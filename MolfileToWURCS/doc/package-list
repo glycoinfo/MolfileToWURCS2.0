@@ -1,0 +1,8 @@
+chemicalgraph
+chemicalgraph.subgraph.aglycone
+chemicalgraph.subgraph.backbone
+chemicalgraph.subgraph.modification
+chemicalgraph.subgraph.molecule
+glycan
+molfile2wurcs
+utility

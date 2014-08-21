@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+</head>
+<body>
+MolfileToWURCS convert CTfile(Sdfile, Molfile) to WURCS.
+<dl>
+    <dt style="font-size:large;">Main Function</dt>
+    <dd>
+		<table border="1">
+			<thead>
+				<tr><th>Class</th><th>Comment</th></tr>
+			</thead>
+			<tbody>
+				<tr><td>molfile2wurcs.CUI_main</td><td>Convert CTfile to WURCS and output result to standerd output.</td></tr>
+				<tr><td>molfile2wurcs.GUI_main</td><td>Convert CTfile to WURCS and output result to standerd output. Then popup Molecule viewer and you can check convert result.</td></tr>
+			</tbody>
+		</table>
+    </dd>
+</dl>
+<hr>
+MolfileToWURCSはCTfile(Sdfile, Molfile)をWURCSに変換します。
+<dl>
+    <dt style="font-size:large;">Main関数</dt>
+    <dd>
+		<table border="1">
+			<thead>
+				<tr><th>Class</th><th>Comment</th></tr>
+			</thead>
+			<tbody>
+				<tr><td>molfile2wurcs.CUI_main</td><td>入力されたCTfileをWURCSに変換し、変換結果を標準出力に出力します。</td></tr>
+				<tr><td>molfile2wurcs.GUI_main</td><td>入力されたCTfileをWURCSに変換し、変換結果を標準出力に出力した後、GUIを用いた出力結果の確認が出来ます。</td></tr>
+			</tbody>
+		</table>
+    </dd>
+</dl>
+以降、molfile2wurcs.CUI_main実行時を例に説明を行います。
+<dl>
+    <dt style="font-size:large;">起動例</dt>
+    <dd>
+		<table border="1">
+			<thead>
+				<tr><th>Command</th><th>Comment</th></tr>
+			</thead>
+			<tbody>
+				<tr><td>java molfile2wurcs.CUI_main -ID FieldName FileName1 FileName2...</td><td>入力されたCTfileをWURCSに変換し、変換結果を標準出力に出力します。<br>変換結果出力時"&gt;  &lt;FieldName&gt;"のフィールドに記述されている値をIDとして利用します。</td></tr>
+				<tr><td>java molfile2wurcs.CUI_main FileName1 FileName2...              </td><td>入力されたCTfileをWURCSに変換し、変換結果を標準出力に出力します。<br>入力CTfileに含まれるユニークなFieldリストがエラー出力に表示されるので、標準入力からどのFieldをIDとして利用するか選択します。<br>"&gt;  &lt;FieldName&gt;"が見つからなかった場合や、空Enterを押した場合はファイル名_レコード番号がIDとして用いられます。</td></tr>
+				<tr><td>java molfile2wurcs.CUI_main FileName1 FileName2... -sdf         </td><td>変換結果（WURCS）をSdfileに埋め込んで、標準出力に出力します。</td></tr>
+				<tr><td>java molfile2wurcs.CUI_main DirectoryName                       </td><td>入力されたディレクトリを再帰的に探索し、見つかった全てのCTFileに対して変換処理を実行します。</td></tr>
+				<tr><td>java molfile2wurcs.CUI_main                                     </td><td>ファイル名もしくはディレクトリ名を入力しない場合、ファイル選択ダイアログを用いて変換対象ファイルもしくはディレクトリを選択します。</td></tr>
+				<tr><td colspan="2">以下Windows専用</td></tr>
+				<tr><td>MolfileToWURCS_CUI.batにファイルもしくはディレクトリをドラッグ&amp;ドロップ                            </td><td>java molfile2wurcs.CUI_main ドラッグ&amp;ドロップされたファイルもしくはディレクトリ が実行されます。<br>複数ファイルを同時にドラッグ＆ドロップする事も可能<br>コマンドラインに展開した際にコマンドプロンプトの文字数制限を超える場合には、「エラーとなる。」もしくは「前半のファイルは処理されるが後半のファイルが処理されない」となります。<br>多数のファイルを処理したい場合には、処理したいファイルをフォルダにまとめてフォルダをドラッグ＆ドロップしてください。</td></tr>
+			</tbody>
+		</table>
+    </dd>
+    
+    <dt style="font-size:large;">Options</dt>
+    <dd>
+		<table border="1">
+			<thead>
+				<tr><th>Option                </th><th>Comment</th></tr>
+			</thead>
+			<tbody>
+				<tr><td>-ID FieldName(null)   </td><td>Sdfileの"&gt;  &lt;FieldName&gt;"のフィールドに記述されている値をIDとして利用します。<br>指定しなかった場合、入力CTfileに含まれるユニークなFieldリストがエラー出力に表示されるので、標準入力からどのFieldをIDとして利用するか選択します。<br>"&gt;  &lt;FieldName&gt;"が見つからなかった場合や、空Enterを押した場合はファイル名_レコード番号がIDとして用いられます。</td></tr>
+				<tr><td>-dir                  </td><td>ファイル選択ダイアログの初期ディレクトリ</td></tr>
+				<tr><td>-sdf                  </td><td>WURCSをSdfileに埋め込んで出力</td></tr>
+				<tr><td>-end                  </td><td>これ以降の引数は無視されます。（開発時における作業効率の向上が主目的）</td></tr>
+				<tr><td colspan="2">以下のオプションは開発時専用  </td></tr>
+				<tr><td>-minNOS Num(2)        </td><td>主鎖探索時に、窒素原子、酸素原子、硫黄原子が1つ以上結合している主鎖炭素の数がNum以上の炭素鎖を対象とする。</td></tr>
+				<tr><td>-minO Num(2)          </td><td>主鎖探索時に、カルボキシ様基に含まれない単結合の酸素が1つ以上結合している主鎖炭素の数がNum以上の炭素鎖を対象とする。</td></tr>
+				<tr><td>-minChainLength Num(3)</td><td>主鎖探索時に、長さがNum以上の炭素鎖を対象とする。</td></tr>
+				<tr><td>-maxChainLength Num(∞)</td><td>主鎖探索時に、長さがNum以下の炭素鎖を対象とする。</td></tr>
+			</tbody>
+		</table>
+		※()はデフォルト値
+    </dd>
+</dl>
+<hr>
+<dl>
+    <dt style="font-size:large;">処理概要</dt>
+    <dd>
+		<ol>
+			<li>引数処理</li>
+			<li>CTfileの読み込みおよびWURCS変換
+				<ol>
+					<li>CTfileから1レコード読み取る</li>
+					<li>WURCS変換処理</li>
+					<li>結果出力</li>
+					<li>次のレコードへ※1</li>
+				</ol>
+			</li>
+			<li>GUI_main起動時には処理結果を表示</li>
+		</ol>
+    </dd>
+    <dd>※1</dd>
+	<dd>CUI_mainの場合、処理結果の格納されたMoleculeオブジェクトは1レコード処理する毎に破棄されます。(大量レコード処理時のメモリ不足を回避する為)</dd>
+	<dd>GUI_mainの場合、処理結果の格納されたMoleculeオブジェクトはMoleculeListオブジェクトに格納されます。</dd>
+
+    <dt style="font-size:large;">WURCS変換処理</dt>
+    <dd>
+		<ol>
+			<li>前処理</li>
+			<li>化合物全体を対象としたEZRS判定(アグリコンとの結合はこれを用いて判定、他の対象として、糖鎖(主鎖+修飾)、修飾を対象とした判定を行う必要あり)</li>
+			<li>主鎖リストの取得</li>
+			<li>アグリコンリストの取得</li>
+			<li>修飾リストの取得</li>
+			<li>主鎖-修飾結合リストの取得</li>
+			<li>糖鎖リストの取得</li>
+			<li>糖鎖毎に以下の処理を実行
+				<ol>
+					<li>主鎖, 修飾, 主鎖-修飾結合の各リストに含まれる要素をソート</li>
+					<li>WURCS生成</li>
+				</ol>
+			</li>
+		</ol>
+    </dd>
+    
+    <dt style="font-size:large;">前処理</dt>
+    <dd>
+		<ol>
+			<li>金属原子(Li, Na, K, Rb, Cs, Be, Mg, Ca, Sr, Ba, Ra)の削除。（非表示の水素が結合していると認識させる。）</li>
+			<li>同位体情報の削除</li>
+			<li>非表示水素の追加</li>
+		</ol>
+    </dd>
+    
+    <dt style="font-size:large;">主鎖リストの取得</dt>
+    <dd>
+		<ol>
+			<li>主鎖候補炭素鎖の取得
+				<ol>
+					<li>主鎖炭素対象外原子(芳香環, π電子保有原子環, 炭素原子環, 炭素以外の原子)の検出</li>
+					<li>末端炭素の取得<br>末端炭素：主鎖炭素対象外原子を除外して得られる部分グラフにおいて、結合数が1の炭素</li>
+					<li>末端炭素から他の末端炭素へ、主鎖候補対象炭素原子のみを通過して得られる全ての炭素鎖を、主鎖候補炭素鎖リストに保存</li>
+				</ol>
+			</li>
+			<li>得られた各炭素鎖の先頭炭素に対してC1判定を行い、先頭炭素よりもC1らしい炭素がα位以降に存在した場合、該当する炭素をC1として炭素鎖を更新する。（炭素鎖が短くなる）</li>
+			<li>主鎖候補炭素鎖リストに含まれる炭素鎖を、主鎖らしさに基づいて並び替える。</li>
+			<li>主鎖候補炭素鎖リストが空になるまで、以下の処理を繰り返し、主鎖リストを構築する。
+				<ol>
+					<li>主鎖候補炭素鎖リストの先頭炭素鎖を最も主鎖らしい炭素鎖として、主鎖に設定</li>
+					<li>主鎖候補炭素鎖リストから主鎖を除外</li>
+					<li>主鎖リストに主鎖を追加</li>
+					<li>主鎖候補炭素鎖リストから、主鎖に含まれる炭素を含む炭素鎖を取り除く</li>
+				</ol>
+			</li>
+		</ol>
+    </dd>
+    
+    <dt style="font-size:large;">アグリコンリストの取得</dt>
+    <dd>
+		<ol>
+			<li>主鎖炭素の隣接原子をChemicalGraphオブジェクトに追加。</li>
+			<li>ChemicalGraphオブジェクトに含まれる原子の隣接原子を以下のルールに従って、幅優先探索により追加する処理を繰り返す。
+				<ol>
+					<li>隣接原子が主鎖炭素の場合、ChemicalGraphオブジェクトに追加せず、その先の原子の探索も行わない。</li>
+					<li>隣接原子が水素原子の場合、ChemicalGraphオブジェクトに追加せず、その先の原子の探索も行わない。</li>
+					<li>隣接原子が上記以外の原子の場合、ChemicalGraphオブジェクトに追加する。（後のループでリストに追加した隣接原子の隣接原子に対する探索が行われる。）</li>
+				</ol>
+			</li>
+			<li>ChemicalGraphオブジェクトに含まれる原子の隣接原子の内、主鎖炭素ではない原子をChemicalGraphオブジェクトに追加する処理を幅優先探索により繰り返す。</li>
+			<li>得られたChemicalGraphオブジェクトの隣接原子に、C1以外の主鎖炭素が含まれていた場合、アグリコンではないので破棄する。</li>
+			<li>得られたChemicalGraphオブジェクトの隣接原子に、C1以外の主鎖炭素が含まれなかった場合、ChemicalGraphオブジェクトからAglyconeオブジェクトを生成しAglyconeリストに追加する。</li>
+		</ol>
+    </dd>
+    
+    <dt style="font-size:large;">修飾リストの取得</dt>
+    <dd>
+		<ol>
+			<li>主鎖炭素の隣接原子をChemicalGraphオブジェクトのAtomListに追加する。</li>
+			<li>ChemicalGraphオブジェクトに含まれる原子の隣接原子を以下のルールに従って、幅優先探索により追加する処理を繰り返す。
+				<ol>
+					<li>隣接原子がアグリコンの場合、ChemicalGraphオブジェクトに追加せず、その先の原子の探索も行わない。</li>
+					<li>隣接原子が水素原子の場合、ChemicalGraphオブジェクトに追加せず、その先の原子の探索も行わない。</li>
+					<li>隣接原子が主鎖炭素の場合、ChemicalGraphオブジェクトに追加するが、その先の原子の探索は行わない。</li>
+					<li>隣接原子が上記以外の原子の場合、ChemicalGraphオブジェクトに追加する。（後のループでリストに追加した隣接原子の隣接原子に対する探索が行われる。）</li>
+				</ol>
+			</li>
+			<li>ChemicalGraphオブジェクトからModificationオブジェクトを生成しModificationリストに追加する。</li>
+		</ol>
+    </dd>
+    
+    <dt style="font-size:large;">主鎖リストのソート</dt>
+    <dd>ChainList.sortForCanonicalWURCS()
+		<ol>
+			<li>Aglyconの結合している主鎖を優先</li>
+			<li>C1と結合している他の糖の数が少ない糖を優先</li>
+			<li>他の糖のC1との結合数の多い糖を優先</li>
+			<li>糖をノードとした糖鎖グラフに対して計算されたEC番号が小さい糖を優先</li>
+			<li>SkeletonCodeの文字列ソート</li>
+			<li>C1に対するHierarchicalDigraphの優先順位<br>※この部分は化合物全体を対象とした処理になる<br>GlycanBuilderで対応可能か確認し、対応が難しい場合は、ユニット単位のCIP順位計算アルゴリズムを作る。</li>
+		</ol>
+	</dd>
+    
+    <dt style="font-size:large;">修飾リストのソート</dt>
+    <dd>ModificationList.sortForCanonicalWURCS()
+		<ol>
+			<li>接続しているユニークな主鎖の数が少ない修飾を優先(同じ主鎖に複数接続している場合は1個としてカウント。)</li>
+			<li>WURCS上で先頭に近い主鎖に接続している修飾を優先</li>
+			<li>主鎖との接続が多い修飾を優先</li>
+			<li>先頭の結合情報から、上位の主鎖炭素に接続している修飾を優先</li>
+			<li>先頭の結合情報から、立体情報（0, 1, 2, 3, e, z, x）を文字列ソートした順序</li>
+			<li>修飾に含まれる原子数が少ない方を優先</li>
+			<li>修飾に含まれる結合数が少ない方を優先</li>
+			<li>修飾文字列を用いたソート
+				<ol>
+					<li>主鎖炭素を優先</li>
+					<li>原子番号の小さなものを優先</li>
+					<li>修飾を対象としたRS判定を利用したソート（未実装）</li>
+					<li>結合比較※先頭のpathはbondが空</li>
+					<li>修飾を対象としたEZ判定を利用したソート（未実装）</li>
+				</ol>
+			</li>
+		</ol>
+    </dd>
+    
+    <dt style="font-size:large;">主鎖-修飾結合リストのソート</dt>
+    <dd>ConnectList.sortForCanonicalWURCS()
+		<ol>
+			<li>主鎖リストの先頭に近い主鎖との結合を優先</li>
+			<li>主鎖の先頭に近い主鎖炭素との結合を優先</li>
+			<li>主鎖からみた結合のCIP順位</li>
+			<li>修飾文字列の先頭に近い修飾原子と結合している結合を優先</li>
+		</ol>
+    </dd>
+    
+    <dt style="font-size:large;">WURCS生成</dt>
+    <dd>
+		<ol>
+			<li>主鎖リストの順で主鎖を出力</li>
+			<li>一つの主鎖のみに結合している修飾は主鎖文字列の後ろに|で区切って出力</li>
+			<li>複数の主鎖に結合している修飾は末尾に出力</li>
+		</ol>
+    </dd>
+</dl>
+<hr>
+<h3>Tips for developer</h3>
+<dl>
+    <dt style="font-size:large;">Encode</dt>
+    <dd>MolfileToWURCSの開発環境は全てBOMなしUTF-8に統一しています。<br>Eclipseの初期設定はMS932となっているので設定をUTF-8に変更します。(※EclipseのUTF-8はBOMなしです。)
+		<ol>
+			<li>[Menu bar]/[Window]/[Preferences]<br><img src="./doc-files/EncodeEclipse_1.png"/></li>
+			<li>[General]/[Workspace]. then select UTF-8<br><img src="./doc-files/EncodeEclipse_2.png"/></li>
+		</ol>
+    </dd>
+    
+    <dt style="font-size:large;">How to add/edit Javadoc by Eclipse.</dt>
+    <dd>
+		<ol>
+			<li>Javadoc recognize comments as a javadoc comment which begins with "/ **" and end with "*/".</li>
+			<li>Move cursor to the function which you want to add/edit Javadoc.<br><img src="./doc-files/EditJavaDoc_1.png"/></li>
+			<li>Alt+Shift+J(then generate template)<br><img src="./doc-files/EditJavaDoc_2.png"/></li>
+			<li>Add comment.<br><img src="./doc-files/EditJavaDoc_3.png"/></li>
+		</ol>
+    </dd>
+    
+    <dt style="font-size:large;">How to update Javadoc by Eclipse.</dt>
+    <dd>
+		<ol>
+			<li>Select [Menu ber]/[Project]/[generate javadoc...].<br><img src="./doc-files/UpdateJavaDoc_1.png"/></li>
+			<li>Check to the [MolfileToWURCS] then click [Finish].<br><img src="./doc-files/UpdateJavaDoc_2.png"/></li>
+			<li>If you have not already done the initial setup, please click [Next] instead of [Finish] then done the following steps:<br><img src="./doc-files/UpdateJavaDoc_3.png"/><br><img src="./doc-files/UpdateJavaDoc_4.png"/></li>
+		</ol>
+    </dd>
+    
+    <dt style="font-size:large;">How to edit this page.</dt>
+    <dd>
+		<ol>
+			<li>Edit "overview.html".<br><img src="./doc-files/EditOverview.png"/></li>
+		</ol>
+    </dd>
+    
+    <dt style="font-size:large;">How to change package presentation to hierarchical.</dt>
+    <dd>
+		<ol>
+			<li>Here.<br><img src="./doc-files/PackagePresentationHierarchical.png"/></li>
+		</ol>
+    </dd>
+
+    <dt style="font-size:large;">Reference</dt>
+    <dd><a href=http://www.atmarkit.co.jp/bbs/phpBB/viewtopic.php?topic=25302&forum=12>Encode</a></dd>
+    <dd><a href=http://www.atmarkit.co.jp/fjava/javatips/003eclipse001.html>How to generate Javadoc</a></dd>
+    <dd><a href=http://d.hatena.ne.jp/unageanu/20070807/1186453441>How to add picture to Javadoc.</a></dd>
+    
+</dl>
+</body>
+</html>
