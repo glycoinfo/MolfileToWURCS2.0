@@ -1,5 +1,8 @@
 package chemicalgraph;
 
+import utility.visitor.ChemicalGraphVisitor;
+import utility.visitor.ChemicalGraphVisitorException;
+
 /**
  * Class for connection (directed graph information).
  * @author KenichiTanaka
@@ -26,7 +29,7 @@ public class Connection {
 		this.stereo = stereo;
 		this.isUniqOrder = true;
 	}
-	
+
 	//----------------------------
 	// Public method (non void)
 	//----------------------------
@@ -82,13 +85,22 @@ public class Connection {
 			double bondLengthPre = Math.sqrt(Math.pow(unitVector3D[0], 2.0) + Math.pow(unitVector3D[1], 2.0) + Math.pow(unitVector3D[2], 2.0));
 			unitVector3D[2] += (this.stereo == 1) ? bondLengthPre : -bondLengthPre;
 		}
-		
+
 		// 単位ベクトルの生成
 		double bondLengthPost = Math.sqrt(Math.pow(unitVector3D[0], 2.0) + Math.pow(unitVector3D[1], 2.0) + Math.pow(unitVector3D[2], 2.0));
 		unitVector3D[0] /= bondLengthPost;
 		unitVector3D[1] /= bondLengthPost;
 		unitVector3D[2] /= bondLengthPost;
-		
+
 		return unitVector3D;
+	}
+
+	/**
+	 * accept for ChimicalGraphVisitor
+	 * @param m_objVisitor
+	 * @throws ChemicalGraphVisitorException
+	 */
+	public void accept(ChemicalGraphVisitor a_objVisitor) throws ChemicalGraphVisitorException {
+		a_objVisitor.visit(this);
 	}
 }

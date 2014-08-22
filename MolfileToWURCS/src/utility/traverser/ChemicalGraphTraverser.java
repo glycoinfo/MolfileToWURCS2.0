@@ -32,7 +32,7 @@ public abstract class ChemicalGraphTraverser {
     public abstract void traverse( Atom a_objAtom ) throws ChemicalGraphVisitorException;
 	public abstract void traverse( Connection a_objConnect ) throws ChemicalGraphVisitorException;
 
-	public abstract void traverseGraph( ChemicalGraph a_objSugar ) throws ChemicalGraphVisitorException;
+	public abstract void traverseGraph( ChemicalGraph a_objMolecule ) throws ChemicalGraphVisitorException;
 
 	public int getState()
 	{
