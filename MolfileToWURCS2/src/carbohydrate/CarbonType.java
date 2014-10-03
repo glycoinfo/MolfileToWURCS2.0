@@ -4,7 +4,7 @@ import sugar.chemicalgraph.Atom;
 import sugar.chemicalgraph.Connection;
 import util.analytical.AtomIdentifier;
 
-public enum BackboneCarbonType {
+public enum CarbonType {
 
 	// Terminal
 	S3_METHYL_L   ( "m", "sp3", 1, 0, null, 1,1,1,  "H",  "H",  "H" ), // -C(H)(H)(H)
@@ -83,7 +83,7 @@ public enum BackboneCarbonType {
 	 * @param a_strY Second symbol of atom connected target carbon (not backbone carbon) or null
 	 * @param a_strZ Third symbol of atom connected target carbon (not backbone carbon) or null
 	 */
-	private BackboneCarbonType( String a_strChar, String a_strOrbital, int a_iTypeC1, int a_iTypeC2, String a_strStereo, int a_iTypeX, int a_iTypeY, int a_iTypeZ, String a_strX, String a_strY, String a_strZ ) {
+	private CarbonType( String a_strChar, String a_strOrbital, int a_iTypeC1, int a_iTypeC2, String a_strStereo, int a_iTypeX, int a_iTypeY, int a_iTypeZ, String a_strX, String a_strY, String a_strZ ) {
 		this.m_strChar = a_strChar;
 		this.m_strHybridOrbital = a_strOrbital;
 		this.m_iBondTypeCarbon1 = a_iTypeC1;
@@ -108,7 +108,7 @@ public enum BackboneCarbonType {
 	 * @param a_objTailCarbon Tail side carbon connected a_objCarbon
 	 * @return ctype BackboneCarbonType
 	 */
-	public BackboneCarbonType forCarbon( String a_strStereo, Atom a_objCarbon, Atom a_objHeadCarbon, Atom a_objTailCarbon ) {
+	public CarbonType forCarbon( String a_strStereo, Atom a_objCarbon, Atom a_objHeadCarbon, Atom a_objTailCarbon ) {
 		// Set connected backbone carbon(s)
 		Atom C1, C2;
 		if ( a_objHeadCarbon == null && a_objTailCarbon == null ) {
@@ -189,7 +189,7 @@ public enum BackboneCarbonType {
 		}
 
 		// Match values
-		for ( BackboneCarbonType ctype : BackboneCarbonType.values() ) {
+		for ( CarbonType ctype : CarbonType.values() ) {
 			if ( !ctype.m_strHybridOrbital.equals(orbital) ) continue;
 			if (  ctype.m_iBondTypeCarbon1 != typeC1       ) continue;
 			if (  ctype.m_iBondTypeCarbon2 != typeC2       ) continue;

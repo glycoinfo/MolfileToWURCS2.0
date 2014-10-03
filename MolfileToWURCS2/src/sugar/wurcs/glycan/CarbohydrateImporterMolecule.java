@@ -406,7 +406,6 @@ public class CarbohydrateImporterMolecule {
 		}
 
 		// Add backbone atoms to candidate modifications
-		
 		for ( SubGraph graph : candidateModifications ) {
 			HashSet<Connection> ModToBackbone = new HashSet<Connection>();
 			for ( Connection con : graph.getExternalConnections() ) {

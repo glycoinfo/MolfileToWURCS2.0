@@ -1,12 +1,17 @@
 package carbohydrate;
 
-import java.util.LinkedList;
+/**
+ * Class for backbone of saccharide
+ * @author MasaakiMatsubara
+ *
+ */
+public class Backbone extends CarbohydrateComponent{
 
-public class Backbone {
-	private LinkedList<BackboneCarbonType> m_aCarbonTypes = new LinkedList<BackboneCarbonType>();
-
-	public void addCarbonTypes( BackboneCarbonType ctype ) {
-		this.m_aCarbonTypes.addLast(ctype);
+	public String getSkeletonCode() {
+		String code = "";
+		for ( CarbonType ctype : this.getCarbonTypes() ) {
+			code += ctype.getChar();
+		}
+		return code;
 	}
-
 }
