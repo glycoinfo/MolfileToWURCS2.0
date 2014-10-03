@@ -1,6 +1,6 @@
 package util;
 
-import chemicalgraph2.Atom;
+import sugar.chemicalgraph.Atom;
 
 /**
  * Class for calculate inner product and outer product

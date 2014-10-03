@@ -2,9 +2,9 @@ package util.analytical;
 
 import java.util.HashSet;
 
-import chemicalgraph2.Atom;
-import chemicalgraph2.Connection;
-import chemicalgraph2.subgraph.Molecule;
+import sugar.chemicalgraph.Atom;
+import sugar.chemicalgraph.Connection;
+import sugar.chemicalgraph.Molecule;
 
 /**
  *
@@ -66,6 +66,7 @@ public class StructureAnalyzer {
 	 * @param a_objMol Molecule object for analyze
 	 */
 	public void analyze(Molecule a_objMol) {
+		this.clear();
 		this.m_objMolecule = a_objMol;
 //		this.setStereoMolecule();
 		this.findAromaticRings();

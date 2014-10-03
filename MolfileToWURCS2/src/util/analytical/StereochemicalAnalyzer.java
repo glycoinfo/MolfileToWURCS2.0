@@ -4,22 +4,25 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import sugar.chemicalgraph.Atom;
+import sugar.chemicalgraph.Bond;
+import sugar.chemicalgraph.ChemicalGraph;
+import sugar.chemicalgraph.Connection;
 import util.Chemical;
 import util.HierarchicalDigraph;
 import util.HierarchicalDigraphComparator;
-import chemicalgraph2.Atom;
-import chemicalgraph2.Bond;
-import chemicalgraph2.ChemicalGraph;
-import chemicalgraph2.Connection;
+import util.HierarchicalDigraphCreator;
 
 /**
  * Class for stereochemical analyze of chemical graph
+ * TODO: To make HierarchicalDigraphCreator
  * @author MasaakiMatsubara
  */
 public class StereochemicalAnalyzer {
 
 	private ChemicalGraph m_objGraph;
 
+	private HierarchicalDigraphCreator    m_objCreator    = new HierarchicalDigraphCreator();
 	private HierarchicalDigraphComparator m_objComparator = new HierarchicalDigraphComparator();
 
 	private HashMap<Atom, Boolean>       m_hashAtomIsUniqueOrder        = new HashMap<Atom, Boolean>();
@@ -69,13 +72,11 @@ public class StereochemicalAnalyzer {
 	//----------------------------
 	/** Get stereo of atom */
 	public String getStereo(Atom atom) {
-		if ( !this.m_hashBondToStereo.containsKey(atom) ) return null;
 		return this.m_hashAtomToStereo.get(atom);
 	}
 
 	/** Get bond to stereo */
 	public String getStereo(Bond bond) {
-		if ( !this.m_hashBondToStereo.containsKey(bond) ) return null;
 		return this.m_hashBondToStereo.get(bond);
 	}
 
@@ -147,7 +148,7 @@ public class StereochemicalAnalyzer {
 //						connection.isUniqOrder = child.isUniqOrder;
 						this.m_hashConnectionIsUniqueOrder.put(connection, child.isUniqueOrder());
 //						connection.isCompletedFullSearch = child.isCompletedFullSearch;
-						this.m_hashConnectionHasFullSearch.put(connection, child.completedFullSearch());
+						this.m_hashConnectionHasFullSearch.put(connection, child.isCompletedFullSearch());
 //						connection.CIPorder = order;
 						this.m_hashConnectionToCIPOrder.put(connection, order);
 					}
@@ -212,7 +213,7 @@ public class StereochemicalAnalyzer {
 				// しかし、ここではダミー以外の要素のみをチェックしているので、achiralが確定していても上記のチェックを逃れてしまう。
 				// その為ここでチェックする。
 //				if(hd.isCompletedFullSearch){
-				if ( hd.completedFullSearch() ) {
+				if ( hd.isCompletedFullSearch() ) {
 //					atom.connections.tmpflg = true;
 					analyzedAtoms.put(atom, true);
 				}
@@ -252,13 +253,12 @@ public class StereochemicalAnalyzer {
 //			ConnectionList b0connects = this.getConnects(b0);
 			LinkedList<Connection> a0connects = this.getConnects(a0);
 			LinkedList<Connection> b0connects = this.getConnects(b0);
-			if( a0connects.size()<2) continue;
-			if( b0connects.size()<2) continue;
+			if ( a0connects.size()<2 ) continue;
+			if ( b0connects.size()<2 ) continue;
 			Atom a1 = (a0connects.get(0).endAtom() == b0) ? a0connects.get(1).endAtom() : a0connects.get(0).endAtom();
 			Atom b1 = (b0connects.get(0).endAtom() == a0) ? b0connects.get(1).endAtom() : b0connects.get(0).endAtom();
 			String stereo = Chemical.sp2stereo(a0, a1, b0, b1);
 //			bond.stereoTmp = stereo;
-			System.err.println(stereo);
 			this.m_hashBondToStereo.put(bond, stereo);
 		}
 	}

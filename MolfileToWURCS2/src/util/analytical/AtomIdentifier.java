@@ -2,9 +2,9 @@ package util.analytical;
 
 import java.util.LinkedList;
 
+import sugar.chemicalgraph.Atom;
+import sugar.chemicalgraph.Connection;
 import util.Chemical;
-import chemicalgraph2.Atom;
-import chemicalgraph2.Connection;
 
 /**
  * Class for Atom identifier
@@ -15,10 +15,9 @@ public class AtomIdentifier {
 
 	protected Atom m_objAtom;
 
-	public AtomIdentifier() { }
-
-	public void setAtom(Atom a_objAtom) {
+	public AtomIdentifier setAtom(Atom a_objAtom) {
 		this.m_objAtom = a_objAtom;
+		return this;
 	}
 
 	public void clear() {
@@ -28,6 +27,86 @@ public class AtomIdentifier {
 	//----------------------------
 	// Public method (non void)
 	//----------------------------
+
+	/**
+	 * Get sum of all bond orders
+	 * @return sum of all bond orders
+	 */
+	public int getSumBondOrders() {
+		int nSumOrder=0;
+		for ( Connection con : this.m_objAtom.getConnections() ) {
+			nSumOrder += con.getBond().getType();
+		}
+		return nSumOrder;
+	}
+
+	/**
+	 * Count bond type
+	 * @param type Number of bond order
+	 * @return number of bond type which is "type"
+	 */
+	public int countBondType(int type) {
+		int nType = 0;
+		for ( Connection con : this.m_objAtom.getConnections() ) {
+			if ( con.getBond().getType() != type ) continue;
+			nType++;
+		}
+		return nType;
+	}
+
+	/**
+	 * Get valence number of the atom
+	 * @return number of valence
+	 */
+	public int getValenceNumber() {
+		int nAtomic = Chemical.getAtomicNumber( this.m_objAtom.getSymbol() );
+		if (this.m_objAtom.getCharge() != 0 ) nAtomic -= this.m_objAtom.getCharge();
+		// First row
+		return  ( nAtomic <=  2 )? nAtomic      : // First row (1,2)
+				( nAtomic <= 10 )? nAtomic - 2  : // Second row (2~10)
+				( nAtomic <= 18 )? nAtomic - 10 : // Third row (11~18)
+				( nAtomic <= 20 )? nAtomic - 18 : // Fourth row (19,20)
+				( nAtomic <= 29 )? 2            : // Fourth row (21~29:transision metals)
+				( nAtomic <= 36 )? nAtomic - 27 : // Fourth row (30~36)
+				0;
+	}
+
+	/**
+	 * Get number of lone pair which the atom has calculated by atomic number and charge
+	 * @return Number of lone pair
+	 */
+	public int countLonePair() {
+		int nAtomic = Chemical.getAtomicNumber( this.m_objAtom.getSymbol() );
+		int nValence = this.getValenceNumber();
+		return  ( nAtomic <=  2 )? 0 :
+				( nAtomic <= 10 )? Math.max( nValence - 4, 0 ) :
+				( nAtomic <= 18 )? Math.max( nValence - 4 - this.countBondType(2), 0) :
+				0;
+	}
+
+	/**
+	 * Get number of hidden bond
+	 * @return Number of hidden bond
+	 */
+	public int getHiddenBondNumber() {
+		int nValence = this.getValenceNumber();
+		int nSumOrder = this.getSumBondOrders();
+		int nLP = this.countLonePair();
+		return nValence-nSumOrder-nLP*2;
+	}
+
+	/**
+	 * Return String of hybrid orbital "sp", "sp2", "sp3" or "" using atom valences.
+	 * @return Hybrid orbital("sp", "sp2", "sp3" or "")
+	 */
+	public String getHybridOrbital0() {
+		int nOrbital = this.m_objAtom.getConnections().size() + this.countLonePair();
+		return  ( nOrbital == 4 )? "sp3" :
+				( nOrbital == 3 )? "sp2" :
+				( nOrbital == 2 )? "sp"  :
+				"";
+	}
+
 	/**
 	 * Return String of hybrid orbital "sp", "sp2", "sp3" or "".
 	 * @return hybridOrbital("sp", "sp2", "sp3" or "")
@@ -96,42 +175,20 @@ public class AtomIdentifier {
 	}
 
 	/**
-	 * Oxygen is N, O, S...
-	 * @return true if this contain element which connect with 2 N, O, or S atom.
-	 */
-	public boolean connectsTwoNOS(){
-		int numNOS = 0;
-		for ( Connection connection : this.m_objAtom.getConnections() ) {
-			String symbol = connection.endAtom().getSymbol();
-			if ( symbol.equals("N") || symbol.equals("O") || symbol.equals("S") )
-				numNOS++;
-		}
-		return (numNOS==2);
-	}
-
-	/**
-	 * Return true if the input conditions are satisfied
-	 * @param symbol
-	 * @param charge
-	 * @param singleBondNum
-	 * @param doubleBondNum
-	 * @param tripleBondNum
-	 * @return true if the input conditions are satisfied.
+	 * Wether or not the atom satisfy input conditions. For number of single bond,
+	 * @param symbol Atom symbol
+	 * @param charge Atom charge
+	 * @param singleBondNum Number of single bond which have the atom
+	 * @param doubleBondNum Number of double bond which have the atom
+	 * @param tripleBondNum Number of triple bond which have the atom
+	 * @return true if the atom satisfy input conditions.
 	 */
 	public boolean is(String symbol, Integer charge, Integer singleBondNum, Integer doubleBondNum, Integer tripleBondNum){
 		if((symbol != null) && !this.m_objAtom.getSymbol().equals(symbol)) return false;
 		if((charge != null) && this.m_objAtom.getCharge() != charge) return false;
-		int nSingle = 0;
-		int nDouble = 0;
-		int nTriple = 0;
-		for(Connection connection : this.m_objAtom.getConnections()){
-			if(connection.getBond().getType() == 1) nSingle++;
-			if(connection.getBond().getType() == 2) nDouble++;
-			if(connection.getBond().getType() == 3) nTriple++;
-		}
-		if((singleBondNum != null) && nSingle >singleBondNum) return false;
-		if((doubleBondNum != null) && nDouble!=doubleBondNum) return false;
-		if((tripleBondNum != null) && nTriple!=tripleBondNum) return false;
+		if((singleBondNum != null) && this.countBondType(1) >singleBondNum) return false;
+		if((doubleBondNum != null) && this.countBondType(2)!=doubleBondNum) return false;
+		if((tripleBondNum != null) && this.countBondType(3)!=tripleBondNum) return false;
 		return true;
 	}
 

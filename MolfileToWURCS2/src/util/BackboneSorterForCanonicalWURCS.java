@@ -4,11 +4,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 
+import sugar.chemicalgraph.Atom;
+import sugar.chemicalgraph.Connection;
 import chemicalgraph.subgraph.backbone.Backbone;
 import chemicalgraph.subgraph.backbone.BackboneList;
 import chemicalgraph.subgraph.modification.Modification;
-import chemicalgraph2.Atom;
-import chemicalgraph2.Connection;
 
 /**
  * Class for Backbone sorter for canonical WURCS

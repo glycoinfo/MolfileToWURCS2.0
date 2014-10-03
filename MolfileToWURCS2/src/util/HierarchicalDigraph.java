@@ -5,14 +5,15 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 
+import sugar.chemicalgraph.Atom;
+import sugar.chemicalgraph.ChemicalGraph;
+import sugar.chemicalgraph.Connection;
 import util.analytical.Cyclization;
-import chemicalgraph2.Atom;
-import chemicalgraph2.ChemicalGraph;
-import chemicalgraph2.Connection;
 
 /**
  * Class for constructing HierarchicalDigraph and comparing the graph by CIP order<br>
  * Ionic conjugate system with odd-numbered members is not cosidered.
+ * TODO: To devide this class into storage and create class which this and HierarchicalDigraphCreator
  * @author KenichiTanaka
  * @author MasaakiMatsubara
  * @see <a href=http://homepage1.nifty.com/nomenclator/text/seqrule.htm>化合物命名法談義</a>
@@ -28,14 +29,14 @@ public class HierarchicalDigraph {
 	/** Parent of this graph (null if this graph is root) */
 	private HierarchicalDigraph parent = null;
 	/** Chidren of this graph */
-	private LinkedList<HierarchicalDigraph> children = null;
+	private LinkedList<HierarchicalDigraph> children = new LinkedList<HierarchicalDigraph>();
 	/** Whether or not this graph is unique order */
 	private boolean isUniqOrder;
 	/** Whether or not full search of this graph has been completed */
-	private boolean completedFullSearch;
+	private boolean isCompletedFullSearch = true;
 	/** Comparator of HierarchicalDigraph */
 	private HierarchicalDigraphComparator comparator;
-	/** Aromatic atoms */	/** Set stereo to member valiable for EZRS. */
+	/** Aromatic atoms */
 
 	private HashSet<Atom> m_aAromaticAtoms = new HashSet<Atom>();
 
@@ -71,12 +72,12 @@ public class HierarchicalDigraph {
 			if ( cyclic.aromatize(a) ) this.m_aAromaticAtoms.addAll(cyclic);
 		}
 
-		this.completedFullSearch = true;
+		this.isCompletedFullSearch = true;
 		this.depthSearch(atom, depth, this.averageAtomicNumber);
 		if(this.children != null){
 			for(HierarchicalDigraph child : this.children){
-				if(child.completedFullSearch==false){
-					this.completedFullSearch = false;
+				if(child.isCompletedFullSearch==false){
+					this.isCompletedFullSearch = false;
 				}
 			}
 		}
@@ -90,21 +91,23 @@ public class HierarchicalDigraph {
 	 */
 	public HierarchicalDigraph(final HierarchicalDigraph parent, final Atom atom, final double averageAtomicNumber) {
 		this.parent = parent;
+		this.atom = atom;
 		this.depth = parent.depth - 1;
 		this.targetGraph = parent.targetGraph;
 		this.ancestors = parent.ancestors;
 		this.comparator = parent.comparator;
 
-		this.completedFullSearch = true;
+		this.isCompletedFullSearch = true;
 		this.depthSearch(atom, this.depth, averageAtomicNumber);
 		if(this.children != null){
 			for(HierarchicalDigraph child : this.children){
-				if(child.completedFullSearch==false){
-					this.completedFullSearch = false;
+				if(child.isCompletedFullSearch==false){
+					this.isCompletedFullSearch = false;
 				}
 			}
 		}
 	}
+
 	//----------------------------
 	// Accessor
 	//----------------------------
@@ -136,13 +139,40 @@ public class HierarchicalDigraph {
 		return this.children;
 	}
 
-	public boolean isUniqueOrder() {
-		return this.isUniqOrder;
+	public void addChild(HierarchicalDigraph child) {
+		this.children.addLast(child);
 	}
 
-	public boolean completedFullSearch() {
-		return this.completedFullSearch;
+	public void sortChildren( HierarchicalDigraphComparator comparator ) {
+		Collections.sort( this.children, comparator );
 	}
+
+	/**
+	 * Whether or not this graph is unique order
+	 */
+	public boolean isUniqueOrder() {
+		HierarchicalDigraph child1, child2;
+		int numChildren = this.children.size();
+		if ( numChildren == 0 ) return true;
+		for(int ii=0; ii<numChildren-1; ii++){
+			child1 = this.children.get(ii);
+			child2 = this.children.get(ii+1);
+//			if(tree1.compareTo(tree2, EZRScheck)!=0) continue;
+			if ( this.comparator.compare(child1, child2)!=0 ) continue;
+//			if ( child1.isUniqueOrder() && child2.isUniqueOrder() ) continue;
+			return false;
+		}
+		return true;
+	}
+
+	public boolean isCompletedFullSearch() {
+		return this.isCompletedFullSearch;
+	}
+
+	public void setCompleteFullSearch(boolean b) {
+		this.isCompletedFullSearch = b;
+	}
+
 	//----------------------------
 	// Public method (void)
 	//----------------------------
@@ -177,7 +207,7 @@ public class HierarchicalDigraph {
 		if(this.atom == null) return;
 		if(this.ancestors.contains(this.atom)) return;
 		if(depth == 0){
-			this.completedFullSearch = false;
+			this.isCompletedFullSearch = false;
 			return;
 		}
 

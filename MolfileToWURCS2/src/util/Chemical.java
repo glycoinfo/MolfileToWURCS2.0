@@ -1,7 +1,7 @@
 package util;
 
-import chemicalgraph2.Atom;
-import chemicalgraph2.Connection;
+import sugar.chemicalgraph.Atom;
+import sugar.chemicalgraph.Connection;
 
 
 /**
@@ -30,6 +30,11 @@ public class Chemical {
 		"A", "Q", "X", "?", "R"                                                                                     // 104 - 108
 	};
 	private static String[] MetalAtoms = {"Li", "Na", "K", "Rb", "Cs", "Be", "Mg", "Ca", "Sr", "Ba", "Ra"};
+
+	/**
+	 * Don't let anyone instantiate this class.
+	 */
+	private Chemical() {}
 
 	//----------------------------
 	// Public method

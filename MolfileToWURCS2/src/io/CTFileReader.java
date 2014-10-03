@@ -7,11 +7,11 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import sugar.chemicalgraph.Atom;
+import sugar.chemicalgraph.Bond;
+import sugar.chemicalgraph.Connection;
+import sugar.chemicalgraph.Molecule;
 import util.Chemical;
-import chemicalgraph2.Atom;
-import chemicalgraph2.Bond;
-import chemicalgraph2.Connection;
-import chemicalgraph2.subgraph.Molecule;
 
 /**
  * Read CTfile(Sdfile, Molfile) and return Molcule

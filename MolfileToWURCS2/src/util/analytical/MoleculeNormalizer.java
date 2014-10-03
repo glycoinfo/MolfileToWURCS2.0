@@ -1,10 +1,12 @@
 package util.analytical;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
-import utility.Chemical;
-import chemicalgraph2.Atom;
-import chemicalgraph2.subgraph.Molecule;
+import sugar.chemicalgraph.Atom;
+import sugar.chemicalgraph.Connection;
+import sugar.chemicalgraph.Molecule;
+import util.Chemical;
 
 /**
  * Class for normalize molecule:
@@ -12,12 +14,15 @@ import chemicalgraph2.subgraph.Molecule;
  * @author MasaakiMatsubara
  */
 public class MoleculeNormalizer {
+
+	private HiddenHydrogenAttacher m_objHydrogenAttacher = new HiddenHydrogenAttacher();
+
 	/** Molecule for normalization*/
 	private Molecule m_objMolecule;
 
 	/**
 	 * Normalize molecule.
-	 * TODO: Add other normalize method
+	 * TODO: To make other normalize method
 	 * @param mol
 	 */
 	public void normalize(Molecule mol) {
@@ -64,12 +69,23 @@ public class MoleculeNormalizer {
 	/**
 	 * Add hidden hydrogens.
 	 */
-	public void addHiddenHydrogens() {
+	private void addHiddenHydrogens() {
+		LinkedList<Connection> addConnect = new LinkedList<Connection>();
 		for(Atom atom : this.m_objMolecule.getAtoms()){
-			HiddenHydrogenChecker t_objHiddenCheck = new HiddenHydrogenChecker(atom);
-			t_objHiddenCheck.addHiddenHydrogens();
+			// Count valence of atoms and supply hidden hydrogens to the atom
+			if ( !m_objHydrogenAttacher.attachHiddenHydrogensTo(atom) ) continue;
+			// Collect hidden hydrogens if hidden hydrogens are supplied
+			for ( Connection con : atom.getConnections() ) {
+				if ( this.m_objMolecule.contains( con.endAtom() ) ) continue;
+				addConnect.add(con);
+			}
+		}
+		System.err.println("attach " + addConnect.size());
+		// Add atom and bond of hidden hydrogens
+		for ( Connection con : addConnect ) {
+			this.m_objMolecule.add( con.endAtom() );
+			this.m_objMolecule.add( con.getBond() );
 		}
 	}
-
 
 }

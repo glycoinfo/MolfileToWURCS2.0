@@ -4,10 +4,15 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-import chemicalgraph2.Atom;
-import chemicalgraph2.Bond;
-import chemicalgraph2.Connection;
+import sugar.chemicalgraph.Atom;
+import sugar.chemicalgraph.Bond;
+import sugar.chemicalgraph.Connection;
 
+/**
+ *
+ * @author MasaakiMatsubara
+ *
+ */
 public class HierarchicalDigraphComparator implements Comparator<HierarchicalDigraph>{
 	//----------------------------
 	// Member variable
@@ -36,6 +41,7 @@ public class HierarchicalDigraphComparator implements Comparator<HierarchicalDig
 		this.m_hashAtomToStereo.clear();
 		this.m_hashBondToStereo.clear();
 	}
+
 	//----------------------------
 	// Compare
 	//----------------------------
@@ -45,7 +51,8 @@ public class HierarchicalDigraphComparator implements Comparator<HierarchicalDig
 
 		// Compare atomic number
 		// 1. First, prioritize the atom which has greater atomic number.
-		// 2. Next, compare next atoms.
+		// 2. Next, compare next atoms by first compare method.
+		// 3.
 		// (1)直接結合する原子の原子番号が大きい方を優位とする。
 		// (2)前項で決まらないときは、最初の原子に結合している原子（すなわち中心から2番目の原子）について (i) の基準で比べる。2番目の原子が最初の原子に複数結合しているときは、原子番号の大きい順に候補を1つずつ出して違いのあった時点で決める。
 		// (3)前項で決まらないときは、中心から2番目の原子（ただし、(ii)で除外された原子は除く）に結合している原子で比べる。以降、順に中心から離れた原子を比べる。
@@ -92,16 +99,17 @@ public class HierarchicalDigraphComparator implements Comparator<HierarchicalDig
 		// WURCS生成時には、正規化の段階で同位体情報は削除されるので、この比較は行わない。
 
 		// (5)2つの基が物質的かつ位相的に等しい（構成する原子の元素、個数、結合順序、質量数が等しい）が、立体化学が異なる場合。
-		// まず二重結合の幾何異性に関して、ZをEより優位とする。
-		// 次いでジアステレオ異性に関して、like （R,R またはS,S）を unlike （R,S またはS,R）より優位とする。
-		// 次いで、鏡像異性に関して、RをS より優位とする。
-		// 最後に、擬似不斉原子に関して、rをs より優位とする。
 		if(this.m_bEZRSCheck) return this.compareEZRS(a_objGraph1, a_objGraph2);
 
 		return 0;
 	}
 
 	private int compareEZRS(final HierarchicalDigraph a_objGraph1, final HierarchicalDigraph a_objGraph2){
+		// (5)2つの基が物質的かつ位相的に等しい（構成する原子の元素、個数、結合順序、質量数が等しい）が、立体化学が異なる場合。
+		// まず二重結合の幾何異性に関して、ZをEより優位とする。
+		// 次いでジアステレオ異性に関して、like （R,R またはS,S）を unlike （R,S またはS,R）より優位とする。
+		// 次いで、鏡像異性に関して、RをS より優位とする。
+		// 最後に、擬似不斉原子に関して、rをs より優位とする。
 		LinkedList<HierarchicalDigraph> widthsearch1 = new LinkedList<HierarchicalDigraph>();
 		LinkedList<HierarchicalDigraph> widthsearch2 = new LinkedList<HierarchicalDigraph>();
 		widthsearch1.addLast(a_objGraph1);
@@ -150,7 +158,7 @@ public class HierarchicalDigraphComparator implements Comparator<HierarchicalDig
 						if( conatomStereo1.equals("S") && conatomStereo2.equals("R")) return 1;
 
 						// 最後に、擬似不斉原子に関して、rをs より優位とする。
-						// For the atom with pseudoasymmetry, "r" more than "s"
+						// For the atom with pseudoasymmetry, prioritize "r" more than "s"
 						if( conatomStereo1.equals("r") && conatomStereo2.equals("s")) return -1;
 						if( conatomStereo1.equals("s") && conatomStereo2.equals("r")) return 1;
 					}
