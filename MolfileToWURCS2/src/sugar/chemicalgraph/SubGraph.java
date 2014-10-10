@@ -4,10 +4,15 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 
+/**
+ * Class for sub chemical graph
+ * @author MasaakiMatsubara
+ *
+ */
 public class SubGraph extends ChemicalGraph {
 	/**
 	 * Remove atom and bonds which connect with input atom from this subgraph.
-	 * @param atom
+	 * @param atom Remove Atom
 	 * @return true if this chemical graph contains input atom.
 	 */
 	public boolean remove(final Atom atom){
@@ -23,13 +28,11 @@ public class SubGraph extends ChemicalGraph {
 		return this.m_aAtoms.remove(atom);
 	}
 
-
-
 	/**
 	 * Recursively expand this chemical graph without ignoreAtoms and hydrogen.
 	 * TODO: Must ignore hydrogens?
 	 * @param startAtom Start atom of this chemical graph
-	 * @param ignoreAtoms ArrayList of ignore Atom list
+	 * @param ignoreAtoms HashSet of ignore Atoms
 	 * @author MasaakiMatsubara
 	 */
 	public void expand(Atom startAtom, HashSet<Atom> ignoreAtoms) {
@@ -56,7 +59,7 @@ public class SubGraph extends ChemicalGraph {
 	/**
 	 * Get connections which connect from this chemical graph to external atoms without hydrogen.
 	 * TODO: Must ignore hydrogens?
-	 * @return ArrayList of connections from this chemical graph
+	 * @return HashSet of connections from this chemical graph
 	 * @author MasaakiMatsubara
 	 */
 	public HashSet<Connection> getExternalConnections() {

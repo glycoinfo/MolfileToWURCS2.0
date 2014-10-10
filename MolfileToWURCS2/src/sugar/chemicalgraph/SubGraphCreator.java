@@ -14,15 +14,15 @@ public class SubGraphCreator {
 	//----------------------------
 	// Accessor
 	//----------------------------
-	public void addStartAtom(Atom startAtom) {
+	public void addStartAtom( Atom startAtom ) {
 		this.m_aStartAtoms.add(startAtom);
 	}
 
-	public void addStartAtoms(HashSet<Atom> startAtoms) {
+	public void addStartAtoms( HashSet<Atom> startAtoms ) {
 		this.m_aStartAtoms.addAll(startAtoms);
 	}
 
-	public void addIgnoreAtoms(HashSet<Atom> ignoreAtoms) {
+	public void addIgnoreAtoms( HashSet<Atom> ignoreAtoms ) {
 		this.m_aIgnoreAtoms.addAll(ignoreAtoms);
 	}
 
@@ -43,7 +43,7 @@ public class SubGraphCreator {
 			System.err.println("There is no start atom for create sub graph.");
 		}
 
-		LinkedList<SubGraph> t_aGraphs = new LinkedList<SubGraph>();
+		LinkedList<SubGraph> t_hashGraphs = new LinkedList<SubGraph>();
 		for(Atom startAtom : this.m_aStartAtoms) {
 			if ( this.m_aIgnoreAtoms.contains(startAtom) ) continue;
 			// Set start atom to candidate subgraph and expand
@@ -53,10 +53,10 @@ public class SubGraphCreator {
 			// Add atoms of the candidate subgraph to ignore list
 			this.m_aIgnoreAtoms.addAll(candidate.getAtoms());
 
-			t_aGraphs.add(candidate);
+			t_hashGraphs.add(candidate);
 		}
 
-		return t_aGraphs;
+		return t_hashGraphs;
 	}
 
 }

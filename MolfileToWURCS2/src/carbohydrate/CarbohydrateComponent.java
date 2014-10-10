@@ -2,28 +2,41 @@ package carbohydrate;
 
 import java.util.LinkedList;
 
+/**
+ * Class for component of Carbohydrate
+ * @author MasaakiMatsubara
+ *
+ */
 public class CarbohydrateComponent {
 	/** Contained CarbonTypes */
-	private LinkedList<CarbonType> m_aCarbonTypes = new LinkedList<CarbonType>();
+	protected LinkedList<BackboneCarbon> m_aCarbons;
 	/** Linkages */
-	private LinkedList<Linkage>    m_aLinkages = new LinkedList<Linkage>();
+	protected LinkedList<Linkage>        m_aLinkages = new LinkedList<Linkage>();
+
+	/**
+	 * Constructor
+	 * @param a_aCarbons List of BackboneCarbon
+	 */
+	public CarbohydrateComponent(LinkedList<BackboneCarbon> a_aCarbons) {
+		this.m_aCarbons = a_aCarbons;
+	}
 
 	/**
 	 * Add CarbonType
 	 * @param ctype CarbonType
 	 * @return true if addition is succeed
 	 */
-	public boolean addBackboneCarbon( CarbonType ctype ) {
-		if ( !this.m_aCarbonTypes.contains(ctype) ) return false;
-		return this.m_aCarbonTypes.add( ctype );
+	public boolean addBackboneCarbon( BackboneCarbon bc ) {
+//		if ( this.m_aCarbonTypes.contains(ctype) ) return false;
+		return this.m_aCarbons.add( bc );
 	}
 
 	/**
-	 * Get list of CarbonTypes in this component
-	 * @return list of CarbonTypes in this component
+	 * Get list of BackboneCarbon in this component
+	 * @return list of BackboneCarbon in this component
 	 */
-	public LinkedList<CarbonType> getCarbonTypes() {
-		return this.m_aCarbonTypes;
+	public LinkedList<BackboneCarbon> getBackboneCarbons() {
+		return this.m_aCarbons;
 	}
 
 	/**
@@ -49,7 +62,7 @@ public class CarbohydrateComponent {
 	 * @param ctype
 	 * @return number of carbon position
 	 */
-	public int getPosition( CarbonType ctype ) {
-		return this.m_aCarbonTypes.indexOf( ctype );
+	public int getPosition( BackboneCarbon bc ) {
+		return this.m_aCarbons.indexOf( bc );
 	}
 }

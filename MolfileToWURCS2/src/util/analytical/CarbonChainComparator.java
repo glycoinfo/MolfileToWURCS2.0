@@ -20,7 +20,7 @@ public class CarbonChainComparator implements Comparator<LinkedList<Atom>> {
 		this.m_objAnalyzer2.setCarbonChain(chain2);
 		String sequence1 = this.m_objAnalyzer1.getCoOCOSequence();
 		String sequence2 = this.m_objAnalyzer2.getCoOCOSequence();
-		int checkCoOCOSequence = sequence1.compareTo(sequence2);
+		int checkCoOCOSequence = sequence2.compareTo(sequence1);
 		if ( checkCoOCOSequence != 0 ) return checkCoOCOSequence;
 
 		// C1が環の一部(C1がヘテロ原子を挟んでBackboneの他の炭素に結合している)であるBackboneを優先
@@ -32,7 +32,7 @@ public class CarbonChainComparator implements Comparator<LinkedList<Atom>> {
 		// oxidationSequenceを辞書順で降順
 		sequence1 = this.m_objAnalyzer1.getOxidationSequence();
 		sequence2 = this.m_objAnalyzer2.getOxidationSequence();
-		int checkOxidationSequence = sequence1.compareTo(sequence2);
+		int checkOxidationSequence = sequence2.compareTo(sequence1);
 		if(checkOxidationSequence != 0) return checkOxidationSequence;
 
 		// これ以降、Backboneの長さは等しくなる。

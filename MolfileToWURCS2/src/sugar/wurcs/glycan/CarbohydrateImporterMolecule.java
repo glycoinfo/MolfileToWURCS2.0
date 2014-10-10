@@ -14,9 +14,11 @@ import sugar.chemicalgraph.SubGraphCreator;
 import util.analytical.CarbonChainAnalyzer;
 import util.analytical.CarbonChainComparator;
 import util.analytical.MoleculeNormalizer;
-import util.analytical.StereochemicalAnalyzer;
 import util.analytical.StructureAnalyzer;
+import util.creator.BackboneCreator;
 import util.creator.CarbonChainCreator;
+import carbohydrate.Backbone;
+import carbohydrate.BackboneCarbon;
 
 /**
  * Class of importer for Carbohydrate
@@ -26,24 +28,19 @@ import util.creator.CarbonChainCreator;
 public class CarbohydrateImporterMolecule {
 	private Molecule m_objMolecule;
 
-	private MoleculeNormalizer     m_objMoleculeNormalyzer     = new MoleculeNormalizer();
-	private StructureAnalyzer      m_objStructureAnalyzer      = new StructureAnalyzer();
-	private StereochemicalAnalyzer m_objStereochemicalAnalyzer = new StereochemicalAnalyzer();
-
-	private SubGraphCreator     m_objSubgraphCreator     = new SubGraphCreator();
+//	private SubGraphCreator     m_objSubgraphCreator     = new SubGraphCreator();
 	private CarbonChainCreator  m_objCarbonChainCreator  = new CarbonChainCreator();
 
-	private LinkedList<LinkedList<Atom>>  m_aBackbones      = new LinkedList<LinkedList<Atom>>();
-	private LinkedList<SubGraph>          m_aAglycones      = new LinkedList<SubGraph>();
-	private LinkedList<SubGraph>          m_aModifications  = new LinkedList<SubGraph>();
+//	private LinkedList<LinkedList<Atom>>  m_aBackboneChains      = new LinkedList<LinkedList<Atom>>();
+	private LinkedList<SubGraph>          m_aAglyconGraphs       = new LinkedList<SubGraph>();
+	private LinkedList<SubGraph>          m_aModificationGraphs  = new LinkedList<SubGraph>();
 
-	private HashMap<LinkedList<Atom>, Boolean> m_hashIsBackbone = new HashMap<LinkedList<Atom>, Boolean>();
 	private HashMap<Atom, LinkedList<Atom>> m_hashAtomToBackbone     = new HashMap<Atom, LinkedList<Atom>>();
 	private HashMap<Atom, SubGraph>         m_hashAtomToModificaiton = new HashMap<Atom, SubGraph>();
-	private HashSet<Atom> m_aAnomericCarbons   = new HashSet<Atom>();
-	private HashSet<Atom> m_aBackboneCarbons   = new HashSet<Atom>();
-	private HashSet<Atom> m_aModificationAtoms = new HashSet<Atom>();
-	private HashSet<Atom> m_aAglyconAtoms      = new HashSet<Atom>();
+//	private HashSet<Atom> m_aAnomericCarbons   = new HashSet<Atom>();
+//	private HashSet<Atom> m_aBackboneCarbons   = new HashSet<Atom>();
+//	private HashSet<Atom> m_aModificationAtoms = new HashSet<Atom>();
+//	private HashSet<Atom> m_aAglyconAtoms      = new HashSet<Atom>();
 
 	public  LinkedList<LinkedList<LinkedList<Atom>>> m_aCandidateBackboneGroups = new LinkedList<LinkedList<LinkedList<Atom>>>();
 
@@ -61,34 +58,36 @@ public class CarbohydrateImporterMolecule {
 	public void clear() {
 //		m_objMolecule = null;
 
-		this.m_aBackbones.clear();
-		this.m_aAglycones.clear();
-		this.m_aModifications.clear();
+//		this.m_aBackboneChains.clear();
+		this.m_aAglyconGraphs.clear();
+		this.m_aModificationGraphs.clear();
 		this.m_aCandidateBackboneGroups.clear();
-		this.m_hashIsBackbone.clear();
+//		this.m_hashIsBackbone.clear();
 		this.m_hashAtomToBackbone.clear();
 
 		this.m_objCarbonChainCreator.clear();
-		this.m_objSubgraphCreator.clear();
+//		this.m_objSubgraphCreator.clear();
 	}
 
 	public void start(Molecule a_objMolecule) throws WURCSException {
 		this.clear();
 		this.m_objMolecule = a_objMolecule;
 
-		// Normalize
-		this.m_objMoleculeNormalyzer.normalize(this.m_objMolecule);
+		// Normalize molecule
+		MoleculeNormalizer normalyzer = new MoleculeNormalizer();
+		normalyzer.normalize(this.m_objMolecule);
 
-		// Structureral analyze
+		// Structureral analyze molecule
 		// Collect atoms which membered aromatic, pi cyclic and carbon cyclic rings
-		this.m_objStructureAnalyzer.analyze(this.m_objMolecule);
+		StructureAnalyzer analSt = new StructureAnalyzer();
+		analSt.analyze(this.m_objMolecule);
 
 		// Set start atoms for backbone creator
-		this.m_objCarbonChainCreator.setTerminalCarbons( this.m_objStructureAnalyzer.getTerminalCarbons() );
+		this.m_objCarbonChainCreator.setTerminalCarbons( analSt.getTerminalCarbons() );
 		// Set Ignore atoms for backbone creator
-		this.m_objCarbonChainCreator.setIgnoreAtoms( this.m_objStructureAnalyzer.getAromaticAtoms() );
-		this.m_objCarbonChainCreator.setIgnoreAtoms( this.m_objStructureAnalyzer.getPiCyclicAtoms() );
-		this.m_objCarbonChainCreator.setIgnoreAtoms( this.m_objStructureAnalyzer.getCarbonCyclicAtoms() );
+		this.m_objCarbonChainCreator.setIgnoreAtoms( analSt.getAromaticAtoms() );
+		this.m_objCarbonChainCreator.setIgnoreAtoms( analSt.getPiCyclicAtoms() );
+		this.m_objCarbonChainCreator.setIgnoreAtoms( analSt.getCarbonCyclicAtoms() );
 
 		// Stereochemical analyze
 		this.m_objMolecule.setStereo();
@@ -102,9 +101,27 @@ public class CarbohydrateImporterMolecule {
 			System.err.println( bond.getGeometric() );
 		}
 
-		this.findCarbonChainsForBackbones();
-		this.printCarbonChains(this.m_aBackbones);
-		this.findModifications();
+
+		// Find components for carbohydrate
+		LinkedList<LinkedList<Atom>> aBackboneChains     = this.findCarbonChainsForBackbones();
+		LinkedList<SubGraph>         aModificationGraphs = this.findModificationGraphs(aBackboneChains);
+		aBackboneChains     = this.findCarbonChainsForBackbones();
+		this.printCarbonChains(aBackboneChains);
+		aModificationGraphs = this.findModificationGraphs(aBackboneChains);
+
+		LinkedList<Backbone> backbones = new LinkedList<Backbone>();
+		HashMap<Atom, BackboneCarbon> hashAtomToBackboneCarbon = new HashMap<Atom, BackboneCarbon>();
+		BackboneCreator creator = new BackboneCreator();
+		for ( LinkedList<Atom> chain : aBackboneChains ) {
+			Backbone backbone = creator.create(chain);
+			if ( backbone == null ) System.err.println("null backbone");
+			backbones.add(backbone);
+			for ( int i=0; i<chain.size(); i++ ) {
+				hashAtomToBackboneCarbon.put( chain.get(i), backbone.getBackboneCarbons().get(i) );
+			}
+
+			System.err.println( aBackboneChains.indexOf(chain) + ": " + backbone.getSkeletonCode() );
+		}
 	}
 
 	private void printCarbonChains(LinkedList<LinkedList<Atom>> chains) {
@@ -119,6 +136,182 @@ public class CarbohydrateImporterMolecule {
 			}
 			System.err.println( chain );
 		}
+	}
+
+	/**
+	 * Find and collect carbon chains for backbones
+	 */
+//	private void findBackbones(HashSet<Atom> a_aIgnoreAtoms){
+	private LinkedList<LinkedList<Atom>> findCarbonChainsForBackbones(){
+		// Get carbon chains, which was reduced length by C1 check
+		LinkedList<LinkedList<Atom>> candidateBackbones = this.m_objCarbonChainCreator.create();
+		this.printCarbonChains(candidateBackbones);
+
+//		candidateBackbones.setcoOCOSequence(minBackboneLength);
+//		candidateBackbones.setOxidationSequence();
+//		candidateBackbones.setSkeletoneCode();
+//		candidateBackbones.sortByMonoSaccharideBackboneLikeness(minBackboneLength);
+		// Sort candidate backbones. Prioritize the backbone satisfying the conditions as monosaccharide.
+		// TODO: compare skeletoneCode in CarbonChainComparator
+		CarbonChainComparator t_objComp = new CarbonChainComparator();
+		Collections.sort(candidateBackbones,  t_objComp);
+		this.printCarbonChains(candidateBackbones);
+
+		// Select the most suitable carbon chains as main chain, and collect carbon chains which contain atoms of selected that.
+		// Repeating that until no candidateBackbones.
+		LinkedList<LinkedList<LinkedList<Atom>>> t_aCandidateBackboneGroups = new LinkedList<LinkedList<LinkedList<Atom>>>();
+		while(candidateBackbones.size()>0){
+			LinkedList<LinkedList<Atom>> backboneGroup = new LinkedList<LinkedList<Atom>>();
+			backboneGroup.addFirst(candidateBackbones.removeFirst());
+			for(int ii=0; ii<candidateBackbones.size(); ii++){
+				LinkedList<Atom> checkBackbone = candidateBackbones.get(ii);
+				for(Atom atom : checkBackbone){
+					if(backboneGroup.getFirst().contains(atom)){
+						backboneGroup.addLast(candidateBackbones.remove(ii));
+						ii--;
+						break;
+					}
+				}
+			}
+			t_aCandidateBackboneGroups.add(backboneGroup);
+		}
+
+		// Set backbone flag for the most suitable carbon chains in each groups.
+		// # For the case which there are two or more suitable one.
+		HashMap<LinkedList<Atom>, Boolean> hashIsBackbone = new HashMap<LinkedList<Atom>, Boolean>();
+		for(LinkedList<LinkedList<Atom>> backbones : t_aCandidateBackboneGroups){
+			System.err.println("Group" + t_aCandidateBackboneGroups.indexOf(backbones) + ":");
+			this.printCarbonChains(backbones);
+
+			// Set true to backbone flag for most suitable carbon chains as backbone, and set false to remains
+			// Initialize backbone flag
+//			backbones.setBackboneFlag();
+			for(LinkedList<Atom> backbone : backbones){
+				hashIsBackbone.put(backbone, true);
+//				backbone.isBackbone = true;
+			}
+
+			// Set false to remains
+			int num = backbones.size();
+			for(int ii=0; ii<num-1; ii++){
+				LinkedList<Atom> backbone1 = backbones.get(ii);
+				LinkedList<Atom> backbone2 = backbones.get(ii+1);
+				int result = t_objComp.compare(backbone1, backbone2);
+				if(result == 0) continue;
+
+				for(int jj=ii+1; jj<num; jj++){
+					LinkedList<Atom> backbone3 = backbones.get(jj);
+					hashIsBackbone.put(backbone3, false);
+//					backbone3.isBackbone = false;
+				}
+			}
+		}
+
+		// Make a choise top of carbon chains in each groups as main chain
+		// TODO: There are cases that not be narrowed down.
+		LinkedList<LinkedList<Atom>> aBackboneChains = new LinkedList<LinkedList<Atom>>();
+		for ( LinkedList<LinkedList<Atom>> backbones : t_aCandidateBackboneGroups ) {
+			if ( hashIsBackbone.get( backbones.get(0) ) == false) continue;
+			aBackboneChains.add(backbones.get(0));
+		}
+		this.m_aCandidateBackboneGroups = t_aCandidateBackboneGroups;
+
+//		HashSet<Atom> atomlist = (HashSet<Atom>) this.m_hashAtomToBackbone.keySet();
+
+		return aBackboneChains;
+	}
+
+	/**
+	 * Get Aglycones
+	 * @throws WURCSGlycanObjectException
+	 */
+/*	private void findAglycones() throws WURCSGlycanObjectException {
+		// Use aglycone creator
+		AglyconeCreator t_objCreator = new AglyconeCreator();
+		t_objCreator.setBackbones(this.m_aBackbones);
+		// Create Alycone list
+		t_objCreator.create();
+		this.m_aAglycones = t_objCreator.getAglycones();
+		this.m_aAglyconeAtoms = t_objCreator.getAglyconeAtoms();
+	}
+*/
+	/**
+	 * Find and collect SubGraphs for Modifications
+	 */
+	private LinkedList<SubGraph> findModificationGraphs(LinkedList<LinkedList<Atom>> a_aBackboneChains) {
+		// Collect carbons of backbones
+		CarbonChainAnalyzer analCC = new CarbonChainAnalyzer();
+		HashSet<Atom> aBackboneCarbons = new HashSet<Atom>();
+		HashSet<Atom> aAnomericCarbons = new HashSet<Atom>();
+		for ( LinkedList<Atom> backbone : a_aBackboneChains ) {
+			aBackboneCarbons.addAll(backbone);
+			for ( Atom atom : backbone ) {
+//				atom.backbone = backbone;
+				this.m_hashAtomToBackbone.put(atom, backbone);
+			}
+			analCC.setCarbonChain(backbone);
+			aAnomericCarbons.add( analCC.getAnomericCarbon() );
+		}
+
+		// Collect start atoms for modification sub graphs
+		HashSet<Atom> startAtoms = new HashSet<Atom>();
+		for ( LinkedList<Atom> backbone : a_aBackboneChains ) {
+			for ( Atom atom : backbone ) {
+				for ( Connection con : atom.getConnections() ) {
+					Atom conatom = con.endAtom();
+					if ( aBackboneCarbons.contains(conatom) ) continue;
+					if ( conatom.getSymbol().equals("H") ) continue;
+					startAtoms.add(conatom);
+				}
+			}
+		}
+
+		// Create sub graph of candidate modifications
+		SubGraphCreator creator = new SubGraphCreator();
+		creator.addStartAtoms(startAtoms);
+		creator.addIgnoreAtoms(aBackboneCarbons);
+		LinkedList<SubGraph> candidateModifications = creator.create();
+
+		// Find aglycons from the candidate modifications
+		for ( SubGraph graph : candidateModifications ) {
+			boolean isAglycon = true;
+			for ( Connection con : graph.getExternalConnections() ) {
+				Atom conatom = con.endAtom();
+				if ( !aBackboneCarbons.contains( conatom ) ) continue;
+				if (  aAnomericCarbons.contains( conatom ) ) continue;
+				isAglycon = false;
+			}
+			if ( isAglycon ) this.m_aAglyconGraphs.addLast( graph );
+		}
+
+		// Remove aglycons from candidate modifications
+		// and add modifications which remade from removed aglycons
+		for ( SubGraph aglycon : this.m_aAglyconGraphs ) {
+			candidateModifications.remove( aglycon );
+
+			for ( Connection con : aglycon.getExternalConnections() ) {
+				Atom conatom = con.endAtom();
+				if ( !aBackboneCarbons.contains( conatom ) ) continue;
+				SubGraph newMod = new SubGraph();
+				newMod.add(con.startAtom());
+				candidateModifications.add(newMod);
+			}
+		}
+
+		// Add backbone atoms to candidate modifications
+		for ( SubGraph graph : candidateModifications ) {
+			HashSet<Connection> conM2B = new HashSet<Connection>();
+			for ( Connection con : graph.getExternalConnections() ) {
+				Atom conatom = con.endAtom();
+				if ( !aBackboneCarbons.contains( conatom ) ) continue;
+				conM2B.add(con);
+				graph.add( conatom );
+				graph.add( con.getBond() );
+				this.m_hashAtomToModificaiton.put( con.startAtom(), graph );
+			}
+		}
+
+		return candidateModifications;
 	}
 
 
@@ -266,158 +459,6 @@ public class CarbohydrateImporterMolecule {
 		}
 	}
 */
-	/**
-	 * Get Backbones
-	 */
-//	private void findBackbones(HashSet<Atom> a_aIgnoreAtoms){
-	private void findCarbonChainsForBackbones(){
-		// Get carbon chains, which was reduced length by C1 check
-		LinkedList<LinkedList<Atom>> candidateBackbones = this.m_objCarbonChainCreator.create();
-		this.printCarbonChains(candidateBackbones);
-
-//		candidateBackbones.setcoOCOSequence(minBackboneLength);
-//		candidateBackbones.setOxidationSequence();
-//		candidateBackbones.setSkeletoneCode();
-//		candidateBackbones.sortByMonoSaccharideBackboneLikeness(minBackboneLength);
-		// Sort candidate backbones. Prioritize the backbone satisfying the conditions as monosaccharide.
-		// TODO: compare skeletoneCode in CarbonChainComparator
-		CarbonChainComparator t_objComp = new CarbonChainComparator();
-		Collections.sort(candidateBackbones,  t_objComp);
-		this.printCarbonChains(candidateBackbones);
-
-		// Select the most suitable carbon chains as main chain, and collect carbon chains which contain atoms of selected that.
-		// Repeating that until no candidateBackbones.
-		LinkedList<LinkedList<LinkedList<Atom>>> t_aCandidateBackboneGroups = new LinkedList<LinkedList<LinkedList<Atom>>>();
-		while(candidateBackbones.size()>0){
-			LinkedList<LinkedList<Atom>> backboneGroup = new LinkedList<LinkedList<Atom>>();
-			backboneGroup.addFirst(candidateBackbones.removeFirst());
-			for(int ii=0; ii<candidateBackbones.size(); ii++){
-				LinkedList<Atom> checkBackbone = candidateBackbones.get(ii);
-				for(Atom atom : checkBackbone){
-					if(backboneGroup.getFirst().contains(atom)){
-						backboneGroup.addLast(candidateBackbones.remove(ii));
-						ii--;
-						break;
-					}
-				}
-			}
-			t_aCandidateBackboneGroups.add(backboneGroup);
-		}
-
-		// Set backbone flag for the most suitable carbon chains in each groups.
-		// # For the case which there are two or more suitable one.
-		for(LinkedList<LinkedList<Atom>> backbones : t_aCandidateBackboneGroups){
-			System.err.println("Group" + t_aCandidateBackboneGroups.indexOf(backbones) + ":");
-			this.printCarbonChains(backbones);
-
-//			backbones.setBackboneFlag();
-			for(LinkedList<Atom> backbone : backbones){
-				this.m_hashIsBackbone.put(backbone, true);
-//				backbone.isBackbone = true;
-			}
-			// 主鎖として採用される可能性の残っていないbackboneにbackbone.isBackbone=falseを立てる。
-			// イテレータを使った処理に変更出来たら後で対応する。
-			//
-			int num = backbones.size();
-			for(int ii=0; ii<num-1; ii++){
-				LinkedList<Atom> backbone1 = backbones.get(ii);
-				LinkedList<Atom> backbone2 = backbones.get(ii+1);
-				int result = t_objComp.compare(backbone1, backbone2);
-				if(result == 0) continue;
-
-				for(int jj=ii+1; jj<num; jj++){
-					LinkedList<Atom> backbone3 = backbones.get(jj);
-					this.m_hashIsBackbone.put(backbone3, false);
-//					backbone3.isBackbone = false;
-				}
-			}
-		}
-
-		CarbonChainAnalyzer analCC = new CarbonChainAnalyzer();
-		// Make a choise top of carbon chains in each groups as main chain
-		// TODO: There are cases that not be narrowed down.
-		this.m_aBackbones = new LinkedList<LinkedList<Atom>>();
-		for ( LinkedList<LinkedList<Atom>> backbones : t_aCandidateBackboneGroups ) {
-			if ( this.m_hashIsBackbone.get( backbones.get(0) ) == false) continue;
-			this.m_aBackbones.add(backbones.get(0));
-		}
-		this.m_aCandidateBackboneGroups = t_aCandidateBackboneGroups;
-
-		// set informations of backbone to main chain carbons
-		for ( LinkedList<Atom> backbone : this.m_aBackbones ) {
-			this.m_aBackboneCarbons.addAll(backbone);
-			for ( Atom atom : backbone ) {
-//				atom.backbone = backbone;
-				this.m_hashAtomToBackbone.put(atom, backbone);
-			}
-			analCC.setCarbonChain(backbone);
-			this.m_aAnomericCarbons.add( analCC.getAnomericCarbon() );
-		}
-//		HashSet<Atom> atomlist = (HashSet<Atom>) this.m_hashAtomToBackbone.keySet();
-	}
-
-	/**
-	 * Get Aglycones
-	 * @throws WURCSGlycanObjectException
-	 */
-/*	private void findAglycones() throws WURCSGlycanObjectException {
-		// Use aglycone creator
-		AglyconeCreator t_objCreator = new AglyconeCreator();
-		t_objCreator.setBackbones(this.m_aBackbones);
-		// Create Alycone list
-		t_objCreator.create();
-		this.m_aAglycones = t_objCreator.getAglycones();
-		this.m_aAglyconeAtoms = t_objCreator.getAglyconeAtoms();
-	}
-*/
-	private void findModifications() {
-		// Collect start atoms for modification sub graphs
-		HashSet<Atom> startAtoms = new HashSet<Atom>();
-		for ( LinkedList<Atom> backbone : this.m_aBackbones ) {
-			for ( Atom atom : backbone ) {
-				for ( Connection con : atom.getConnections() ) {
-					Atom conatom = con.endAtom();
-					if ( this.m_aBackboneCarbons.contains(conatom) ) continue;
-					if ( conatom.getSymbol().equals("H") ) continue;
-					startAtoms.add(conatom);
-				}
-			}
-		}
-
-		// Create sub graphs
-		this.m_objSubgraphCreator.addStartAtoms(startAtoms);
-		this.m_objSubgraphCreator.addIgnoreAtoms(this.m_aBackboneCarbons);
-		LinkedList<SubGraph> candidateModifications = this.m_objSubgraphCreator.create();
-
-		// Sort out the aglycons from the candidate modifications
-		for ( SubGraph graph : candidateModifications ) {
-			boolean isAglycon = true;
-			for ( Connection con : graph.getExternalConnections() ) {
-				Atom conatom = con.endAtom();
-				if ( !this.m_aBackboneCarbons.contains( conatom ) ) continue;
-				if (  this.m_aAnomericCarbons.contains( conatom ) ) continue;
-				isAglycon = false;
-			}
-			if ( isAglycon ) this.m_aAglycones.addLast(graph);
-		}
-		// Remove aglycons from candidate modifications
-		for ( SubGraph aglycon : this.m_aAglycones ) {
-			candidateModifications.remove(aglycon);
-		}
-
-		// Add backbone atoms to candidate modifications
-		for ( SubGraph graph : candidateModifications ) {
-			HashSet<Connection> ModToBackbone = new HashSet<Connection>();
-			for ( Connection con : graph.getExternalConnections() ) {
-				Atom conatom = con.endAtom();
-				if ( !this.m_aBackboneCarbons.contains( conatom ) ) continue;
-				ModToBackbone.add(con);
-				graph.add( conatom );
-				graph.add( con.getBond() );
-				this.m_hashAtomToModificaiton.put( con.startAtom(), graph );
-			}
-		}
-	}
 
 	/**
 	 * Get Modifications
