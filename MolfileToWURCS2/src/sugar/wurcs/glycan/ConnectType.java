@@ -2,7 +2,7 @@ package sugar.wurcs.glycan;
 
 import java.util.LinkedList;
 
-import sugar.chemicalgraph.Connection;
+import chemicalgraph.Connection;
 
 /**
  * SkeletoneCodeを生成する際に、主鎖に含まれる各炭素＋1原子の状況からどのタイプに属するのかを判定する為のクラス

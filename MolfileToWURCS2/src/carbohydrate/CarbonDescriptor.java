@@ -11,9 +11,9 @@ public enum CarbonDescriptor {
 	// Terminal
 	SZ3_METHYL_L   ( 'm', "sp3", 1,0, 1, null, null, "-H", "-H", "-H" ), // -C(H)(H)(H)
 	SZ3_METHYL_U   ( 'M', "sp3", 1,0, 1, null, null, "-X", "-X", "-X" ), // -C(X)(X)(X)
-	SZ3_HYDROXYL_L ( 'h', "sp3", 1,0, 2, null, null, "-O", "-H", "-H" ), // -C(O)(H)(H)
-	SZ3_HYDROXYL_U ( 'H', "sp3", 1,0, 2, null, null, "-X", "-H", "-H" ), // -C(X)(H)(H)
-	SZ3_ACETAL     ( 'b', "sp3", 1,0, 2, null, null, "-X", "-O", "-O" ), // -C(X)(O)(O)
+	SZ3_HYDROXYL_L ( 'h', "sp3", 1,0, 2, null, null, "-H", "-H", "-O" ), // -C(O)(H)(H)
+	SZ3_HYDROXYL_U ( 'H', "sp3", 1,0, 2, null, null, "-H", "-H", "-X" ), // -C(X)(H)(H)
+	SZ3_ACETAL     ( 'b', "sp3", 1,0, 2, null, null, "-O", "-O", "-X" ), // -C(X)(O)(O)
 	SZ3_GEMINAL_W  ( 'W', "sp3", 1,0, 2, null, null, "-X", "-X", "-H" ), // -C(X)(X)(H)
 	SZ3_GEMINAL_L  ( 'L', "sp3", 1,0, 2, null, null, "-X", "-X", "-X" ), // -C(X)(X)(Y)
 	SZ3_CHIRAL_S   ( '1', "sp3", 1,0, 3,  "S", true, "-X", "-X", "-X" ), // -C(X)(Y)(Z)

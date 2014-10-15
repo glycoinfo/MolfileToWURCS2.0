@@ -5,18 +5,17 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 
-import sugar.chemicalgraph.Atom;
-import sugar.chemicalgraph.Bond;
-import sugar.chemicalgraph.Connection;
-import sugar.chemicalgraph.Molecule;
-import sugar.chemicalgraph.SubGraph;
-import sugar.chemicalgraph.SubGraphCreator;
-import util.analytical.CarbonChainAnalyzer;
-import util.analytical.CarbonChainComparator;
-import util.analytical.MoleculeNormalizer;
-import util.analytical.StructureAnalyzer;
-import util.creator.BackboneCreator;
-import util.creator.CarbonChainCreator;
+import chemicalgraph.Atom;
+import chemicalgraph.Connection;
+import chemicalgraph.Molecule;
+import chemicalgraph.SubGraph;
+import chemicalgraph.util.analytical.CarbonChainAnalyzer;
+import chemicalgraph.util.analytical.CarbonChainComparator;
+import chemicalgraph.util.analytical.MoleculeNormalizer;
+import chemicalgraph.util.analytical.StructureAnalyzer;
+import chemicalgraph.util.creator.BackboneCreator;
+import chemicalgraph.util.creator.CarbonChainCreator;
+import chemicalgraph.util.creator.SubGraphCreator;
 import carbohydrate.Backbone;
 import carbohydrate.BackboneCarbon;
 
@@ -92,6 +91,7 @@ public class CarbohydrateImporterMolecule {
 		// Stereochemical analyze
 		this.m_objMolecule.setStereo();
 //		this.m_objStereochemicalAnalyzer.analyze(this.m_objMolecule);
+/*
 		for ( Atom atom : this.m_objMolecule.getAtoms() ) {
 			if ( atom.getChirality() == null ) continue;
 			System.err.println( this.m_objMolecule.getAtoms().indexOf(atom) + ":" + atom.getChirality() );
@@ -100,13 +100,13 @@ public class CarbohydrateImporterMolecule {
 			if ( bond.getGeometric() == null ) continue;
 			System.err.println( bond.getGeometric() );
 		}
-
+*/
 
 		// Find components for carbohydrate
 		LinkedList<LinkedList<Atom>> aBackboneChains     = this.findCarbonChainsForBackbones();
 		LinkedList<SubGraph>         aModificationGraphs = this.findModificationGraphs(aBackboneChains);
 		aBackboneChains     = this.findCarbonChainsForBackbones();
-		this.printCarbonChains(aBackboneChains);
+//		this.printCarbonChains(aBackboneChains);
 		aModificationGraphs = this.findModificationGraphs(aBackboneChains);
 
 		LinkedList<Backbone> backbones = new LinkedList<Backbone>();
@@ -145,7 +145,7 @@ public class CarbohydrateImporterMolecule {
 	private LinkedList<LinkedList<Atom>> findCarbonChainsForBackbones(){
 		// Get carbon chains, which was reduced length by C1 check
 		LinkedList<LinkedList<Atom>> candidateBackbones = this.m_objCarbonChainCreator.create();
-		this.printCarbonChains(candidateBackbones);
+//		this.printCarbonChains(candidateBackbones);
 
 //		candidateBackbones.setcoOCOSequence(minBackboneLength);
 //		candidateBackbones.setOxidationSequence();
@@ -155,7 +155,7 @@ public class CarbohydrateImporterMolecule {
 		// TODO: compare skeletoneCode in CarbonChainComparator
 		CarbonChainComparator t_objComp = new CarbonChainComparator();
 		Collections.sort(candidateBackbones,  t_objComp);
-		this.printCarbonChains(candidateBackbones);
+//		this.printCarbonChains(candidateBackbones);
 
 		// Select the most suitable carbon chains as main chain, and collect carbon chains which contain atoms of selected that.
 		// Repeating that until no candidateBackbones.
@@ -180,8 +180,8 @@ public class CarbohydrateImporterMolecule {
 		// # For the case which there are two or more suitable one.
 		HashMap<LinkedList<Atom>, Boolean> hashIsBackbone = new HashMap<LinkedList<Atom>, Boolean>();
 		for(LinkedList<LinkedList<Atom>> backbones : t_aCandidateBackboneGroups){
-			System.err.println("Group" + t_aCandidateBackboneGroups.indexOf(backbones) + ":");
-			this.printCarbonChains(backbones);
+//			System.err.println("Group" + t_aCandidateBackboneGroups.indexOf(backbones) + ":");
+//			this.printCarbonChains(backbones);
 
 			// Set true to backbone flag for most suitable carbon chains as backbone, and set false to remains
 			// Initialize backbone flag

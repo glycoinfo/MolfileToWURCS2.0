@@ -4,11 +4,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 
-import sugar.chemicalgraph.Atom;
-import sugar.chemicalgraph.Connection;
+import chemicalgraph.Atom;
+import chemicalgraph.Connection;
+import chemicalgraph.util.Chemical;
+import chemicalgraph.util.analytical.AtomIdentifier;
 import sugar.wurcs.glycan.ConnectType;
-import util.Chemical;
-import util.analytical.AtomIdentifier;
 import carbohydrate.Backbone;
 
 public class SkeltonCodeGenerator {

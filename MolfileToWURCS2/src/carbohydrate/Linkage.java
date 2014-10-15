@@ -3,40 +3,45 @@ package carbohydrate;
 import java.util.LinkedList;
 
 /**
- * Class for linkage between Backbone and Modification
+ * Class for linkage on the Backbone carbon
  * @author MasaakiMatsubara
  *
  */
 public class Linkage {
 
-	private Backbone m_objBackbone;
-	private Modification m_objModification;
-	private LinkedList<LinkageSite> m_aLinkageSites = new LinkedList<LinkageSite>();
+	public static final int DIRECTION_0 = 0;
+	public static final int DIRECTION_1 = 1;
+	public static final int DIRECTION_2 = 2;
 
-	public void setBackbone(Backbone backbone) {
-		this.m_objBackbone = backbone;
+	/** Direction type of Modification on the Backbone carbon (calling "DMB" in WURCS) */
+	private int m_iDirection = Linkage.DIRECTION_0;
+	/** Carbon number in linked Backbone (calling "PCB" in WURCS) */
+	private LinkedList<Integer> m_aBackbonePositions     = new LinkedList<Integer>();
+	/** Carbon number in linked Modification (calling "PCA" in WURCS) */
+	private LinkedList<Integer> m_aModificationPositions = new LinkedList<Integer>();
+
+
+	public void setDirection(int direction) {
+		this.m_iDirection = direction;
 	}
 
-	public Backbone getBackbone() {
-		return this.m_objBackbone;
+	public int getDirection() {
+		return this.m_iDirection;
 	}
 
-	public void setModification(Modification mod) {
-		this.m_objModification = mod;
+	public void addBackbonePosition(Integer iPosition) {
+		this.m_aBackbonePositions.addLast(iPosition);
 	}
 
-	public Modification getModification() {
-		return this.m_objModification;
+	public LinkedList<Integer> getBackbonePositions() {
+		return this.m_aBackbonePositions;
 	}
 
-	public boolean addLinkageSite( LinkageSite linksite ) {
-		if ( !this.m_aLinkageSites.contains( linksite ) ) return false;
-		return this.m_aLinkageSites.add( linksite );
+	public void addModificationPosition(Integer iPosition) {
+		this.m_aModificationPositions.addLast(iPosition);
 	}
 
-	public LinkedList<LinkageSite> getLinkageSites() {
-		return this.m_aLinkageSites;
+	public LinkedList<Integer> getModificationPositions() {
+		return this.m_aModificationPositions;
 	}
-
-
 }
