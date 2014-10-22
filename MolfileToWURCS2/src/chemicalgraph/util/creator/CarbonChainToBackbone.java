@@ -6,20 +6,20 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 
+import wurcs.Backbone;
+import wurcs.BackboneCarbon;
+import wurcs.CarbonDescriptor;
 import chemicalgraph.Atom;
 import chemicalgraph.Connection;
 import chemicalgraph.util.Chemical;
 import chemicalgraph.util.analytical.CarbonIdentifier;
-import carbohydrate.Backbone;
-import carbohydrate.BackboneCarbon;
-import carbohydrate.CarbonDescriptor;
 
 /**
  * Class for create backbone
  * @author MasaakiMatsubara
  *
  */
-public class BackboneCreator {
+public class CarbonChainToBackbone {
 
 	private static final int OTHER           = 0;
 	/** The carbon is sp3, terminal and foot of bridge, and has chirality */
@@ -38,13 +38,13 @@ public class BackboneCreator {
 	 * @param chain List of atoms in carbon chain
 	 * @return Backbone
 	 */
-	public Backbone create(LinkedList<Atom> chain) {
-		LinkedList<BackboneCarbon> carbons = new LinkedList<BackboneCarbon>();
+	public Backbone convert(LinkedList<Atom> chain) {
+		Backbone backbone = new Backbone();
 		for ( Atom carbon : chain ) {
 			CarbonDescriptor cd = this.convertCarbonToDescriptor(carbon, chain);
-			carbons.addLast( new BackboneCarbon(cd, this.m_objIdent.setAtom(carbon).isAnomericLike()) );
+			backbone.addBackboneCarbon( new BackboneCarbon(backbone, cd, this.m_objIdent.setAtom(carbon).isAnomericLike()) );
 		}
-		return new Backbone(carbons);
+		return backbone;
 	}
 
 	/**

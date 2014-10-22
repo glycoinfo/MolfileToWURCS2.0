@@ -75,9 +75,14 @@ public class StereochemicalAnalyzer {
 		return this.m_hashAtomToStereo.get(atom);
 	}
 
-	/** Get bond to stereo */
+	/** Get stereo of bond */
 	public String getStereo(Bond bond) {
 		return this.m_hashBondToStereo.get(bond);
+	}
+
+	/** Get CIP order of connection */
+	public Integer getCIPOrder(Connection con) {
+		return this.m_hashConnectionToCIPOrder.get(con);
 	}
 
 	//----------------------------

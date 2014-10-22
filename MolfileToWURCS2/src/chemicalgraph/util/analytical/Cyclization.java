@@ -5,6 +5,11 @@ import java.util.LinkedList;
 import chemicalgraph.Atom;
 import chemicalgraph.Connection;
 
+/**
+ * Class for finding cyclic atoms which aromatic, pi cyclic or carbon cyclic atoms
+ * @author MasaakiMatsubara
+ *
+ */
 public class Cyclization extends LinkedList<Atom>{
 	//----------------------------
 	// Member variable
@@ -16,10 +21,17 @@ public class Cyclization extends LinkedList<Atom>{
 	private static final int CARBON_CYCLIC = 2;
 
 	private boolean isSucceeded = false;
+
+	public void clear() {
+		super.clear();
+		this.isSucceeded = false;
+	}
+
 	//----------------------------
 	// Public method (void)
 	//----------------------------
 	public boolean aromatize(final Atom start) {
+		this.clear();
 		this.addFirst(start);
 		this.searchCyclic(Cyclization.AROMATIC);
 		if ( this.isSucceeded ) return true;
@@ -27,6 +39,7 @@ public class Cyclization extends LinkedList<Atom>{
 	}
 
 	public boolean piCyclize(final Atom start){
+		this.clear();
 		this.addFirst(start);
 		this.searchCyclic(Cyclization.PI_CYCLIC);
 		if ( this.isSucceeded ) return true;
@@ -34,6 +47,7 @@ public class Cyclization extends LinkedList<Atom>{
 	}
 
 	public boolean carbonCyclize(final Atom start){
+		this.clear();
 		this.addFirst(start);
 		this.searchCyclic(Cyclization.CARBON_CYCLIC);
 		if ( this.isSucceeded ) return true;

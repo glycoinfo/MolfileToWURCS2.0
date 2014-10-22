@@ -4,15 +4,15 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 
+import chemicalgraph.util.visitor.AtomicVisitable;
 import chemicalgraph.util.visitor.AtomicVisitor;
 import chemicalgraph.util.visitor.AtomicVisitorException;
-import chemicalgraph.util.visitor.VisitableComponent;
 
 /**
  * Class for atom
  * @author MasaakiMatsubara
  */
-public class Atom implements VisitableComponent {
+public class Atom implements AtomicVisitable {
 	//----------------------------
 	// Member variable
 	//----------------------------

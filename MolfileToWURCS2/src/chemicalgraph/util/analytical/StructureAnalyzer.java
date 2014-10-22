@@ -7,38 +7,34 @@ import chemicalgraph.Connection;
 import chemicalgraph.Molecule;
 
 /**
- *
- * @author Masaaki Matsubara
+ * Class for molecule structure analysis to find aromatic, pi cyclic and carbon cyclic atoms and terminal carbons
+ * @author MasaakiMatsubara
  *
  */
 public class StructureAnalyzer {
 
-	private Molecule m_objMolecule;
-
+	//----------------------------
+	// Member variable
+	//----------------------------
+	/** Aromatic atoms. The member of an aromatic ring,
+	 *  which all atoms have pi electorn(s) and total number of pi electorons is 4n+2.
+	 */
 	private HashSet<Atom> m_aAromaticAtoms     = new HashSet<Atom>();
+	/** Pi cyclic atoms. The member of a ring which all atoms have pi electorn(s). */
 	private HashSet<Atom> m_aPiCyclicAtoms     = new HashSet<Atom>();
+	/** Carbon cyclic atoms. The member of a ring which all atoms are carbon. */
 	private HashSet<Atom> m_aCarbonCyclicAtoms = new HashSet<Atom>();
+	/** Terminal carbons. Not contained aromatic, pi cyclic and carbon cyclic atoms. */
 	private HashSet<Atom> m_aTerminalCarbons   = new HashSet<Atom>();
-
-	//----------------------------
-	// Constructor
-	//----------------------------
-	public StructureAnalyzer() {
-	}
 
 	//----------------------------
 	// Accessor
 	//----------------------------
 	public void clear() {
-		this.m_objMolecule = null;
 		this.m_aAromaticAtoms.clear();
 		this.m_aPiCyclicAtoms.clear();
 		this.m_aCarbonCyclicAtoms.clear();
 		this.m_aTerminalCarbons.clear();
-	}
-
-	public Molecule getMolecule() {
-		return this.m_objMolecule;
 	}
 
 	public HashSet<Atom> getAromaticAtoms() {
@@ -67,69 +63,32 @@ public class StructureAnalyzer {
 	 */
 	public void analyze(Molecule a_objMol) {
 		this.clear();
-		this.m_objMolecule = a_objMol;
-//		this.setStereoMolecule();
-		this.findAromaticRings();
-		this.findPiRings();
-		this.findCarbonRings();
-		this.findTerminalCarbons();
-	}
 
-	/**
-	 * Collect aromatic atoms. The atoms are member of an aromatic ring,
-	 *  which all atoms have pi electorn(s) and total number of pi electorons is 4n+2.
-	 * using class Cyclization
-	 */
-	public void findAromaticRings(){
+		// Collect cyclic atoms using Cyclization
 		Cyclization t_objCyclize = new Cyclization();
-		for(Atom atom : this.m_objMolecule.getAtoms()){
-			t_objCyclize.clear();
-			if ( t_objCyclize.aromatize(atom) ) {
+		for ( Atom atom : a_objMol.getAtoms() ) {
+
+			// Collect aromatic atoms
+			if ( t_objCyclize.aromatize(atom) )
 				this.m_aAromaticAtoms.addAll(t_objCyclize);
-			}
-		}
-	}
 
-	/**
-	 * Collect pi cyclic atoms. The atoms are member of a ring which all atoms have pi electorn(s).
-	 * using class Cyclization
-	 */
-	public void findPiRings(){
-		Cyclization t_objCyclize = new Cyclization();
-		for(Atom atom : this.m_objMolecule.getAtoms()){
-			t_objCyclize.clear();
-			if ( t_objCyclize.piCyclize(atom) ) {
+			// Collect pi cyclic atoms
+			if ( t_objCyclize.piCyclize(atom) )
 				this.m_aPiCyclicAtoms.addAll(t_objCyclize);
-			}
-		}
-	}
 
-	/**
-	 * Collect carbon cyclic atoms. The atoms are member of a ring which all atoms are carbon.
-	 * using class Cyclization
-	 */
-	public void findCarbonRings(){
-		Cyclization t_objCyclize = new Cyclization();
-		for(Atom atom : this.m_objMolecule.getAtoms()){
-			t_objCyclize.clear();
-			if ( t_objCyclize.carbonCyclize(atom) ) {
+			// Collect carbon ring atoms
+			if ( t_objCyclize.carbonCyclize(atom) )
 				this.m_aCarbonCyclicAtoms.addAll(t_objCyclize);
-			}
 		}
-	}
 
-	/**
-	 * Collect terminal carbons. The atoms are terminal carbons without aromatic, pi cyclic, and carbon cyclic rings.
-	 */
-	public void findTerminalCarbons() {
 		// Set ignore atoms
 		HashSet<Atom> ignoreAtoms = new HashSet<Atom>();
 		ignoreAtoms.addAll(this.m_aAromaticAtoms);
 		ignoreAtoms.addAll(this.m_aPiCyclicAtoms);
 		ignoreAtoms.addAll(this.m_aCarbonCyclicAtoms);
 
-		// Search terminal carbons
-		for ( Atom atom : this.m_objMolecule.getAtoms() ) {
+		// Search and collect terminal carbons
+		for ( Atom atom : a_objMol.getAtoms() ) {
 			if ( !atom.getSymbol().equals("C") ) continue;
 			if ( ignoreAtoms.contains(atom) ) continue;
 			int numC = 0;

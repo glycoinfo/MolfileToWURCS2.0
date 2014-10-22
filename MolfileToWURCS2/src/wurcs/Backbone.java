@@ -1,4 +1,4 @@
-package carbohydrate;
+package wurcs;
 
 import java.util.LinkedList;
 
@@ -7,18 +7,25 @@ import java.util.LinkedList;
  * @author MasaakiMatsubara
  *
  */
-public class Backbone extends CarbohydrateComponent{
+public class Backbone extends WURCSComponent{
+
+	/** Contained CarbonTypes */
+	private LinkedList<BackboneCarbon> m_aCarbons = new LinkedList<BackboneCarbon>();
 	/** Anomeric carbon which assigned */
 	private BackboneCarbon m_objAnomericCarbon = null;
 	/** Configurational carbon which assigned D/L */
 //	private LinkedList<BackboneCarbon> m_objConfigurationalCarbons = new LinkedList<BackboneCarbon>();
 
+	/**
+	 * Constructor
+	 * @param a_aCarbons List of BackboneCarbon
+	 */
+/*
 	public Backbone(LinkedList<BackboneCarbon> a_aCarbons) {
-		super(a_aCarbons);
-
-		for ( BackboneCarbon carbon : this.m_aCarbons ) {
+		// Get first anomeric like carbon
+		for ( BackboneCarbon carbon : a_aCarbons ) {
 			// Ignore last carbon
-			if ( carbon.equals( this.m_aCarbons.getLast() ) ) continue;
+			if ( carbon.equals( a_aCarbons.getLast() ) ) continue;
 
 			// Set anomeric carbon
 			if ( this.m_objAnomericCarbon == null && carbon.isAnomeric() ) {
@@ -26,7 +33,7 @@ public class Backbone extends CarbohydrateComponent{
 				break;
 			}
 		}
-/*
+		this.m_aCarbons = a_aCarbons;
 		int nChiral = 0;
 		BackboneCarbon lastChiralCarbon = null;
 		for ( BackboneCarbon carbon : this.m_aCarbons ) {
@@ -43,8 +50,8 @@ public class Backbone extends CarbohydrateComponent{
 		}
 		if ( lastChiralCarbon != null && !this.m_objConfigurationalCarbons.contains(lastChiralCarbon) )
 			this.m_objConfigurationalCarbons.addLast(lastChiralCarbon);
-*/
 	}
+*/
 
 	/** Get skeltone code from BackboneCarbons */
 	public String getSkeletonCode() {
@@ -53,6 +60,13 @@ public class Backbone extends CarbohydrateComponent{
 			code += cd.getDesctriptor().getChar();
 		}
 		return code;
+	}
+
+	@Override
+	protected void checkAnomeric(BackboneCarbon bc) {
+		// Set anomeric carbon
+		if ( this.m_objAnomericCarbon == null && bc.isAnomeric() )
+			this.m_objAnomericCarbon = bc;
 	}
 
 	/** Get anomeric symbol */

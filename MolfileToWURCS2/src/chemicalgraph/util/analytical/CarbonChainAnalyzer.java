@@ -11,8 +11,9 @@ public class CarbonChainAnalyzer {
 	private String m_strOxidationSequence = null;
 	private String m_strCoOCOSequence = null;
 
-	public void setCarbonChain(LinkedList<Atom> chain) {
+	public CarbonChainAnalyzer setCarbonChain(LinkedList<Atom> chain) {
 		this.m_aCarbonChain = chain;
+		return this;
 	}
 
 	/**

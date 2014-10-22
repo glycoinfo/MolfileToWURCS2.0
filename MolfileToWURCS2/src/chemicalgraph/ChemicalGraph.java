@@ -19,7 +19,7 @@ public abstract class ChemicalGraph {
 	protected LinkedList<Bond> m_aBonds = new LinkedList<Bond>();
 
 	/** Analyzer for stereochemistry */
-	private StereochemicalAnalyzer m_objAnalyzer = new StereochemicalAnalyzer();
+	protected StereochemicalAnalyzer m_objAnalyzer = new StereochemicalAnalyzer();
 
 	private HashMap<Atom, Integer>       m_hashAtomToTmp                = new HashMap<Atom, Integer>();
 	private HashMap<Atom, Integer>       m_hashAtomToSubgraphECNumber   = new HashMap<Atom, Integer>();
@@ -35,9 +35,6 @@ public abstract class ChemicalGraph {
 		return this.m_aBonds;
 	}
 
-	//----------------------------
-	// Public method (void)
-	//----------------------------
 	public void clear() {
 		this.m_aAtoms.clear();
 		this.m_aBonds.clear();
@@ -51,6 +48,9 @@ public abstract class ChemicalGraph {
 		this.m_aBonds.addLast(bond);
 	}
 
+	//----------------------------
+	// Public method
+	//----------------------------
 	/**
 	 * Whether or not this chemical graph contains the atom.
 	 * @param atom
@@ -90,7 +90,7 @@ public abstract class ChemicalGraph {
 		}
 	}
 
-	/** Get updatedECNumbers */
+	/** Get updated EC numbers */
 	public HashMap<Atom, Integer> getAtomToECNumber() {
 		return this.m_hashAtomToSubgraphECNumber;
 	}

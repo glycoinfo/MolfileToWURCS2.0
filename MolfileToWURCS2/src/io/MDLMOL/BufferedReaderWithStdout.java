@@ -1,4 +1,4 @@
-package chemicalgraph.io;
+package io.MDLMOL;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

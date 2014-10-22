@@ -1,4 +1,4 @@
-package carbohydrate;
+package wurcs;
 
 
 /**
@@ -97,8 +97,47 @@ public enum CarbonDescriptor {
 		this.m_strModification3 = a_strMod3;
 	}
 
+	/** Get SkeletonCode character of the carbon */
 	public char getChar() {
 		return this.m_strChar;
+	}
+
+	/** Get String of hybrid orbital of the carbon */
+	public String getHybridOrbital() {
+		return this.m_strHybridOrbital;
+	}
+
+	/** Whether or not the carbon is terminal */
+	public Boolean isTerminal() {
+		if ( this.m_strChar == '?' ) return null;
+		return ( this.m_iBondTypeCarbon2 == 0 );
+	}
+
+	/** Get number of unique modifications connected the carbon */
+	public int getNumberOfUniqueModifications() {
+		return this.m_nUniqueModification;
+	}
+
+	/** Get string of stereo */
+	public String getStereo() {
+		return this.m_strStereo;
+	}
+
+	/** Whether or not the carbon is foot of bridge */
+	public Boolean isFootOfBridge() {
+		return this.m_bIsFootOfBridge;
+	}
+
+	/**
+	 * Get string of modification
+	 * @param num Number of modification
+	 * @return String of modification
+	 */
+	public String getModification(int num) {
+		if (num == 1) return this.m_strModification1;
+		if (num == 2) return this.m_strModification2;
+		if (num == 3) return this.m_strModification3;
+		return null;
 	}
 
 	/**

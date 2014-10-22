@@ -1,10 +1,10 @@
 package chemicalgraph;
 
+import chemicalgraph.util.visitor.AtomicVisitable;
 import chemicalgraph.util.visitor.AtomicVisitor;
 import chemicalgraph.util.visitor.AtomicVisitorException;
-import chemicalgraph.util.visitor.VisitableComponent;
 
-public class Connection implements VisitableComponent {
+public class Connection implements AtomicVisitable {
 	//----------------------------
 	// Member variable
 	//----------------------------
@@ -36,6 +36,7 @@ public class Connection implements VisitableComponent {
 	 * @return the start atom of this connection
 	 */
 	public Atom startAtom(){
+		if ( this.m_objBond == null ) return null;
 		return (this.m_objBond.getAtom2()==this.m_objAtom) ? this.m_objBond.getAtom1() : this.m_objBond.getAtom2();
 	}
 

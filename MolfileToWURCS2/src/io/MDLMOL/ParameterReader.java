@@ -1,4 +1,4 @@
-package chemicalgraph.io;
+package io.MDLMOL;
 
 import java.awt.FileDialog;
 import java.awt.Frame;

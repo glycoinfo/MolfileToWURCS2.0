@@ -1,4 +1,4 @@
-package chemicalgraph.io;
+package io.MDLMOL;
 
 import java.io.File;
 import java.io.FileNotFoundException;

@@ -1,4 +1,4 @@
-package carbohydrate;
+package wurcs;
 
 import java.util.LinkedList;
 
@@ -7,7 +7,7 @@ import java.util.LinkedList;
  * @author MasaakiMatsubara
  *
  */
-public class Edge {
+public class WURCSEdge {
 
 	private Backbone m_objBackbone;
 	private Modification m_objModification;
@@ -29,14 +29,12 @@ public class Edge {
 		return this.m_objModification;
 	}
 
-	public boolean addLinkageSite( Linkage linksite ) {
-		if ( !this.m_aLinkages.contains( linksite ) ) return false;
-		return this.m_aLinkages.add( linksite );
+	public boolean addLinkage( Linkage link ) {
+		if ( this.m_aLinkages.contains( link ) ) return false;
+		return this.m_aLinkages.add( link );
 	}
 
-	public LinkedList<Linkage> getLinkageSites() {
+	public LinkedList<Linkage> getLinkages() {
 		return this.m_aLinkages;
 	}
-
-
 }

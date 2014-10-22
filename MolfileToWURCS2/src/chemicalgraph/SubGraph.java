@@ -30,6 +30,23 @@ public class SubGraph extends ChemicalGraph {
 		return this.m_aAtoms.remove(atom);
 	}
 
+	@Override
+	public void setStereo() {
+		this.m_objAnalyzer.analyze(this);
+	}
+
+	public String getStereo(Atom atom) {
+		return this.m_objAnalyzer.getStereo(atom);
+	}
+
+	public String getStereo(Bond bond) {
+		return this.m_objAnalyzer.getStereo(bond);
+	}
+
+	public Integer getCIPOrder(Connection con) {
+		return this.m_objAnalyzer.getCIPOrder(con);
+	}
+
 	/**
 	 * Recursively expand this chemical graph without ignoreAtoms and hydrogen.
 	 * TODO: Must ignore hydrogens?

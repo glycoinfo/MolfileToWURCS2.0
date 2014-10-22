@@ -5,13 +5,24 @@ import java.util.LinkedList;
 
 import chemicalgraph.Atom;
 import chemicalgraph.SubGraph;
-import sugar.wurcs.glycan.WURCSException;
 
 public class SubGraphCreator {
 	/** Start atom list to make subgraph */
-	private HashSet<Atom> m_aStartAtoms = new HashSet<Atom>();
+	private HashSet<Atom> m_aStartAtoms;
 	/** Ignore atom list */
-	private HashSet<Atom> m_aIgnoreAtoms = new HashSet<Atom>();
+	private HashSet<Atom> m_aIgnoreAtoms;
+
+	//----------------------------
+	// Constructor
+	//----------------------------
+	/**
+	 * @param aStartAtoms Start atoms for subgraph
+	 * @param aIgnoreAtoms Ignore atoms for subgraph
+	 */
+	public SubGraphCreator( HashSet<Atom> aStartAtoms, HashSet<Atom> aIgnoreAtoms ) {
+		this.m_aStartAtoms  = aStartAtoms;
+		this.m_aIgnoreAtoms = aIgnoreAtoms;
+	}
 
 	//----------------------------
 	// Accessor
@@ -37,14 +48,9 @@ public class SubGraphCreator {
 	// Public method
 	//----------------------------
 	/**
-	 * Create subgraph
-	 * @throws WURCSException
+	 * Create subgraphs
 	 */
 	public LinkedList<SubGraph> create() {
-		if ( this.m_aStartAtoms.isEmpty() ) {
-			System.err.println("There is no start atom for create sub graph.");
-		}
-
 		LinkedList<SubGraph> t_hashGraphs = new LinkedList<SubGraph>();
 		for(Atom startAtom : this.m_aStartAtoms) {
 			if ( this.m_aIgnoreAtoms.contains(startAtom) ) continue;
