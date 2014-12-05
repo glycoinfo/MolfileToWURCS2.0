@@ -12,45 +12,64 @@ public enum CarbonDescriptor {
 	SZ3_METHYL_L   ( 'm', "sp3", 1,0, 1, null, null, "-H", "-H", "-H" ), // -C(H)(H)(H)
 	SZ3_METHYL_U   ( 'M', "sp3", 1,0, 1, null, null, "-X", "-X", "-X" ), // -C(X)(X)(X)
 	SZ3_HYDROXYL_L ( 'h', "sp3", 1,0, 2, null, null, "-H", "-H", "-O" ), // -C(O)(H)(H)
-	SZ3_HYDROXYL_U ( 'H', "sp3", 1,0, 2, null, null, "-H", "-H", "-X" ), // -C(X)(H)(H)
-	SZ3_ACETAL     ( 'b', "sp3", 1,0, 2, null, null, "-O", "-O", "-X" ), // -C(X)(O)(O)
-	SZ3_GEMINAL_W  ( 'W', "sp3", 1,0, 2, null, null, "-X", "-X", "-H" ), // -C(X)(X)(H)
-	SZ3_GEMINAL_L  ( 'L', "sp3", 1,0, 2, null, null, "-X", "-X", "-X" ), // -C(X)(X)(Y)
-	SZ3_CHIRAL_S   ( '1', "sp3", 1,0, 3,  "S", true, "-X", "-X", "-X" ), // -C(X)(Y)(Z)
-	SZ3_CHIRAL_R   ( '2', "sp3", 1,0, 3,  "R", true, "-X", "-X", "-X" ), // -C(X)(Y)(Z)
-	SZ3_CHIRAL_s   ( '3', "sp3", 1,0, 3,  "s", true, "-X", "-X", "-X" ), // -C(X)(Y)(Z)
-	SZ3_CHIRAL_r   ( '4', "sp3", 1,0, 3,  "r", true, "-X", "-X", "-X" ), // -C(X)(Y)(Z)
+	SZ3_HYDROXYL_U ( 'H', "sp3", 1,0, 2, null, null, "-H", "-H", "-X" ), // -C(H)(H)(X)
+	SZ3_ACETAL_L   ( 'c', "sp3", 1,0, 2, null, null, "-O", "-O", "-H" ), // -C(O)(O)(H) ver 2.0 change (from 'b')
+	SZ3_ACETAL_U   ( 'C', "sp3", 1,0, 2, null, null, "-O", "-O", "-X" ), // -C(O)(O)(X) ver 2.0 new
+	SZ3_DOUBLE_L   ( 'd', "sp3", 1,0, 2, null, null, "-X", "-X", "-H" ), // -C(X)(X)(H) ver 2.0 change (from 'W')
+	SZ3_DOUBLE_U   ( 'D', "sp3", 1,0, 2, null, null, "-X", "-X", "-X" ), // -C(X)(X)(Y) ver 2.0 change (from 'L')
+	SZ3_STEREO_S   ( '1', "sp3", 1,0, 3,  "S", true, "-X", "-X", "-H" ), // -C(X)(Y)(H) ver 2.0 new
+	SZ3_STEREO_R   ( '2', "sp3", 1,0, 3,  "R", true, "-X", "-X", "-H" ), // -C(X)(Y)(H) ver 2.0 new
+	SZ3_STEREO_s   ( '3', "sp3", 1,0, 3,  "s", true, "-X", "-X", "-H" ), // -C(X)(Y)(H) ver 2.0 new
+	SZ3_STEREO_r   ( '4', "sp3", 1,0, 3,  "r", true, "-X", "-X", "-H" ), // -C(X)(Y)(H) ver 2.0 new
+	SZ3_STEREO_X   ( 'x', "sp3", 1,0, 3,  "X", true, "-X", "-X", "-H" ), // -C(X)(Y)(H) ver 2.0 new
+	SZ3_NORING_S_L ( 's', "sp3", 1,0, 3,  "S", false,"-X", "-X", "-H" ), // -C(X)(Y)(H) ver 2.0 new
+	SZ3_NORING_R_L ( 'r', "sp3", 1,0, 3,  "R", false,"-X", "-X", "-H" ), // -C(X)(Y)(H) ver 2.0 new
+	SZ3_NORING_X_L ( 'q', "sp3", 1,0, 3,  "X", false,"-X", "-X", "-H" ), // -C(X)(Y)(H) ver 2.0 change (from 'U')
+	SZ3_CHIRAL_S   ( '5', "sp3", 1,0, 3,  "S", true, "-X", "-X", "-X" ), // -C(X)(Y)(X) ver 2.0 change (from '1')
+	SZ3_CHIRAL_R   ( '6', "sp3", 1,0, 3,  "R", true, "-X", "-X", "-X" ), // -C(X)(Y)(X) ver 2.0 change (from '2')
+	SZ3_CHIRAL_s   ( '7', "sp3", 1,0, 3,  "s", true, "-X", "-X", "-X" ), // -C(X)(Y)(Z) ver 2.0 change (from '3')
+	SZ3_CHIRAL_r   ( '8', "sp3", 1,0, 3,  "r", true, "-X", "-X", "-X" ), // -C(X)(Y)(Z) ver 2.0 change (from '4')
 	SZ3_CHIRAL_X   ( 'X', "sp3", 1,0, 3,  "X", true, "-X", "-X", "-X" ), // -C(X)(Y)(Z)
-	SZ3_NORING_U   ( 'U', "sp3", 1,0, 3, null, false,"-X", "-X", "-H" ), // -C(X)(Y)(H)
-	SZ3_NORING_R   ( 'R', "sp3", 1,0, 3, null, false,"-X", "-X", "-X" ), // -C(X)(Y)(Z)
+	SZ3_NORING_S_U ( 'S', "sp3", 1,0, 3,  "S", false,"-X", "-X", "-X" ), // -C(X)(Y)(Z) ver 2.0 new
+	SZ3_NORING_R_U ( 'R', "sp3", 1,0, 3,  "R", false,"-X", "-X", "-X" ), // -C(X)(Y)(Z) ver 2.0 new
+	SZ3_NORING_X_U ( 'Q', "sp3", 1,0, 3,  "X", false,"-X", "-X", "-X" ), // -C(X)(Y)(Z) ver 2.0 change (from 'R')
 	SZ2_ALDEHYDE_L ( 'o', "sp2", 1,0, 2, null, null, "=O", "-H", null ), // -C(=O)(H)
 	SZ2_ACID_L     ( 'a', "sp2", 1,0, 2, null, null, "=O", "-O", null ), // -C(=O)(O)
 	SZ2_ALDEHYDE_U ( 'O', "sp2", 1,0, 2, null, null, "=X", "-H", null ), // -C(=X)(H)
 	SZ2_ACID_U     ( 'A', "sp2", 1,0, 2, null, null, "=X", "-X", null ), // -C(=X)(Y)
-	DZ2_METHYLENE_L( 'v', "sp2", 2,0, 1, null, null, "-H", "-H", null ), // =C(H)(H)
-	DZ2_ETHENE_L   ( 'c', "sp2", 2,0, 1, null, null, "-O", "-O", null ), // =C(O)(O)
-	DZ2_METHYLENE_U( 'V', "sp2", 2,0, 1, null, null, "-X", "-X", null ), // =C(X)(X)
-	DZ2_CISTRANS_E ( 'G', "sp2", 2,0, 2,  "E", null, "-X", "-H", null ), // =C(X)(H)
-	DZ2_CISTRANS_Z ( 'I', "sp2", 2,0, 2,  "Z", null, "-X", "-H", null ), // =C(X)(H)
-	DZ2_CISTRANS_N ( 'P', "sp2", 2,0, 2,  "N", null, "-X", "-H", null ), // =C(X)(H)
-	DZ2_CISTRANS_X ( 'J', "sp2", 2,0, 2,  "X", null, "-X", "-H", null ), // =C(X)(H)
-	DZ2_ETHENE_U   ( 'C', "sp2", 2,0, 2, null, null, "-X", "-X", null ), // =C(X)(Y)
-	SZ1_XETHYNE    ( 'Y',  "sp", 1,0, 1, null, null, "#X", null, null ), // -C(#X)
-	DZ1_ALLENE     ( 'q',  "sp", 2,0, 1, null, null, "=X", null, null ), // =C(=X)
+	DZ2_METHYLENE_L( 'n', "sp2", 2,0, 1, null, null, "-H", "-H", null ), // =C(H)(H) ver 2.0 change (from 'v')
+//	DZ2_ETHENE_L   ( 'c', "sp2", 2,0, 1, null, null, "-O", "-O", null ), // =C(O)(O) ver 2.0 reduce (merged into DZ2_METHYLENE_U)
+	DZ2_METHYLENE_U( 'N', "sp2", 2,0, 1, null, null, "-X", "-X", null ), // =C(X)(X) ver 2.0 change (from 'V')
+	DZ2_CISTRANS_EL( 'e', "sp2", 2,0, 2,  "E", null, "-X", "-H", null ), // =C(X)(H) ver 2.0 change (from 'G')
+	DZ2_CISTRANS_ZL( 'z', "sp2", 2,0, 2,  "Z", null, "-X", "-H", null ), // =C(X)(H) ver 2.0 change (from 'I')
+//	DZ2_CISTRANS_NL( 'p', "sp2", 2,0, 2,  "N", null, "-X", "-H", null ), // =C(X)(H) ver 2.0 change (from 'P' and impossible configuration)
+	DZ2_CISTRANS_XL( 'f', "sp2", 2,0, 2,  "X", null, "-X", "-H", null ), // =C(X)(H) ver 2.0 change (from 'J')
+	DZ2_CISTRANS_EU( 'E', "sp2", 2,0, 2,  "E", null, "-X", "-X", null ), // =C(X)(Y) ver 2.0 new
+	DZ2_CISTRANS_ZU( 'Z', "sp2", 2,0, 2,  "Z", null, "-X", "-X", null ), // =C(X)(Y) ver 2.0 new
+//	DZ2_CISTRANS_NU( 'P', "sp2", 2,0, 2,  "N", null, "-X", "-X", null ), // =C(X)(Y) ver 2.0 new (impossible configuration)
+	DZ2_CISTRANS_XU( 'F', "sp2", 2,0, 2,  "X", null, "-X", "-X", null ), // =C(X)(Y) ver 2.0 new
+	SZ1_XETHYNE    ( 'T',  "sp", 1,0, 1, null, null, "#X", null, null ), // -C(#X) ver 2.0 change (from 'Y')
+	DZ1_KETENE_L   ( 'k',  "sp", 2,0, 1, null, null, "=O", null, null ), // =C(=O) ver 2.0 new
+	DZ1_KETENE_U   ( 'K',  "sp", 2,0, 1, null, null, "=X", null, null ), // =C(=X) ver 2.0 change (from 'q')
 	TZ1_ETHYNE_L   ( 't',  "sp", 3,0, 1, null, null, "-H", null, null ), // #C(H)
 	TZ1_ETHYNE_U   ( 'T',  "sp", 3,0, 1, null, null, "-X", null, null ), // #C(X)
 
 	// Non-terminal
 	SS3_METHYNE    ( 'd', "sp3", 1,1, 1, null, null, "-H", "-H", null ), // -C(H)(H)-
-	SS3_ACETAL     ( 'b', "sp3", 1,1, 1, null, null, "-O", "-O", null ), // -C(O)(O)-
+	SS3_ACETAL     ( 'c', "sp3", 1,1, 1, null, null, "-O", "-O", null ), // -C(O)(O)- ver 2.0 change (from 'b')
 	SS3_XMETHYNE   ( 'D', "sp3", 1,1, 1, null, null, "-X", "-X", null ), // -C(X)(X)-
-	SS3_STEREO_S   ( '1', "sp3", 1,1, 2,  "S", null, "-X", "-X", null ), // -C(X)(Y)-
-	SS3_STEREO_R   ( '2', "sp3", 1,1, 2,  "R", null, "-X", "-X", null ), // -C(X)(Y)-
-	SS3_STEREO_s   ( '3', "sp3", 1,1, 2,  "s", null, "-X", "-X", null ), // -C(X)(Y)-
-	SS3_STEREO_r   ( '4', "sp3", 1,1, 2,  "r", null, "-X", "-X", null ), // -C(X)(Y)-
-	SS3_STEREO_X   ( 'X', "sp3", 1,1, 2,  "X", null, "-X", "-X", null ), // -C(X)(Y)-
-	SS2_KETONE_L   ( 'k', "sp2", 1,1, 1, null, null, "=O", null, null ), // -C(=O)-
-	SS2_KETONE_U   ( 'K', "sp2", 1,1, 1, null, null, "=X", null, null ), // -C(=X)-
+	SS3_STEREO_S   ( '1', "sp3", 1,1, 2,  "S", null, "-X", "-H", null ), // -C(X)(Y)- ver 2.0 new
+	SS3_STEREO_R   ( '2', "sp3", 1,1, 2,  "R", null, "-X", "-H", null ), // -C(X)(Y)- ver 2.0 new
+	SS3_STEREO_s   ( '3', "sp3", 1,1, 2,  "s", null, "-X", "-H", null ), // -C(X)(Y)- ver 2.0 new
+	SS3_STEREO_r   ( '4', "sp3", 1,1, 2,  "r", null, "-X", "-H", null ), // -C(X)(Y)- ver 2.0 new
+	SS3_STEREO_X   ( 'x', "sp3", 1,1, 2,  "X", null, "-X", "-H", null ), // -C(X)(Y)- ver 2.0 new
+	SS3_CHIRAL_S   ( '5', "sp3", 1,1, 2,  "S", null, "-X", "-X", null ), // -C(X)(Y)- ver 2.0 change (from '1')
+	SS3_CHIRAL_R   ( '6', "sp3", 1,1, 2,  "R", null, "-X", "-X", null ), // -C(X)(Y)- ver 2.0 change (from '2')
+	SS3_CHIRAL_s   ( '7', "sp3", 1,1, 2,  "s", null, "-X", "-X", null ), // -C(X)(Y)- ver 2.0 change (from '3')
+	SS3_CHIRAL_r   ( '8', "sp3", 1,1, 2,  "r", null, "-X", "-X", null ), // -C(X)(Y)- ver 2.0 change (from '4')
+	SS3_CHIRAL_X   ( 'X', "sp3", 1,1, 2,  "X", null, "-X", "-X", null ), // -C(X)(Y)-
+	SS2_KETONE_L   ( 'k', "sp2", 1,1, 1, null, null, "=O", null, null ), // -C(=O)- ver 2.0 change (from 'o')
+	SS2_KETONE_U   ( 'K', "sp2", 1,1, 1, null, null, "=X", null, null ), // -C(=X)- ver 2.0 change (from 'O')
 	DS2_CISTRANS_EL( 'e', "sp2", 2,1, 1,  "E", null, "-H", null, null ), // =C(H)-
 	DS2_CISTRANS_ZL( 'z', "sp2", 2,1, 1,  "Z", null, "-H", null, null ), // =C(H)-
 	DS2_CISTRANS_NL( 'n', "sp2", 2,1, 1,  "N", null, "-H", null, null ), // =C(H)-
@@ -59,42 +78,59 @@ public enum CarbonDescriptor {
 	DS2_CISTRANS_ZU( 'Z', "sp2", 2,1, 1,  "Z", null, "-X", null, null ), // =C(X)-
 	DS2_CISTRANS_NU( 'N', "sp2", 2,1, 1,  "N", null, "-X", null, null ), // =C(X)-
 	DS2_CISTRANS_XU( 'F', "sp2", 2,1, 1,  "X", null, "-X", null, null ), // =C(X)-
-	DD1_ALLENE     ( 'q',  "sp", 2,2, 0, null, null, null, null, null ), // =C=
-	TS1_ETHYNE     ( 'y',  "sp", 3,1, 0, null, null, null, null, null ), // #C-
+	DD1_KETENE     ( 'K',  "sp", 2,2, 0, null, null, null, null, null ), // =C= ver 2.0 change (from 'q')
+	TS1_ETHYNE     ( 'T',  "sp", 3,1, 0, null, null, null, null, null ), // #C- ver 2.0 change (from 'y')
 
 	XXX_UNKNOWN    ( '?',  null, 0,0, 0, null, null, null, null, null ); // C???
 
+	/** Charactor of carbon descriptor */
 	private char   m_strChar;
+	/** Hybrid orbital */
 	private String m_strHybridOrbital;
+	/** Bond type of connecting first carbon */
 	private int    m_iBondTypeCarbon1;
+	/** Bond type of connecting second carbon (0 at terminal) */
 	private int    m_iBondTypeCarbon2;
+	/** Number of unique modifications */
 	private int    m_nUniqueModification;
+	/** Chirality or geometrical isomerism */
 	private String m_strStereo;
+	/** Whether or not the carbon is foot of bridge on the ring */
 	private Boolean m_bIsFootOfBridge;
+	/** String of first unique modificaiton */
 	private String m_strModification1;
+	/** String of second unique modificaiton (or null) */
 	private String m_strModification2;
+	/** String of third unique modificaiton (or null) */
 	private String m_strModification3;
 
 	/**
-	 * Private constructor of CarbonDescriptor for a charactor of SkeltonCode
+	 * Private constructor of CarbonDescriptor (a charactor of SkeltonCode)
 	 * @param a_strChar SkeltonCode character of target carbon
 	 * @param a_strOrbital Hybrid orbital of target carbon
+	 * @param a_iTypeC1 Bond type of connection to first carbon
+	 * @param a_iTypeC2 Bond type of connection to second carbon (0 at terminal carbon)
+	 * @param a_nUniqMod Number of Unique modifications
 	 * @param a_strStereo Stereo of target carbon
-	 * @param a_strX First symbol of atom connected target carbon (not backbone carbon)
-	 * @param a_strY Second symbol of atom connected target carbon (not backbone carbon) or null
-	 * @param a_strZ Third symbol of atom connected target carbon (not backbone carbon) or null
+	 * @param a_bIsFoot Whether or not the carbon is foot of bridge on the ring
+	 * @param a_strMod1 String of first modification
+	 * @param a_strMod2 String of second modification (or null)
+	 * @param a_strMod3 String of third modification (or null)
+	 * @param a_nO Number of oxygen in basic modification (=O or -OH)
+	 * @param a_nH Number of hydrogen in basic modification (-OH or -H)
 	 */
-	private CarbonDescriptor( char a_strChar, String a_strOrbital, int a_iTypeC1, int a_iTypeC2, int a_nUniqMod, String a_strStereo, Boolean a_bIsFoot, String a_strMod1, String a_strMod2, String a_strMod3 ) {
-		this.m_strChar = a_strChar;
-		this.m_strHybridOrbital = a_strOrbital;
-		this.m_iBondTypeCarbon1 = a_iTypeC1;
-		this.m_iBondTypeCarbon2 = a_iTypeC2;
+	private CarbonDescriptor( char a_strChar, String a_strOrbital, int a_iTypeC1, int a_iTypeC2, int a_nUniqMod,
+			String a_strStereo, Boolean a_bIsFoot, String a_strMod1, String a_strMod2, String a_strMod3 ) {
+		this.m_strChar             = a_strChar;
+		this.m_strHybridOrbital    = a_strOrbital;
+		this.m_iBondTypeCarbon1    = a_iTypeC1;
+		this.m_iBondTypeCarbon2    = a_iTypeC2;
 		this.m_nUniqueModification = a_nUniqMod;
-		this.m_strStereo = a_strStereo;
-		this.m_bIsFootOfBridge = a_bIsFoot;
-		this.m_strModification1 = a_strMod1;
-		this.m_strModification2 = a_strMod2;
-		this.m_strModification3 = a_strMod3;
+		this.m_strStereo           = a_strStereo;
+		this.m_bIsFootOfBridge     = a_bIsFoot;
+		this.m_strModification1    = a_strMod1;
+		this.m_strModification2    = a_strMod2;
+		this.m_strModification3    = a_strMod3;
 	}
 
 	/** Get SkeletonCode character of the carbon */
