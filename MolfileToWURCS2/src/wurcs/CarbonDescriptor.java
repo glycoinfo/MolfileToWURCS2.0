@@ -24,6 +24,8 @@ public enum CarbonDescriptor {
 	SZ3_STEREO_X   ( 'x', "sp3", 1,0, 3,  "X", true, "-X", "-X", "-H" ), // -C(X)(Y)(H) ver 2.0 new
 	SZ3_NORING_S_L ( 's', "sp3", 1,0, 3,  "S", false,"-X", "-X", "-H" ), // -C(X)(Y)(H) ver 2.0 new
 	SZ3_NORING_R_L ( 'r', "sp3", 1,0, 3,  "R", false,"-X", "-X", "-H" ), // -C(X)(Y)(H) ver 2.0 new
+	SZ3_NORING_s_L ( 's', "sp3", 1,0, 3,  "s", false,"-X", "-X", "-H" ), // -C(X)(Y)(H) ver 2.0 new
+	SZ3_NORING_r_L ( 'r', "sp3", 1,0, 3,  "r", false,"-X", "-X", "-H" ), // -C(X)(Y)(H) ver 2.0 new
 	SZ3_NORING_X_L ( 'q', "sp3", 1,0, 3,  "X", false,"-X", "-X", "-H" ), // -C(X)(Y)(H) ver 2.0 change (from 'U')
 	SZ3_CHIRAL_S   ( '5', "sp3", 1,0, 3,  "S", true, "-X", "-X", "-X" ), // -C(X)(Y)(X) ver 2.0 change (from '1')
 	SZ3_CHIRAL_R   ( '6', "sp3", 1,0, 3,  "R", true, "-X", "-X", "-X" ), // -C(X)(Y)(X) ver 2.0 change (from '2')
@@ -32,6 +34,8 @@ public enum CarbonDescriptor {
 	SZ3_CHIRAL_X   ( 'X', "sp3", 1,0, 3,  "X", true, "-X", "-X", "-X" ), // -C(X)(Y)(Z)
 	SZ3_NORING_S_U ( 'S', "sp3", 1,0, 3,  "S", false,"-X", "-X", "-X" ), // -C(X)(Y)(Z) ver 2.0 new
 	SZ3_NORING_R_U ( 'R', "sp3", 1,0, 3,  "R", false,"-X", "-X", "-X" ), // -C(X)(Y)(Z) ver 2.0 new
+	SZ3_NORING_s_U ( 'S', "sp3", 1,0, 3,  "s", false,"-X", "-X", "-X" ), // -C(X)(Y)(Z) ver 2.0 new
+	SZ3_NORING_r_U ( 'R', "sp3", 1,0, 3,  "r", false,"-X", "-X", "-X" ), // -C(X)(Y)(Z) ver 2.0 new
 	SZ3_NORING_X_U ( 'Q', "sp3", 1,0, 3,  "X", false,"-X", "-X", "-X" ), // -C(X)(Y)(Z) ver 2.0 change (from 'R')
 	SZ2_ALDEHYDE_L ( 'o', "sp2", 1,0, 2, null, null, "=O", "-H", null ), // -C(=O)(H)
 	SZ2_ACID_L     ( 'a', "sp2", 1,0, 2, null, null, "=O", "-O", null ), // -C(=O)(O)
