@@ -1,4 +1,4 @@
-package wurcs;
+package wurcsglycan;
 
 
 /**
@@ -120,8 +120,6 @@ public enum CarbonDescriptor {
 	 * @param a_strMod1 String of first modification
 	 * @param a_strMod2 String of second modification (or null)
 	 * @param a_strMod3 String of third modification (or null)
-	 * @param a_nO Number of oxygen in basic modification (=O or -OH)
-	 * @param a_nH Number of hydrogen in basic modification (-OH or -H)
 	 */
 	private CarbonDescriptor( char a_strChar, String a_strOrbital, int a_iTypeC1, int a_iTypeC2, int a_nUniqMod,
 			String a_strStereo, Boolean a_bIsFoot, String a_strMod1, String a_strMod2, String a_strMod3 ) {
@@ -181,19 +179,22 @@ public enum CarbonDescriptor {
 	}
 
 	/**
-	 * Match and get CarbonDescriptor which correspond to a character of SkeltonCode
+	 * Get CarbonDescriptor which correspond to a character of SkeltonCode
 	 * @param cName A character of SkeltonCode
+	 * @param isTerminal Whether or not the charactor is at terminal
 	 * @return
 	 */
-	public static CarbonDescriptor forCharacter(char cName) {
+	public static CarbonDescriptor forCharacter(char cName, boolean isTerminal) {
 		for ( CarbonDescriptor cd : CarbonDescriptor.values() ) {
-			if ( cd.m_strChar == cName ) return cd;
+			if ( cd.m_strChar != cName ) continue;
+			if ( cd.isTerminal() != isTerminal ) continue;
+			return cd;
 		}
 		return CarbonDescriptor.XXX_UNKNOWN;
 	}
 
 	/**
-	 * Match and get CarbonDescriptor which correspond to a character of SkeltonCode
+	 * Get CarbonDescriptor by carbon situation
 	 * @param a_strOrbital
 	 * @param a_iTypeC1
 	 * @param a_iTypeC2
@@ -205,7 +206,8 @@ public enum CarbonDescriptor {
 	 * @param a_strMod3
 	 * @return
 	 */
-	public static CarbonDescriptor forCarbonStatus( String a_strOrbital, int a_iTypeC1, int a_iTypeC2, int a_nUniqMod, String a_strStereo, Boolean a_bIsFoot, String a_strMod1, String a_strMod2, String a_strMod3 ) {
+	public static CarbonDescriptor forCarbonSituation( String a_strOrbital, int a_iTypeC1, int a_iTypeC2, int a_nUniqMod,
+			String a_strStereo, Boolean a_bIsFoot, String a_strMod1, String a_strMod2, String a_strMod3 ) {
 		// Match values
 		for ( CarbonDescriptor cd : CarbonDescriptor.values() ) {
 			if ( cd.m_strHybridOrbital != null

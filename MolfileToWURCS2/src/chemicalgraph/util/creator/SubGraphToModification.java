@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 
-import wurcs.Modification;
+import wurcsglycan.Modification;
 import chemicalgraph.Atom;
 import chemicalgraph.Bond;
 import chemicalgraph.Connection;
@@ -55,7 +55,7 @@ public class SubGraphToModification {
 
 		this.path = this.findCanonicalPaths(graph);
 		String ALIN = this.makeALINCode(graph, this.path);
-		System.err.println( ALIN );
+//		System.err.println( ALIN );
 
 		Modification modification = new Modification(ALIN);
 		return modification;

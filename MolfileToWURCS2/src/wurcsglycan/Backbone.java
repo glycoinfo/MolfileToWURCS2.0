@@ -1,6 +1,5 @@
-package wurcs;
+package wurcsglycan;
 
-import java.util.LinkedList;
 
 /**
  * Class for backbone of saccharide
@@ -9,8 +8,6 @@ import java.util.LinkedList;
  */
 public class Backbone extends WURCSComponent{
 
-	/** Contained CarbonTypes */
-	private LinkedList<BackboneCarbon> m_aCarbons = new LinkedList<BackboneCarbon>();
 	/** Anomeric carbon which assigned */
 	private BackboneCarbon m_objAnomericCarbon = null;
 	/** Configurational carbon which assigned D/L */
@@ -62,6 +59,11 @@ public class Backbone extends WURCSComponent{
 		return code;
 	}
 
+	public int getAnomericPosition() {
+		if ( this.m_objAnomericCarbon == null ) return 0;
+		return this.getBackboneCarbons().indexOf(this.m_objAnomericCarbon)+1;
+	}
+
 	@Override
 	protected void checkAnomeric(BackboneCarbon bc) {
 		// Set anomeric carbon
@@ -70,17 +72,33 @@ public class Backbone extends WURCSComponent{
 	}
 
 	/** Get anomeric symbol */
-/*	public char getAnomericSymbol() {
+	public char getAnomericSymbol() {
+		// Get configurational carbon
+		int pos = this.getAnomericPosition();
+		int i = 0;
+		BackboneCarbon bcConfig = null;
+		for ( BackboneCarbon bc : this.getBackboneCarbons() ) {
+			if ( !bc.isChiral() ) continue;
+			i++;
+			bcConfig = bc;
+			if ( i == pos + 4 ) break;
+		}
 		char anom = 'x';
-		if ( this.m_objConfigurationalCarbons.isEmpty() ) return anom;
+		if ( bcConfig == null ) return anom;
 		if ( this.m_objAnomericCarbon == null ) return anom;
 
+		char configChar = bcConfig.getDesctriptor().getChar();
+		if ( configChar == 'x' || configChar == 'X' ) return anom;
+		if ( !Character.isDigit(configChar) ) return anom;
+		int iConfig = Integer.valueOf(Character.toString(configChar));
+
 		char anomChar = this.m_objAnomericCarbon.getDesctriptor().getChar();
-		char configChar = this.m_objConfigurationalCarbons.getFirst().getDesctriptor().getChar();
-		if ( configChar == 'X' )
-		anom = ( configChar == anomChar )? 'a' : 'b';
+		if ( !Character.isDigit(anomChar) ) return anom;
+		int iAnom = Integer.valueOf(Character.toString(anomChar));
+		System.err.println(pos + ":" + iAnom + " vs " + i +":"+ iConfig);
+		anom = ( iConfig%2 == iAnom%2 )? 'a' : 'b';
 
 		return anom;
 	}
-*/
+
 }

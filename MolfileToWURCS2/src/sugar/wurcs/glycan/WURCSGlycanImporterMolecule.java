@@ -5,11 +5,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 
-import wurcs.Backbone;
-import wurcs.BackboneCarbon;
-import wurcs.Linkage;
-import wurcs.Modification;
-import wurcs.WURCSEdge;
+import wurcsglycan.Backbone;
+import wurcsglycan.BackboneCarbon;
+import wurcsglycan.Position;
+import wurcsglycan.Modification;
+import wurcsglycan.WURCSEdge;
+import wurcsglycan.WURCSException;
 import chemicalgraph.Atom;
 import chemicalgraph.Connection;
 import chemicalgraph.Molecule;
@@ -29,7 +30,7 @@ import chemicalgraph.util.creator.SubGraphToModification;
  * @author Masaaki Matsubara
  *
  */
-public class CarbohydrateImporterMolecule {
+public class WURCSGlycanImporterMolecule {
 	private Molecule m_objMolecule;
 
 //	private SubGraphCreator     m_objSubgraphCreator     = new SubGraphCreator();
@@ -48,7 +49,7 @@ public class CarbohydrateImporterMolecule {
 
 	public  LinkedList<LinkedList<LinkedList<Atom>>> m_aCandidateBackboneGroups = new LinkedList<LinkedList<LinkedList<Atom>>>();
 
-	public CarbohydrateImporterMolecule() {
+	public WURCSGlycanImporterMolecule() {
 	}
 
 	/**
@@ -168,7 +169,7 @@ public class CarbohydrateImporterMolecule {
 					break;
 				}
 			}
-			// New edge is found then make linkages
+			// Make linkages if new edge is found
 			if ( !edges.contains(edge) ) {
 				edge.setBackbone(backbone);
 				edge.setModification(modification);
@@ -178,8 +179,28 @@ public class CarbohydrateImporterMolecule {
 				edges.add(edge);
 			}
 
-			Linkage link = C2L.convert(con, chain, graph);
+			Position link = C2L.convert(con, chain, graph);
 			edge.addLinkage(link);
+		}
+
+		for (Backbone backbone : backbones) {
+			String skeleton = backbone.getSkeletonCode();
+			skeleton += "+" + backbone.getAnomericPosition();
+			skeleton += ":" + backbone.getAnomericSymbol();
+			for ( WURCSEdge edge : backbone.getEdges() ) {
+				Modification mod = edge.getModification();
+				if ( mod.getEdges().size() > 1 ) continue;
+				String MAP = mod.getMAPCode();
+				if ( MAP.equals("*O") || MAP.equals("*=O") ) continue;
+				if ( MAP.equals("*O*") ) MAP = "";
+				String COLIN = "";
+				for ( Position link : mod.getEdges().get(0).getLinkages() ) {
+					if ( !COLIN.equals("") ) COLIN += ",";
+					COLIN += link.getBackbonePosition();
+				}
+				skeleton += "|" + COLIN + MAP;
+			}
+			System.err.println(skeleton);
 		}
 
 		for (WURCSEdge edge : edges ) {
@@ -187,13 +208,30 @@ public class CarbohydrateImporterMolecule {
 			Modification modification = edge.getModification();
 			System.err.println(
 				backbones.indexOf(backbone) +":"+ backbone.getSkeletonCode() + "-"
-				+ modifications.indexOf(modification) +":"+ modification.getALINCode() );
-			for ( Linkage link : edge.getLinkages() ) {
-				System.err.print( link.getCOLINCode(false) + " " );
+				+ modifications.indexOf(modification) +":"+ modification.getMAPCode() );
+			for ( Position link : edge.getLinkages() ) {
+				System.err.print( link.getCOLINCode(true) + " " );
 			}
 			System.err.println();
 		}
 
+		for ( Modification mod : modifications ) {
+			if ( mod.getEdges().size() < 2 ) continue;
+			String str = "";
+			int nAnomeric = 0;
+			for ( WURCSEdge edge : mod.getEdges() ) {
+				if ( !str.equals("") ) str += ",";
+				Backbone backbone = edge.getBackbone();
+				str += backbones.indexOf(backbone)+1 +"("+ backbone.getSkeletonCode() +")";
+				for ( Position link : edge.getLinkages() ) {
+					str += link.getCOLINCode(true);
+					if ( link.getBackbonePosition() == backbone.getAnomericPosition() ) nAnomeric++;
+				}
+			}
+			str += mod.getMAPCode();
+			System.err.print(str);
+			System.err.println((nAnomeric>0)? (nAnomeric>1)? " both of anomeric" : " at anomeric" : "" );
+		}
 	}
 
 	private void printCarbonChains(LinkedList<LinkedList<Atom>> chains) {
@@ -387,7 +425,7 @@ public class CarbohydrateImporterMolecule {
 					if ( chain.contains(conatom) ) continue;
 					for ( SubGraph graph : graphs ) {
 						if ( !graph.contains(conatom) ) continue;
-						System.err.print(conatom.getSymbol());
+//						System.err.print(conatom.getSymbol());
 						aConB2M.add(con);
 						this.m_hashConnectionToBackboneChain.put(con, chain);
 						this.m_hashConnectionToModificationGraph.put(con, graph);

@@ -1,12 +1,12 @@
-package wurcs;
+package wurcsglycan;
 
 
 /**
- * Class for linkage on the Backbone carbon
+ * Class for information of linkage position on the Backbone carbon
  * @author MasaakiMatsubara
  *
  */
-public class Linkage {
+public class Position {
 
 	/** Carbon number in linked Backbone (calling "PCB" in WURCS) */
 	private int m_iBackbonePosition = 0;
@@ -17,7 +17,7 @@ public class Linkage {
 	private boolean m_bCompressDMB;
 	private boolean m_bCompressPCA;
 
-	public Linkage(int iPCB, String strDMB, boolean compressDMB, int iPCA, boolean compressPCA) {
+	public Position(int iPCB, String strDMB, boolean compressDMB, int iPCA, boolean compressPCA) {
 		this.m_iBackbonePosition = iPCB;
 		this.m_strDirection = strDMB;
 		this.m_bCompressDMB = compressDMB;
@@ -41,9 +41,9 @@ public class Linkage {
 		String COLINCode = "";
 
 		COLINCode += this.m_iBackbonePosition;
-		if ( !compress || !this.m_bCompressDMB )
+		if ( !(compress && this.m_bCompressDMB) )
 			COLINCode +=  ":" + this.m_strDirection;
-		if ( !compress || !this.m_bCompressPCA )
+		if ( !(compress && this.m_bCompressPCA) )
 			COLINCode +=  "-" + this.m_iModificationPosition;
 
 		return COLINCode;

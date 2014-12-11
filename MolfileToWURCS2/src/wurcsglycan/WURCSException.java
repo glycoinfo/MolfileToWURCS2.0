@@ -1,4 +1,4 @@
-package sugar.wurcs.glycan;
+package wurcsglycan;
 
 /**
  * Class for exception of WURCS object

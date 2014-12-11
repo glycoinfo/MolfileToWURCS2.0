@@ -1,4 +1,4 @@
-package wurcs;
+package wurcsglycan;
 
 import java.util.LinkedList;
 

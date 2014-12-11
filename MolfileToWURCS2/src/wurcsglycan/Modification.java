@@ -1,4 +1,4 @@
-package wurcs;
+package wurcsglycan;
 
 
 
@@ -9,15 +9,15 @@ package wurcs;
  */
 public class Modification extends WURCSComponent{
 
-	private String m_strALINCode;
+	private String m_strMAPCode;
 	private boolean m_bIsAglycone = true;
 
-	public Modification( String ALINCode ) {
-		this.m_strALINCode = ALINCode;
+	public Modification( String MAPCode ) {
+		this.m_strMAPCode = MAPCode;
 	}
 
-	public String getALINCode() {
-		return this.m_strALINCode;
+	public String getMAPCode() {
+		return this.m_strMAPCode;
 	}
 
 	public boolean isAglycone() {

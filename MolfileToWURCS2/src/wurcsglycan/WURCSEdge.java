@@ -1,4 +1,4 @@
-package wurcs;
+package wurcsglycan;
 
 import java.util.LinkedList;
 
@@ -11,7 +11,7 @@ public class WURCSEdge {
 
 	private Backbone m_objBackbone;
 	private Modification m_objModification;
-	private LinkedList<Linkage> m_aLinkages = new LinkedList<Linkage>();
+	private LinkedList<Position> m_aLinkages = new LinkedList<Position>();
 
 	public void setBackbone(Backbone backbone) {
 		this.m_objBackbone = backbone;
@@ -29,12 +29,12 @@ public class WURCSEdge {
 		return this.m_objModification;
 	}
 
-	public boolean addLinkage( Linkage link ) {
+	public boolean addLinkage( Position link ) {
 		if ( this.m_aLinkages.contains( link ) ) return false;
 		return this.m_aLinkages.add( link );
 	}
 
-	public LinkedList<Linkage> getLinkages() {
+	public LinkedList<Position> getLinkages() {
 		return this.m_aLinkages;
 	}
 }

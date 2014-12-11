@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import chemicalgraph.Molecule;
-import sugar.wurcs.glycan.CarbohydrateImporterMolecule;
-import sugar.wurcs.glycan.WURCSException;
+import sugar.wurcs.glycan.WURCSGlycanImporterMolecule;
+import wurcsglycan.WURCSException;
 
 public class example2 extends example {
 
@@ -13,7 +13,7 @@ public class example2 extends example {
 		// read argument and files using SelectFileDialog
 		ParameterReader t_objParam = new ParameterReader(args, true);
 
-		CarbohydrateImporterMolecule t_objImporterMol = new CarbohydrateImporterMolecule();
+		WURCSGlycanImporterMolecule t_objImporterMol = new WURCSGlycanImporterMolecule();
 		// Set parameters for backbone creation
 		t_objImporterMol.getCarbonChainCreator().setParameters(t_objParam.m_minNOS, t_objParam.m_minO, t_objParam.m_minBackboneLength, t_objParam.m_maxBackboneLength, t_objParam.m_ratioBackboneNOS);
 

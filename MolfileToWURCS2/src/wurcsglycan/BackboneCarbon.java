@@ -1,4 +1,4 @@
-package wurcs;
+package wurcsglycan;
 
 /**
  * Class for carbon indicate position of backbone
@@ -8,14 +8,16 @@ package wurcs;
 public class BackboneCarbon {
 	/** Backbone which contain this*/
 	private Backbone m_objBackbone;
-	/** Whether or not this is anomeric like */
-	private boolean m_bIsAnomericLike = false;
 	/** Descriptor for this carbon */
 	private CarbonDescriptor m_objCarbonDescriptor;
+	/** Whether or not this is anomeric like */
+	private boolean m_bIsAnomericLike = false;
 
 	/**
 	 * Constructor
+	 * @param backbone Backbone which contain this
 	 * @param cd CarbonDescriptor
+	 * @param chiral Whether or not this is chirality
 	 * @param anom Whether or not this is anomeric like
 	 */
 	public BackboneCarbon( Backbone backbone, CarbonDescriptor cd, boolean anom ) {
@@ -36,4 +38,8 @@ public class BackboneCarbon {
 		return this.m_bIsAnomericLike;
 	}
 
+	public boolean isChiral() {
+		return ( this.m_objCarbonDescriptor.getHybridOrbital().equals("sp3")
+				&& this.m_objCarbonDescriptor.getStereo() != null );
+	}
 }

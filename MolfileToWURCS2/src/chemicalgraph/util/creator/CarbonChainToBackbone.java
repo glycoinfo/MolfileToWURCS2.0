@@ -6,9 +6,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 
-import wurcs.Backbone;
-import wurcs.BackboneCarbon;
-import wurcs.CarbonDescriptor;
+import wurcsglycan.Backbone;
+import wurcsglycan.BackboneCarbon;
+import wurcsglycan.CarbonDescriptor;
 import chemicalgraph.Atom;
 import chemicalgraph.Connection;
 import chemicalgraph.util.Chemical;
@@ -144,8 +144,8 @@ public class CarbonChainToBackbone {
 				if ( mod1.charAt(0) != '=' && mod2.charAt(0) == '=' ) return 1;
 
 				// Compare symbol. Prioritize large atomic number.
-				String symbol1 = ( !mod1.endsWith("_") )? mod1.substring(1) : mod1.substring(1, mod1.length());
-				String symbol2 = ( !mod2.endsWith("_") )? mod2.substring(1) : mod2.substring(1, mod2.length());
+				String symbol1 = ( !mod1.endsWith("_") )? mod1.substring(1) : mod1.substring(1, mod1.length()-1);
+				String symbol2 = ( !mod2.endsWith("_") )? mod2.substring(1) : mod2.substring(1, mod2.length()-1);
 				if ( !symbol1.equals(symbol2) )
 					return Chemical.getAtomicNumber(symbol2) - Chemical.getAtomicNumber(symbol1);
 
@@ -157,7 +157,9 @@ public class CarbonChainToBackbone {
 			}
 		});
 		// Remove "_"
+//		System.err.println();
 		for ( int i=0; i< modStrList.size(); i++ ) {
+//			System.err.println(modStrList.get(i) + ":" + modStrList.get(i).substring(1, modStrList.get(i).length()) );
 			modStrList.set( i, modStrList.get(i).replaceAll("_", "") );
 		}
 		String strMod1 = (modStrList.size() > 0)? modStrList.get(0) : null;
@@ -180,7 +182,7 @@ public class CarbonChainToBackbone {
 		}
 
 		// Return matching CarbonDesctiptor
-		return CarbonDescriptor.forCarbonStatus(strOrbital, iType1, iType2, nUniq, strStereo, !bridgeCons.isEmpty(), strMod1, strMod2, strMod3 );
+		return CarbonDescriptor.forCarbonSituation(strOrbital, iType1, iType2, nUniq, strStereo, !bridgeCons.isEmpty(), strMod1, strMod2, strMod3 );
 	}
 
 	// IUPACを参考にして、Stereo判定を行う対象かどうかのチェックをまず入れる。
