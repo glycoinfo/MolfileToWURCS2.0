@@ -52,11 +52,14 @@ public enum CarbonDescriptor {
 	DZ2_CISTRANS_ZU( 'Z', "sp2", 2,0, 2,  "Z", null, "-X", "-X", null ), // =C(X)(Y) ver 2.0 new
 //	DZ2_CISTRANS_NU( 'P', "sp2", 2,0, 2,  "N", null, "-X", "-X", null ), // =C(X)(Y) ver 2.0 new (impossible configuration)
 	DZ2_CISTRANS_XU( 'F', "sp2", 2,0, 2,  "X", null, "-X", "-X", null ), // =C(X)(Y) ver 2.0 new
-	SZ1_XETHYNE    ( 'T',  "sp", 1,0, 1, null, null, "#X", null, null ), // -C(#X) ver 2.0 change (from 'Y')
-	DZ1_KETENE_L   ( 'k',  "sp", 2,0, 1, null, null, "=O", null, null ), // =C(=O) ver 2.0 new
-	DZ1_KETENE_U   ( 'K',  "sp", 2,0, 1, null, null, "=X", null, null ), // =C(=X) ver 2.0 change (from 'q')
-	TZ1_ETHYNE_L   ( 't',  "sp", 3,0, 1, null, null, "-H", null, null ), // #C(H)
-	TZ1_ETHYNE_U   ( 'T',  "sp", 3,0, 1, null, null, "-X", null, null ), // #C(X)
+	SZ1_XETHYNE    ( 'T', "sp" , 1,0, 1, null, null, "#X", null, null ), // -C(#X) ver 2.0 change (from 'Y')
+	DZ1_KETENE_L   ( 'k', "sp" , 2,0, 1, null, null, "=O", null, null ), // =C(=O) ver 2.0 new
+	DZ1_KETENE_U   ( 'K', "sp" , 2,0, 1, null, null, "=X", null, null ), // =C(=X) ver 2.0 change (from 'q')
+	TZ1_ETHYNE_L   ( 't', "sp" , 3,0, 1, null, null, "-H", null, null ), // #C(H)
+	TZ1_ETHYNE_U   ( 'T', "sp" , 3,0, 1, null, null, "-X", null, null ), // #C(X)
+	// Ambiguous
+	SZX_UNDEF_L    ( 'u',  "?" , 1,0, 0, null, null, "-X", "-H", null ), // -C(X)(Y)(H) or -C(=O)(H) ver 2.0 new ('x' and 'O')
+	SZX_UNDEF_U    ( 'U',  "?" , 1,0, 0, null, null, "-X", "-X", null ), // -C(X)(Y)(Z) or -C(=X)(X) ver 2.0 new ('X' and 'A')
 
 	// Non-terminal
 	SS3_METHYNE    ( 'd', "sp3", 1,1, 1, null, null, "-H", "-H", null ), // -C(H)(H)-
@@ -72,8 +75,8 @@ public enum CarbonDescriptor {
 	SS3_CHIRAL_s   ( '7', "sp3", 1,1, 2,  "s", null, "-X", "-X", null ), // -C(X)(Y)- ver 2.0 change (from '3')
 	SS3_CHIRAL_r   ( '8', "sp3", 1,1, 2,  "r", null, "-X", "-X", null ), // -C(X)(Y)- ver 2.0 change (from '4')
 	SS3_CHIRAL_X   ( 'X', "sp3", 1,1, 2,  "X", null, "-X", "-X", null ), // -C(X)(Y)-
-	SS2_KETONE_L   ( 'k', "sp2", 1,1, 1, null, null, "=O", null, null ), // -C(=O)- ver 2.0 change (from 'o')
-	SS2_KETONE_U   ( 'K', "sp2", 1,1, 1, null, null, "=X", null, null ), // -C(=X)- ver 2.0 change (from 'O')
+	SS2_KETONE_L   ( 'o', "sp2", 1,1, 1, null, null, "=O", null, null ), // -C(=O)- ver 2.0 change (from 'k')
+	SS2_KETONE_U   ( 'O', "sp2", 1,1, 1, null, null, "=X", null, null ), // -C(=X)- ver 2.0 change (from 'K')
 	DS2_CISTRANS_EL( 'e', "sp2", 2,1, 1,  "E", null, "-H", null, null ), // =C(H)-
 	DS2_CISTRANS_ZL( 'z', "sp2", 2,1, 1,  "Z", null, "-H", null, null ), // =C(H)-
 	DS2_CISTRANS_NL( 'n', "sp2", 2,1, 1,  "N", null, "-H", null, null ), // =C(H)-
@@ -84,6 +87,8 @@ public enum CarbonDescriptor {
 	DS2_CISTRANS_XU( 'F', "sp2", 2,1, 1,  "X", null, "-X", null, null ), // =C(X)-
 	DD1_KETENE     ( 'K',  "sp", 2,2, 0, null, null, null, null, null ), // =C= ver 2.0 change (from 'q')
 	TS1_ETHYNE     ( 'T',  "sp", 3,1, 0, null, null, null, null, null ), // #C- ver 2.0 change (from 'y')
+	// Ambiguous
+	SSX_UNDEF_U    ( 'U',  "?" , 1,1, 0, null, null, "-X", null, null ), // -C(X)(Y)- or -C(=X)- ver 2.0 new ('X' and 'O')
 
 	XXX_UNKNOWN    ( '?',  null, 0,0, 0, null, null, null, null, null ); // C???
 
