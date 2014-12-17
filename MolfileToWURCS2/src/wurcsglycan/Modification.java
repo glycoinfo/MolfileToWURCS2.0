@@ -1,5 +1,8 @@
 package wurcsglycan;
 
+import wurcsglycan.util.visitor.WURCSVisitor;
+import wurcsglycan.util.visitor.WURCSVisitorException;
+
 
 
 /**
@@ -10,7 +13,6 @@ package wurcsglycan;
 public class Modification extends WURCSComponent{
 
 	private String m_strMAPCode;
-	private boolean m_bIsAglycone = true;
 
 	public Modification( String MAPCode ) {
 		this.m_strMAPCode = MAPCode;
@@ -21,12 +23,19 @@ public class Modification extends WURCSComponent{
 	}
 
 	public boolean isAglycone() {
-		return this.m_bIsAglycone;
+		if ( this.getEdges().isEmpty() ) return false;
+		for ( WURCSEdge edge : this.getEdges() ) {
+			if ( edge.getLinkages().size() == 1
+				&& edge.getBackbone().getAnomericPosition() == edge.getLinkages().get(0).getBackbonePosition() ) continue;
+			return false;
+		}
+		return true;
 	}
 
 	@Override
-	protected void checkAnomeric(BackboneCarbon bc) {
-		if ( !bc.isAnomeric() ) this.m_bIsAglycone = false;
+	public void accept(WURCSVisitor a_objVisitor) throws WURCSVisitorException {
+		// TODO 自動生成されたメソッド・スタブ
+		a_objVisitor.visit(this);
 	}
 
 }

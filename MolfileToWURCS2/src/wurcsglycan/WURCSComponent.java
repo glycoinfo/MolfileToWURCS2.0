@@ -2,6 +2,9 @@ package wurcsglycan;
 
 import java.util.LinkedList;
 
+import wurcsglycan.util.visitor.WURCSVisitor;
+import wurcsglycan.util.visitor.WURCSVisitorException;
+
 /**
  * Abstract class for component of Carbohydrate
  * @author MasaakiMatsubara
@@ -9,33 +12,12 @@ import java.util.LinkedList;
  */
 public abstract class WURCSComponent {
 
-	/** BackboneCarbons  */
-	protected LinkedList<BackboneCarbon> m_aCarbons = new LinkedList<BackboneCarbon>();
 	/** Edges between Backbone and Modification */
-	protected LinkedList<WURCSEdge> m_aEdges = new LinkedList<WURCSEdge>();
-
-	/**
-	 * Add backbone carbon
-	 * @param bc BackboneCarbon
-	 * @return true if addition is succeed
-	 */
-	public boolean addBackboneCarbon( BackboneCarbon bc ) {
-		if ( this.m_aCarbons.contains(bc) ) return false;
-		this.checkAnomeric(bc);
-		return this.m_aCarbons.add( bc );
-	}
-
-	/**
-	 * Get list of BackboneCarbon in this component
-	 * @return list of BackboneCarbon in this component
-	 */
-	public LinkedList<BackboneCarbon> getBackboneCarbons() {
-		return this.m_aCarbons;
-	}
+	private LinkedList<WURCSEdge> m_aEdges = new LinkedList<WURCSEdge>();
 
 	/**
 	 * Add edge
-	 * @param edge Edage
+	 * @param edge Edge
 	 * @return true if addition is succeed
 	 */
 	public boolean addEdge( WURCSEdge edge ) {
@@ -52,8 +34,26 @@ public abstract class WURCSComponent {
 	}
 
 	/**
-	 * Abstract method of check anomeric backbone carbon
-	 * @param bc BackboneCarbon
+	 * Remove edge
+	 * @param edge Edge
+	 * @throws WURCSException
 	 */
-	protected abstract void checkAnomeric(BackboneCarbon bc);
+	public boolean removeEdge( WURCSEdge edge ) throws WURCSException {
+		if ( edge == null )
+			throw new WURCSException("Cant delete null linkage.");
+		if ( !this.m_aEdges.contains(edge) ) return false;
+		return this.m_aEdges.remove(edge);
+	}
+
+	/**
+	 * Remove all edge
+	 */
+	public void removeAllEdges() {
+		this.m_aEdges = new LinkedList<WURCSEdge>();
+	}
+
+	/**
+	 * @throws WURCSVisitorException
+	 */
+	public abstract void accept(WURCSVisitor a_objVisitor) throws WURCSVisitorException;
 }
