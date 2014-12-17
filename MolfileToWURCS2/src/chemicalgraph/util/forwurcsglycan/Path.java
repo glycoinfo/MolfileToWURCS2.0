@@ -1,4 +1,4 @@
-package chemicalgraph.util.creator;
+package chemicalgraph.util.forwurcsglycan;
 
 import java.util.LinkedList;
 

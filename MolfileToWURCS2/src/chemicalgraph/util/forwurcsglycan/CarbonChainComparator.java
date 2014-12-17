@@ -1,4 +1,4 @@
-package chemicalgraph.util.analytical;
+package chemicalgraph.util.forwurcsglycan;
 
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import chemicalgraph.Atom;
 import chemicalgraph.Connection;
 import chemicalgraph.util.Chemical;
+import chemicalgraph.util.analytical.CarbonChainAnalyzer;
 
 public class CarbonChainComparator implements Comparator<LinkedList<Atom>> {
 

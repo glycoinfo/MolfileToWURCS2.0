@@ -1,9 +1,9 @@
-package chemicalgraph.util.creator;
+package chemicalgraph.util.forwurcsglycan;
 
 import java.util.HashMap;
 import java.util.LinkedList;
 
-import wurcsglycan.Position;
+import wurcsglycan.LinkagePosition;
 import chemicalgraph.Atom;
 import chemicalgraph.Connection;
 import chemicalgraph.SubGraph;
@@ -32,7 +32,7 @@ public class ConnectionToLinkage {
 	 * @param graph SubGraph of modification
 	 * @return Linkage converted from the connection
 	 */
-	public Position convert( Connection con, LinkedList<Atom> chain, SubGraph graph ) {
+	public LinkagePosition convert( Connection con, LinkedList<Atom> chain, SubGraph graph ) {
 //		if ( !this.m_hashConnectionToBackboneChain.containsKey(con) ) return null;
 		// PCB: Get carbon position in the backbone
 		int PCB = chain.indexOf( con.startAtom() )+1;
@@ -52,7 +52,7 @@ public class ConnectionToLinkage {
 		// Check PCA can ellipsis
 		boolean ellipsisPCA = ( !(modCarbons.size()==2 && graph.getAtoms().size()==3) && modCarbons.size() > 1 );
 
-		Position link = new Position(PCB, DMB, ellipsisDMB, PCA, ellipsisPCA);
+		LinkagePosition link = new LinkagePosition(PCB, DMB, ellipsisDMB, PCA, ellipsisPCA);
 		return link;
 
 	}
