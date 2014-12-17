@@ -9,19 +9,20 @@ import chemicalgraph.Connection;
 import chemicalgraph.SubGraph;
 import chemicalgraph.util.Chemical;
 import chemicalgraph.util.analytical.AtomIdentifier;
+import chemicalgraph.util.analytical.CarbonChainAnalyzer;
 
 /**
  * Class for
  * @author MasaakiMatsubara
  *
  */
-public class ConnectionToLinkage {
+public class ConnectionToLinkagePosition {
 
 	private HashMap<Connection, LinkedList<Atom>> m_hashConnectionToBackboneChain;
 	private HashMap<SubGraph, LinkedList<Atom>> m_hashGraphToModificationCarbons = new HashMap<SubGraph, LinkedList<Atom>>();
 	private AtomIdentifier m_objIdent = new AtomIdentifier();
 
-	public ConnectionToLinkage( HashMap<SubGraph, LinkedList<Atom>> hashGraphToModificationCarbons ) {
+	public ConnectionToLinkagePosition( HashMap<SubGraph, LinkedList<Atom>> hashGraphToModificationCarbons ) {
 		this.m_hashGraphToModificationCarbons = hashGraphToModificationCarbons;
 	}
 
@@ -43,14 +44,14 @@ public class ConnectionToLinkage {
 		// Check DMB can ellipsis
 //		ConnectTypeList types = new ConnectTypeList(connect.start(), connect.start().backbone);
 //		if(outputFullInformation || types.get(types.uniqBackboneNum).connects.size() != 1){
-		boolean ellipsisDMB = ( DMB == "0" );
+		boolean ellipsisDMB = ( this.countModificationNumber(con, chain) == 0 );
 
 		// PCA: Get carbon poistion in the modification
 		LinkedList<Atom> modCarbons = this.m_hashGraphToModificationCarbons.get(graph);
 		int PCA = modCarbons.indexOf( con.startAtom() )+1;
 
 		// Check PCA can ellipsis
-		boolean ellipsisPCA = ( !(modCarbons.size()==2 && graph.getAtoms().size()==3) && modCarbons.size() > 1 );
+		boolean ellipsisPCA = !( !(modCarbons.size()==2 && graph.getAtoms().size()==3) && modCarbons.size() > 1 );
 
 		LinkagePosition link = new LinkagePosition(PCB, DMB, ellipsisDMB, PCA, ellipsisPCA);
 		return link;
@@ -75,7 +76,7 @@ public class ConnectionToLinkage {
 		Atom CLarge = (Co != chain.getLast() ) ? chain.get(indexCo+1) : null;
 		if ( CSmall==null || CLarge==null ) {
 			// 環状糖の環を構成している原子をダミーの主鎖炭素として扱う処理
-			// Consider ring ester atom to be dammy backbone carbon
+			// Consider ring ester atom as dammy backbone carbon
 			for ( Connection con : Co.getConnections() ) {
 				Atom conatom = con.endAtom();
 				if ( conatom == Mo) continue;
@@ -173,7 +174,7 @@ public class ConnectionToLinkage {
 				// C=Co=Mo
 				//        \
 				//         Ms
-				// TODO: Co is sp?
+				// TODO: When the Co is sp?
 				if ( conCType == 2 ) return "0";
 
 				// CSmall       Mp
@@ -216,7 +217,7 @@ public class ConnectionToLinkage {
 					break;
 				}
 				// connectTargetが見つからない場合(Cが末端）、接続している修飾の内CIP優勢な修飾と比較
-				// If C is terminal, compare modification with the highest priority
+				// If C is terminal, compare modification of the highest priority
 				if ( conTarget==null ) {
 					for ( Connection connect : conC.endAtom().getConnections() ) {
 						if ( connect.endAtom() == Co) continue;
@@ -225,7 +226,7 @@ public class ConnectionToLinkage {
 					}
 				}
 
-				// TODO: How distinguish Mo and Y when Y is modificaiton?
+				// TODO: When the Y is modificaiton, how distinguish Mo and Y ?
 				//             Mo
 				//            /
 				// Target=C=Co
@@ -277,4 +278,31 @@ public class ConnectionToLinkage {
 		return "?";
 	}
 
+	/**
+	 * Count number of other modification on backbone carbon
+	 * @param conB2M Connection between backbone carbon and modification
+	 * @param chain Backbone carbon chain
+	 * @return Number of other modifications
+	 */
+	private int countModificationNumber(Connection conB2M, LinkedList<Atom> chain) {
+		CarbonChainAnalyzer analCC = new CarbonChainAnalyzer();
+		Atom anomC = analCC.setCarbonChain(chain).getAnomericCarbon();
+		Atom Co = conB2M.startAtom();
+		int nMo = 0;
+		for ( Connection con : Co.getConnections() ) {
+			if ( con.equals(conB2M) ) continue;
+			Atom Mo = con.endAtom();
+			if ( Mo.getSymbol().equals("H") ) continue;
+			if ( chain.contains(Mo) ) continue;
+			if ( Co.equals( anomC ) ) {
+				// check bridge modification
+				int nBackboneConnection = 0;
+				for ( Connection concon : Mo.getConnections() )
+					if ( chain.contains( concon.endAtom() ) ) nBackboneConnection++;
+				if ( nBackboneConnection > 1 ) continue;
+			}
+			nMo++;
+		}
+		return nMo;
+	}
 }

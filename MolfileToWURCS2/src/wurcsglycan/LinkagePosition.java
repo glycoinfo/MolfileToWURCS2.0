@@ -16,8 +16,8 @@ public class LinkagePosition {
 	private String m_strDirection;
 	/** Carbon number in linked Modification (calling "PCM" in WURCS) */
 	private int m_iModificationPosition;
-	private boolean m_bCompressDMB;
-	private boolean m_bCompressPCM;
+	private boolean m_bCanCompressDMB;
+	private boolean m_bCanCompressPCM;
 
 	private double m_dProbabilityUpper = 1.0;
 	private double m_dProbabilityLower = 1.0;
@@ -29,9 +29,13 @@ public class LinkagePosition {
 	public LinkagePosition(int iPCB, String strDMB, boolean compressDMB, int iPCM, boolean compressPCM) {
 		this.m_iBackbonePosition = iPCB;
 		this.m_strDirection = strDMB;
-		this.m_bCompressDMB = compressDMB;
+		this.m_bCanCompressDMB = compressDMB;
 		this.m_iModificationPosition = iPCM;
-		this.m_bCompressPCM = compressPCM;
+		this.m_bCanCompressPCM = compressPCM;
+	}
+
+	public LinkagePosition(int iPCB, String strDMB, int iPCM) {
+		this(iPCB, strDMB, true, iPCM, true);
 	}
 
 	public void setProbabilityUpper(double prob) throws WURCSException {
@@ -76,13 +80,15 @@ public class LinkagePosition {
 		return this.m_iProbabilityPosition;
 	}
 
-	public String getCOLINCode(boolean compress) {
+	public String getCOLINCode(int a_iNodeID, boolean a_bCompress) {
 		String COLINCode = "";
 
+		if ( a_iNodeID > 0 )
+			COLINCode += a_iNodeID + "+";
 		COLINCode += this.m_iBackbonePosition;
-		if ( !(compress && this.m_bCompressDMB) )
+		if ( !a_bCompress || !this.m_bCanCompressDMB )
 			COLINCode +=  ":" + this.m_strDirection;
-		if ( !(compress && this.m_bCompressPCM) )
+		if ( !a_bCompress || !this.m_bCanCompressPCM )
 			COLINCode +=  "-" + this.m_iModificationPosition;
 
 		if ( this.m_dProbabilityLower == 1.0 ) return COLINCode;
