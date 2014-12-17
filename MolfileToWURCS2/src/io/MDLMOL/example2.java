@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import chemicalgraph.Molecule;
-import sugar.wurcs.glycan.WURCSGlycanImporterMolecule;
 import wurcsglycan.WURCSException;
 
 public class example2 extends example {

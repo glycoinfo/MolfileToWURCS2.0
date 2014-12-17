@@ -1,4 +1,4 @@
-package sugar.wurcs.glycan;
+package io.MDLMOL;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -7,7 +7,7 @@ import java.util.LinkedList;
 
 import wurcsglycan.Backbone;
 import wurcsglycan.BackboneCarbon;
-import wurcsglycan.Position;
+import wurcsglycan.LinkagePosition;
 import wurcsglycan.Modification;
 import wurcsglycan.WURCSEdge;
 import wurcsglycan.WURCSException;
@@ -16,14 +16,14 @@ import chemicalgraph.Connection;
 import chemicalgraph.Molecule;
 import chemicalgraph.SubGraph;
 import chemicalgraph.util.analytical.CarbonChainAnalyzer;
-import chemicalgraph.util.analytical.CarbonChainComparator;
 import chemicalgraph.util.analytical.MoleculeNormalizer;
 import chemicalgraph.util.analytical.StructureAnalyzer;
-import chemicalgraph.util.creator.CarbonChainCreator;
-import chemicalgraph.util.creator.CarbonChainToBackbone;
-import chemicalgraph.util.creator.ConnectionToLinkage;
-import chemicalgraph.util.creator.SubGraphCreator;
-import chemicalgraph.util.creator.SubGraphToModification;
+import chemicalgraph.util.forwurcsglycan.CarbonChainComparator;
+import chemicalgraph.util.forwurcsglycan.CarbonChainFinder;
+import chemicalgraph.util.forwurcsglycan.CarbonChainToBackbone;
+import chemicalgraph.util.forwurcsglycan.ConnectionToLinkage;
+import chemicalgraph.util.forwurcsglycan.SubGraphCreator;
+import chemicalgraph.util.forwurcsglycan.SubGraphToModification;
 
 /**
  * Class of importer for Carbohydrate
@@ -34,7 +34,7 @@ public class WURCSGlycanImporterMolecule {
 	private Molecule m_objMolecule;
 
 //	private SubGraphCreator     m_objSubgraphCreator     = new SubGraphCreator();
-	private CarbonChainCreator  m_objCarbonChainCreator  = new CarbonChainCreator();
+	private CarbonChainFinder  m_objCCFinder  = new CarbonChainFinder();
 
 //	private LinkedList<LinkedList<Atom>>  m_aBackboneChains      = new LinkedList<LinkedList<Atom>>();
 	private LinkedList<SubGraph>          m_aAglyconGraphs       = new LinkedList<SubGraph>();
@@ -56,8 +56,8 @@ public class WURCSGlycanImporterMolecule {
 	 * Get Backbone creator
 	 * @return BackboneCreator
 	 */
-	public CarbonChainCreator getCarbonChainCreator() {
-		return this.m_objCarbonChainCreator;
+	public CarbonChainFinder getCarbonChainCreator() {
+		return this.m_objCCFinder;
 	}
 
 	public void clear() {
@@ -71,7 +71,7 @@ public class WURCSGlycanImporterMolecule {
 		this.m_hashConnectionToBackboneChain.clear();
 		this.m_hashConnectionToModificationGraph.clear();
 
-		this.m_objCarbonChainCreator.clear();
+		this.m_objCCFinder.clear();
 //		this.m_objSubgraphCreator.clear();
 	}
 
@@ -88,12 +88,13 @@ public class WURCSGlycanImporterMolecule {
 		StructureAnalyzer analSt = new StructureAnalyzer();
 		analSt.analyze(this.m_objMolecule);
 
-		// Set start atoms for backbone creator
-		this.m_objCarbonChainCreator.setTerminalCarbons( analSt.getTerminalCarbons() );
-		// Set Ignore atoms for backbone creator
-		this.m_objCarbonChainCreator.setIgnoreAtoms( analSt.getAromaticAtoms() );
-		this.m_objCarbonChainCreator.setIgnoreAtoms( analSt.getPiCyclicAtoms() );
-		this.m_objCarbonChainCreator.setIgnoreAtoms( analSt.getCarbonCyclicAtoms() );
+		// Set start atoms for carbon chain finder
+		HashSet<Atom> terminalCarbons = analSt.getTerminalCarbons();
+		// Set Ignore atoms for carbon chain finder
+		HashSet<Atom> ignoreAtoms = new HashSet<Atom>();
+		ignoreAtoms.addAll( analSt.getAromaticAtoms() );
+		ignoreAtoms.addAll( analSt.getPiCyclicAtoms() );
+		ignoreAtoms.addAll( analSt.getCarbonCyclicAtoms() );
 
 		// Stereochemical analyze
 		this.m_objMolecule.setStereo();
@@ -108,8 +109,9 @@ public class WURCSGlycanImporterMolecule {
 			System.err.println( bond.getGeometric() );
 		}
 */
-		// Get carbon chains, which was reduced length by C1 check
-		LinkedList<LinkedList<Atom>> candidateBackbones = this.m_objCarbonChainCreator.create();
+		// Find and get carbon chains, which was reduced length by C1 check
+		this.m_objCCFinder.find( terminalCarbons, ignoreAtoms );
+		LinkedList<LinkedList<Atom>> candidateBackbones = this.m_objCCFinder.getCandidateCarbonChains();
 //		this.printCarbonChains(candidateBackbones);
 
 		// Find components for carbohydrate
@@ -147,7 +149,7 @@ public class WURCSGlycanImporterMolecule {
 			hashGraphToModificationCarbons.put(graph, SG2M.getBackboneAtoms());
 			for ( Atom atom : SG2M.getBackboneAtoms() ) {
 				BackboneCarbon bc = hashAtomToBackboneCarbon.get(atom);
-				modification.addBackboneCarbon(bc);
+//				modification.addBackboneCarbon(bc);
 			}
 			modifications.add(modification);
 		}
@@ -179,7 +181,7 @@ public class WURCSGlycanImporterMolecule {
 				edges.add(edge);
 			}
 
-			Position link = C2L.convert(con, chain, graph);
+			LinkagePosition link = C2L.convert(con, chain, graph);
 			edge.addLinkage(link);
 		}
 
@@ -194,7 +196,7 @@ public class WURCSGlycanImporterMolecule {
 				if ( MAP.equals("*O") || MAP.equals("*=O") ) continue;
 				if ( MAP.equals("*O*") ) MAP = "";
 				String COLIN = "";
-				for ( Position link : mod.getEdges().get(0).getLinkages() ) {
+				for ( LinkagePosition link : mod.getEdges().get(0).getLinkages() ) {
 					if ( !COLIN.equals("") ) COLIN += ",";
 					COLIN += link.getBackbonePosition();
 				}
@@ -209,7 +211,7 @@ public class WURCSGlycanImporterMolecule {
 			System.err.println(
 				backbones.indexOf(backbone) +":"+ backbone.getSkeletonCode() + "-"
 				+ modifications.indexOf(modification) +":"+ modification.getMAPCode() );
-			for ( Position link : edge.getLinkages() ) {
+			for ( LinkagePosition link : edge.getLinkages() ) {
 				System.err.print( link.getCOLINCode(true) + " " );
 			}
 			System.err.println();
@@ -223,7 +225,7 @@ public class WURCSGlycanImporterMolecule {
 				if ( !str.equals("") ) str += ",";
 				Backbone backbone = edge.getBackbone();
 				str += backbones.indexOf(backbone)+1 +"("+ backbone.getSkeletonCode() +")";
-				for ( Position link : edge.getLinkages() ) {
+				for ( LinkagePosition link : edge.getLinkages() ) {
 					str += link.getCOLINCode(true);
 					if ( link.getBackbonePosition() == backbone.getAnomericPosition() ) nAnomeric++;
 				}
@@ -264,7 +266,7 @@ public class WURCSGlycanImporterMolecule {
 //		this.printCarbonChains(candidateBackbones);
 
 		// Select the most suitable carbon chains as main chain, and collect carbon chains which contain atoms of selected that.
-		// Repeating that until no candidateBackbones.
+		// Repeat for all candidateBackbones.
 		LinkedList<LinkedList<LinkedList<Atom>>> t_aCandidateBackboneGroups = new LinkedList<LinkedList<LinkedList<Atom>>>();
 		while(candidateBackbones.size()>0){
 			LinkedList<LinkedList<Atom>> backboneGroup = new LinkedList<LinkedList<Atom>>();
@@ -272,11 +274,10 @@ public class WURCSGlycanImporterMolecule {
 			for(int ii=0; ii<candidateBackbones.size(); ii++){
 				LinkedList<Atom> checkBackbone = candidateBackbones.get(ii);
 				for(Atom atom : checkBackbone){
-					if(backboneGroup.getFirst().contains(atom)){
-						backboneGroup.addLast(candidateBackbones.remove(ii));
-						ii--;
-						break;
-					}
+					if(!backboneGroup.getFirst().contains(atom)) continue;
+					backboneGroup.addLast(candidateBackbones.remove(ii));
+					ii--;
+					break;
 				}
 			}
 			t_aCandidateBackboneGroups.add(backboneGroup);
@@ -284,7 +285,7 @@ public class WURCSGlycanImporterMolecule {
 		this.m_aCandidateBackboneGroups = t_aCandidateBackboneGroups;
 
 		// Set backbone flag for the most suitable carbon chains in each groups.
-		// # For the case which there are two or more suitable one.
+		// # If there are two or more suitable one.
 		HashMap<LinkedList<Atom>, Boolean> hashIsBackbone = new HashMap<LinkedList<Atom>, Boolean>();
 		for(LinkedList<LinkedList<Atom>> backbones : t_aCandidateBackboneGroups){
 //			System.err.println("Group" + t_aCandidateBackboneGroups.indexOf(backbones) + ":");
