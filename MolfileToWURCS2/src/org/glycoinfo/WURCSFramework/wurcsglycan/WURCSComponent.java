@@ -2,15 +2,14 @@ package org.glycoinfo.WURCSFramework.wurcsglycan;
 
 import java.util.LinkedList;
 
-import org.glycoinfo.WURCSFramework.wurcsglycan.util.visitor.WURCSVisitor;
-import org.glycoinfo.WURCSFramework.wurcsglycan.util.visitor.WURCSVisitorException;
+import org.glycoinfo.WURCSFramework.wurcsglycan.util.visitor.WURCSVisitable;
 
 /**
  * Abstract class for component of Carbohydrate
  * @author MasaakiMatsubara
  *
  */
-public abstract class WURCSComponent {
+public abstract class WURCSComponent implements WURCSVisitable{
 
 	/** Edges between Backbone and Modification */
 	private LinkedList<WURCSEdge> m_aEdges = new LinkedList<WURCSEdge>();
@@ -52,8 +51,4 @@ public abstract class WURCSComponent {
 		this.m_aEdges = new LinkedList<WURCSEdge>();
 	}
 
-	/**
-	 * @throws WURCSVisitorException
-	 */
-	public abstract void accept(WURCSVisitor a_objVisitor) throws WURCSVisitorException;
 }

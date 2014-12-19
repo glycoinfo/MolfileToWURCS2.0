@@ -5,21 +5,26 @@ import org.glycoinfo.WURCSFramework.wurcsglycan.Modification;
 import org.glycoinfo.WURCSFramework.wurcsglycan.WURCSEdge;
 import org.glycoinfo.WURCSFramework.wurcsglycan.WURCSGlycan;
 
-public abstract class WURCSTraverser {
-	public static final int ENTER 	= 0;
-	public static final int LEAVE 	= 1;
-	public static final int RETURN 	= 2;
+/**
+ * Abstract class for WURCSGlycan traverser
+ * @author MasaakiMatsubara
+ *
+ */
+public abstract class WURCSGlycanTraverser {
+	public static final int ENTER  = 0;
+	public static final int LEAVE  = 1;
+	public static final int RETURN = 2;
+	public static final int BACKBONE     = 0;
+	public static final int MODIFICATION = 1;
 
 	protected WURCSVisitor m_objVisitor = null;
 	protected int m_iState = 0;
+	protected int m_iNode = 0;
 
-
-	public WURCSTraverser ( WURCSVisitor a_objVisitor ) throws WURCSVisitorException
-	{
+	public WURCSGlycanTraverser ( WURCSVisitor a_objVisitor ) throws WURCSVisitorException {
 		if ( a_objVisitor == null )
-		{
 			throw new WURCSVisitorException("Null visitor given to traverser");
-		}
+
 		this.m_objVisitor = a_objVisitor;
 	}
 
@@ -29,9 +34,11 @@ public abstract class WURCSTraverser {
 
 	public abstract void traverseGraph( WURCSGlycan a_objGlycan ) throws WURCSVisitorException;
 
-	public int getState()
-	{
+	public int getState() {
 		return this.m_iState;
 	}
 
+	public int getNode() {
+		return this.m_iNode;
+	}
 }

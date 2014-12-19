@@ -103,6 +103,13 @@ public class Backbone extends WURCSComponent{
 		return null;
 	}
 
+	public boolean hasUnknownLength() {
+		for ( BackboneCarbon bc : this.m_aCarbons ) {
+			if ( bc.hasUnknownLength() ) return true;
+		}
+		return false;
+	}
+
 	private void checkAnomeric(BackboneCarbon bc) {
 		// Set anomeric carbon
 		if ( this.m_objAnomericCarbon == null && bc.isAnomeric() )
@@ -111,7 +118,6 @@ public class Backbone extends WURCSComponent{
 
 	@Override
 	public void accept(WURCSVisitor a_objVisitor) throws WURCSVisitorException {
-		// TODO 自動生成されたメソッド・スタブ
 		a_objVisitor.visit(this);
 	}
 

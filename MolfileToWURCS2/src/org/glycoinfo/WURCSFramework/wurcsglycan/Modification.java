@@ -1,5 +1,7 @@
 package org.glycoinfo.WURCSFramework.wurcsglycan;
 
+import java.util.HashSet;
+
 import org.glycoinfo.WURCSFramework.wurcsglycan.util.visitor.WURCSVisitor;
 import org.glycoinfo.WURCSFramework.wurcsglycan.util.visitor.WURCSVisitorException;
 
@@ -30,6 +32,19 @@ public class Modification extends WURCSComponent{
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 *
+	 * @return true if MAP code of the Modification is omission terget
+	 */
+	public boolean canOmit() {
+		HashSet<String> omissions = new HashSet<String>();
+		omissions.add("*O");
+		omissions.add("*O*");
+		omissions.add("*=O");
+		if ( omissions.contains( this.m_strMAPCode ) ) return true;
+		return false;
 	}
 
 	@Override

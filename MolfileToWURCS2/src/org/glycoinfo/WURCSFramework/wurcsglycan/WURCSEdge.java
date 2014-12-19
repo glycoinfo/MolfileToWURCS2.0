@@ -2,12 +2,16 @@ package org.glycoinfo.WURCSFramework.wurcsglycan;
 
 import java.util.LinkedList;
 
+import org.glycoinfo.WURCSFramework.wurcsglycan.util.visitor.WURCSVisitable;
+import org.glycoinfo.WURCSFramework.wurcsglycan.util.visitor.WURCSVisitor;
+import org.glycoinfo.WURCSFramework.wurcsglycan.util.visitor.WURCSVisitorException;
+
 /**
  * Class for edge between Backbone and Modification
  * @author MasaakiMatsubara
  *
  */
-public class WURCSEdge {
+public class WURCSEdge implements WURCSVisitable {
 
 	private Backbone m_objBackbone;
 	private Modification m_objModification;
@@ -36,5 +40,10 @@ public class WURCSEdge {
 
 	public LinkedList<LinkagePosition> getLinkages() {
 		return this.m_aLinkages;
+	}
+
+	@Override
+	public void accept(WURCSVisitor a_objVisitor) throws WURCSVisitorException {
+		a_objVisitor.visit(this);
 	}
 }
