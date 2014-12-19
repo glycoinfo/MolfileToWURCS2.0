@@ -6,13 +6,19 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 
-import wurcsglycan.Modification;
+import org.glycoinfo.WURCSFramework.wurcsglycan.Modification;
+
 import chemicalgraph.Atom;
 import chemicalgraph.Bond;
 import chemicalgraph.Connection;
 import chemicalgraph.SubGraph;
 import chemicalgraph.util.Chemical;
 
+/**
+ * Class for the conversion of SubGraph to Modification
+ * @author MasaakiMatsubara
+ *
+ */
 public class SubGraphToModification {
 	//----------------------------
 	// Member variable
@@ -20,7 +26,7 @@ public class SubGraphToModification {
 
 	private HashSet<Atom> m_aAromaticAtoms = new HashSet<Atom>();
 	private HashSet<Atom> m_aBackboneAtoms = new HashSet<Atom>();
-	private HashMap<Atom, LinkedList<Atom>> m_hashAtomToBackbone = new HashMap<Atom, LinkedList<Atom>>();
+	private HashMap<Atom, LinkedList<Atom>> m_hashAtomToCarbonChain = new HashMap<Atom, LinkedList<Atom>>();
 
 	private SubGraph m_objModificationGraph;
 	private LinkedList<Atom> m_aBackboneAtomsInModification = new LinkedList<Atom>();
@@ -45,7 +51,7 @@ public class SubGraphToModification {
 		for ( LinkedList<Atom> chain : backboneChains ) {
 			this.m_aBackboneAtoms.addAll(chain);
 			for ( Atom atom : chain ) {
-				this.m_hashAtomToBackbone.put(atom, chain);
+				this.m_hashAtomToCarbonChain.put(atom, chain);
 			}
 		}
 	}
@@ -81,17 +87,18 @@ public class SubGraphToModification {
 		graph.sortAtoms( new Comparator<Atom>() {
 			public int compare(Atom atom1, Atom atom2) {
 				// １．主鎖炭素を優先
+				// 1. Prioritize backbone carbons
 //				if( atom1.isBackbone() && !atom2.isBackbone()) return -1;
 //				if(!atom1.isBackbone() &&  atom2.isBackbone()) return 1;
 				if (  backboneAtoms.contains(atom1) && !backboneAtoms.contains(atom2) ) return -1;
 				if ( !backboneAtoms.contains(atom1) &&  backboneAtoms.contains(atom2) ) return 1;
 				// ２．EC番号が小さい修飾原子を優先
+				// 2. Prioritize modification atoms with smaller EC number
 //				if( atom1.subgraphECnumber != atom2.subgraphECnumber ) return atom1.subgraphECnumber - atom2.subgraphECnumber;
-				// 2. Prioritize smoller EC number
 				if ( initialECNumber.get(atom1) != initialECNumber.get(atom2) )
 					return initialECNumber.get(atom1) - initialECNumber.get(atom2);
 				// ３．原子番号が小さい修飾原子を優先
-				// 3. Prioritize smoller atomic number
+				// 3. Prioritize smaller atomic number
 //				if( atom1.atomicNumber()   != atom2.atomicNumber()   ) return atom1.atomicNumber()   - atom2.atomicNumber();
 				if ( Chemical.getAtomicNumber(atom1.getSymbol()) != Chemical.getAtomicNumber(atom2.getSymbol()) )
 					return Chemical.getAtomicNumber(atom1.getSymbol()) - Chemical.getAtomicNumber(atom2.getSymbol());
@@ -127,17 +134,15 @@ public class SubGraphToModification {
 			if(connects.size()==0) break;
 
 			// 接続要素の2原子が共に探索済みの場合、start()が末端に近いConnectを採用する。
-			// Take near teminal connection if connecting two atoms has searched
+			// Take connection near by terminal if connecting two atoms has searched
 			for ( Connection con : connects ) {
 				if ( !graph.contains( con.endAtom() ) ) continue;
-				if ( path.indexOf( con.startAtom() ) < path.indexOf( con.endAtom() ) ){
-					int index = connects.indexOf(con);
-					for ( Connection connect2 : con.endAtom().getConnections() ){
-						if ( connect2.getBond().equals( con.getBond() ) ){
-							connects.set(index, connect2);
-							break;
-						}
-					}
+				if ( path.indexOf( con.startAtom() ) >= path.indexOf( con.endAtom() ) ) continue;
+				int index = connects.indexOf(con);
+				for ( Connection connect2 : con.endAtom().getConnections() ){
+					if ( !connect2.getBond().equals( con.getBond() ) ) continue;
+					connects.set(index, connect2);
+					break;
 				}
 			}
 
@@ -166,7 +171,7 @@ public class SubGraphToModification {
 					}
 
 					// ２．後半に探索した修飾原子から伸びている結合を優先
-					// 2. Prioritize connection which connected the latter searched path
+					// 2. Prioritize connection of the path searched latter
 					if(tmpPathAtom.indexOf(start1) != tmpPathAtom.indexOf(start2))
 						return tmpPathAtom.indexOf(start2) - tmpPathAtom.indexOf(start1);
 

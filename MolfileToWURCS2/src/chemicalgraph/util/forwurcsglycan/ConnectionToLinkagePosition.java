@@ -3,7 +3,8 @@ package chemicalgraph.util.forwurcsglycan;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-import wurcsglycan.LinkagePosition;
+import org.glycoinfo.WURCSFramework.wurcsglycan.LinkagePosition;
+
 import chemicalgraph.Atom;
 import chemicalgraph.Connection;
 import chemicalgraph.SubGraph;

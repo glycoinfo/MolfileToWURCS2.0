@@ -6,9 +6,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 
-import wurcsglycan.Backbone;
-import wurcsglycan.BackboneCarbon;
-import wurcsglycan.CarbonDescriptor;
+import org.glycoinfo.WURCSFramework.wurcsglycan.Backbone;
+import org.glycoinfo.WURCSFramework.wurcsglycan.BackboneCarbon;
+import org.glycoinfo.WURCSFramework.wurcsglycan.CarbonDescriptor;
+
 import chemicalgraph.Atom;
 import chemicalgraph.Connection;
 import chemicalgraph.util.Chemical;

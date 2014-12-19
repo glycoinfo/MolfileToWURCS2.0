@@ -7,7 +7,7 @@ import chemicalgraph.Bond;
 import chemicalgraph.ChemicalGraph;
 
 /**
- * Class for atomic path in modification to generate ALIN code
+ * Class for atomic path in modification to generate MAP code
  * @author KenichiTanaka
  * @author MasaakiMatsubara
  */
@@ -36,51 +36,6 @@ public class Path extends LinkedList<PathSection>{
 	//----------------------------
 	// Public method (non void)
 	//----------------------------
-/*	public String toALIN(){
-		String ALIN = "";
-		boolean aromatic = false;
-		for(Path path : this){
-			// For aromatic
-//			if(aromatic==false &&  path.pathEnd.atom.isAromatic) ALIN += "(";
-//			if(aromatic==true  && !path.pathEnd.atom.isAromatic) ALIN += ")";
-			if(aromatic==false &&  path.isAromatic() ) ALIN += "(";
-			if(aromatic==true  && !path.isAromatic() ) ALIN += ")";
-			aromatic = path.isAromatic();
-
-			// 分岐開始
-			// For starting brach
-			if ( path.getStart()!=null && this.indexOf(path.getStart())!=this.indexOf(path)-1 ) {
-				ALIN += "/" + (this.indexOf(path.getStart()) + 1);
-			}
-
-			// 結合表示
-			// For bond type
-			Bond bond = path.getBond();
-			if ( bond!=null && !(path.getStart().isAromatic() && path.getEnd().isAromatic()) ) {
-				if ( bond.getType() == 2) ALIN += "=";
-				if ( bond.getType() == 3) ALIN += "#";
-			}
-			if(bond!=null && path.getStereo()!=null){
-				ALIN += "^" + path.getStereo();
-			}
-
-			Atom atom = path.getAtom();
-			if(atom==null){
-				ALIN += "$" + (this.indexOf(path.getEnd()) + 1);
-			}else if(path.isBackbone()){
-				ALIN += "*";
-			}else{
-				ALIN += atom.getSymbol();
-			}
-			if(atom!=null && path.getStereo()!=null){
-				ALIN += "^" + path.getStereo();
-			}
-		}
-		if(this.getLast().getEnd().isAromatic()) ALIN += ")";
-
-		return ALIN;
-	}
-*/
 	public LinkedList<Atom> atoms(){
 		LinkedList<Atom> atoms = new LinkedList<Atom>();
 		for(PathSection path : this){
