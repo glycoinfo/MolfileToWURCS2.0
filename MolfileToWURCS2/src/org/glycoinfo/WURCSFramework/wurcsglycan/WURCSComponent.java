@@ -1,9 +1,9 @@
-package wurcsglycan;
+package org.glycoinfo.WURCSFramework.wurcsglycan;
 
 import java.util.LinkedList;
 
-import wurcsglycan.util.visitor.WURCSVisitor;
-import wurcsglycan.util.visitor.WURCSVisitorException;
+import org.glycoinfo.WURCSFramework.wurcsglycan.util.visitor.WURCSVisitor;
+import org.glycoinfo.WURCSFramework.wurcsglycan.util.visitor.WURCSVisitorException;
 
 /**
  * Abstract class for component of Carbohydrate

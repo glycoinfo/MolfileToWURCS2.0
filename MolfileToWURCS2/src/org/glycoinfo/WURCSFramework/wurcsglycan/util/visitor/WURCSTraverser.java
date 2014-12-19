@@ -1,9 +1,9 @@
-package wurcsglycan.util.visitor;
+package org.glycoinfo.WURCSFramework.wurcsglycan.util.visitor;
 
-import wurcsglycan.Backbone;
-import wurcsglycan.Modification;
-import wurcsglycan.WURCSEdge;
-import wurcsglycan.WURCSGlycan;
+import org.glycoinfo.WURCSFramework.wurcsglycan.Backbone;
+import org.glycoinfo.WURCSFramework.wurcsglycan.Modification;
+import org.glycoinfo.WURCSFramework.wurcsglycan.WURCSEdge;
+import org.glycoinfo.WURCSFramework.wurcsglycan.WURCSGlycan;
 
 public abstract class WURCSTraverser {
 	public static final int ENTER 	= 0;

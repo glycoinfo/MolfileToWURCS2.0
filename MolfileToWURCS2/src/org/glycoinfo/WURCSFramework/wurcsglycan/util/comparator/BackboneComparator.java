@@ -1,9 +1,9 @@
-package wurcsglycan.util.comparator;
+package org.glycoinfo.WURCSFramework.wurcsglycan.util.comparator;
 
 import java.util.Comparator;
 
-import wurcsglycan.Backbone;
-import wurcsglycan.BackboneCarbon;
+import org.glycoinfo.WURCSFramework.wurcsglycan.Backbone;
+import org.glycoinfo.WURCSFramework.wurcsglycan.BackboneCarbon;
 
 /**
  *

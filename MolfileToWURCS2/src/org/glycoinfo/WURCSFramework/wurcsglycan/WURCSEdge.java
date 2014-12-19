@@ -1,4 +1,4 @@
-package wurcsglycan;
+package org.glycoinfo.WURCSFramework.wurcsglycan;
 
 import java.util.LinkedList;
 

@@ -1,8 +1,8 @@
-package wurcsglycan.util.visitor;
+package org.glycoinfo.WURCSFramework.wurcsglycan.util.visitor;
 
-import wurcsglycan.Backbone;
-import wurcsglycan.Modification;
-import wurcsglycan.WURCSGlycan;
+import org.glycoinfo.WURCSFramework.wurcsglycan.Backbone;
+import org.glycoinfo.WURCSFramework.wurcsglycan.Modification;
+import org.glycoinfo.WURCSFramework.wurcsglycan.WURCSGlycan;
 
 public interface WURCSVisitor {
 	public void visit( Backbone     a_objBackbone     ) throws WURCSVisitorException;

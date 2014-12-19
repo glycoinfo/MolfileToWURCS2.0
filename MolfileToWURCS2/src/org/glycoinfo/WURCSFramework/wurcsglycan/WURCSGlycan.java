@@ -1,4 +1,4 @@
-package wurcsglycan;
+package org.glycoinfo.WURCSFramework.wurcsglycan;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -19,7 +19,7 @@ public class WURCSGlycan {
 			t_objBackbone = t_iterBackbone.next();
 
 			WURCSEdge t_objParentEdge = t_objBackbone.getAnomericEdge();
-			if ( t_objParentEdge.getModification().isAglycone() || t_objParentEdge == null )
+			if ( t_objParentEdge == null || t_objParentEdge.getModification().isAglycone() )
 				t_aResult.add(t_objBackbone);
 
 		}
