@@ -59,7 +59,8 @@ public class BackboneComparator implements Comparator<Backbone> {
 				// Ignore reverse edge
 				if ( edgeM2B.equals(edgeB2M) ) continue;
 				t_nBackboneCount1++;
-				if ( !edgeM2B.getBackbone().getAnomericEdge().equals(edgeM2B) ) continue;
+				if ( edgeM2B.getBackbone().getAnomericEdge() != null &&
+					!edgeM2B.getBackbone().getAnomericEdge().equals(edgeM2B) ) continue;
 				t_nChildCount1++;
 			}
 			// Ignore modification which can omit
@@ -73,7 +74,8 @@ public class BackboneComparator implements Comparator<Backbone> {
 				// Ignore reverse edge
 				if ( edgeM2B.equals(edgeB2M) ) continue;
 				t_nBackboneCount1++;
-				if ( !edgeM2B.getBackbone().getAnomericEdge().equals(edgeM2B) ) continue;
+				if ( edgeM2B.getBackbone().getAnomericEdge() != null &&
+					!edgeM2B.getBackbone().getAnomericEdge().equals(edgeM2B) ) continue;
 				t_nChildCount1++;
 			}
 			// Ignore modification which can omit

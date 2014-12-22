@@ -12,8 +12,12 @@ import org.glycoinfo.WURCSFramework.wurcsglycan.Modification;
 public class ModificationComparator implements Comparator<Modification> {
 
 	@Override
-	public int compare(Modification o1, Modification o2) {
+	public int compare(Modification m1, Modification m2) {
 		// TODO 自動生成されたメソッド・スタブ
+
+		int edgeCount1 = m1.getEdges().size();
+		int edgeCount2 = m2.getEdges().size();
+		if ( edgeCount1 != edgeCount2 ) return edgeCount1 - edgeCount2;
 		return 0;
 	}
 

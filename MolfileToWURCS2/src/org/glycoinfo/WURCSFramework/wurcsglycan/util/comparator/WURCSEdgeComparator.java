@@ -18,6 +18,18 @@ public class WURCSEdgeComparator implements Comparator<WURCSEdge> {
 	public int compare(WURCSEdge o1, WURCSEdge o2) {
 		// TODO 自動生成されたメソッド・スタブ
 		// Compare size of LinkagePosition, bigger comes first
+		// Compare connected Backbone
+		if ( !o1.getBackbone().equals(o2.getBackbone()) ) {
+			BackboneComparator t_oBComp = new BackboneComparator();
+			return t_oBComp.compare(o1.getBackbone(), o2.getBackbone());
+		}
+
+		// Compare connected Modification
+		if ( !o1.getModification().equals(o2.getModification()) ) {
+			ModificationComparator t_oMComp = new ModificationComparator();
+			return t_oMComp.compare(o1.getModification(), o2.getModification());
+		}
+
 		if (o1.getLinkages().size() > o2.getLinkages().size()) return 1;
 		if (o1.getLinkages().size() < o2.getLinkages().size()) return -1;
 
@@ -34,17 +46,6 @@ public class WURCSEdgeComparator implements Comparator<WURCSEdge> {
 			return t_oLinkComp.compare(t_aLinkages1.get(i),t_aLinkages2.get(i));
 		}
 
-		// Compare connected Backbone
-		if ( !o1.getBackbone().equals(o2.getBackbone()) ) {
-			BackboneComparator t_oBComp = new BackboneComparator();
-			return t_oBComp.compare(o1.getBackbone(), o2.getBackbone());
-		}
-
-		// Compare connected Modification
-		if ( !o1.getModification().equals(o2.getModification()) ) {
-			ModificationComparator t_oMComp = new ModificationComparator();
-			return t_oMComp.compare(o1.getModification(), o2.getModification());
-		}
 
 		return 0;
 	}
