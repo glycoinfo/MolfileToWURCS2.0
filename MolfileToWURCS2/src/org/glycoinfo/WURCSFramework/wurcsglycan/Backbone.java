@@ -84,7 +84,7 @@ public class Backbone extends WURCSComponent{
 		if ( !Character.isDigit(cAnom) ) return anom;
 		int iAnom = Character.getNumericValue(cAnom);
 
-		System.err.println(pos + ":" + iAnom + " vs " + i +":"+ iConfig);
+//		System.err.println(pos + ":" + iAnom + " vs " + i +":"+ iConfig);
 		anom = ( iConfig%2 == iAnom%2 )? 'a' : 'b';
 
 		return anom;

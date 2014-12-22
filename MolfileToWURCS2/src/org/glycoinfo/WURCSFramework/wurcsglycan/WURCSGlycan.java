@@ -95,6 +95,14 @@ public class WURCSGlycan {
 	}
 
 	/**
+	 * Get all Modifications
+	 * @return
+	 */
+	public ArrayList<Modification> getModifications() {
+		return this.m_aModifications;
+	}
+
+	/**
 	 * Add Backbone
 	 * @param a_objResidue
 	 * @return
@@ -110,14 +118,14 @@ public class WURCSGlycan {
 	}
 
 	/**
-	 * Add Backbone with connected modification
+	 * Add Backbone and connected modification
 	 * @param a_objBackbone
 	 * @param a_objLinkage
 	 * @param a_objModification
 	 * @return
 	 * @throws WURCSException
 	 */
-	public boolean addBackbone(Backbone a_objBackbone, WURCSEdge a_objLinkage, Modification a_objModification) throws WURCSException {
+	public boolean addResidues(Backbone a_objBackbone, WURCSEdge a_objLinkage, Modification a_objModification) throws WURCSException {
 		if ( a_objBackbone == null || a_objModification == null )
 			throw new WURCSException("Invalide residue.");
 		if ( a_objLinkage == null )
@@ -162,6 +170,5 @@ public class WURCSGlycan {
 		a_objLinkage.setBackbone(a_objBackbone);
 		return true;
 	}
-
 
 }
