@@ -1,7 +1,6 @@
 package org.glycoinfo.WURCSFramework.wurcsglycan.util.visitor;
 
-import org.glycoinfo.WURCSFramework.wurcsglycan.Backbone;
-import org.glycoinfo.WURCSFramework.wurcsglycan.Modification;
+import org.glycoinfo.WURCSFramework.wurcsglycan.WURCSComponent;
 import org.glycoinfo.WURCSFramework.wurcsglycan.WURCSEdge;
 import org.glycoinfo.WURCSFramework.wurcsglycan.WURCSGlycan;
 
@@ -28,8 +27,9 @@ public abstract class WURCSGlycanTraverser {
 		this.m_objVisitor = a_objVisitor;
 	}
 
-	public abstract void traverse( Backbone     a_objBackbone     ) throws WURCSVisitorException;
-	public abstract void traverse( Modification a_objModification ) throws WURCSVisitorException;
+	public abstract void traverse( WURCSComponent a_objResidue    ) throws WURCSVisitorException;
+//	public abstract void traverse( Backbone     a_objBackbone     ) throws WURCSVisitorException;
+//	public abstract void traverse( Modification a_objModification ) throws WURCSVisitorException;
 	public abstract void traverse( WURCSEdge    a_objEdge         ) throws WURCSVisitorException;
 
 	public abstract void traverseGraph( WURCSGlycan a_objGlycan ) throws WURCSVisitorException;
