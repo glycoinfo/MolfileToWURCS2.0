@@ -16,9 +16,7 @@ public class WURCSGlycanExporterWURCS implements WURCSVisitor {
 	private String m_strMLUs;
 	private LinkedList<Backbone> m_aBackbones = new LinkedList<Backbone>();
 
-	@Override
 	public void visit(Backbone a_objBackbone) throws WURCSVisitorException {
-		// TODO 自動生成されたメソッド・スタブ
 		if ( !this.m_aBackbones.contains(a_objBackbone) ) this.m_aBackbones.addLast(a_objBackbone);
 		String skeleton = a_objBackbone.getSkeletonCode();
 		if ( a_objBackbone.getAnomericPosition() != 0 ) {
@@ -46,9 +44,7 @@ public class WURCSGlycanExporterWURCS implements WURCSVisitor {
 
 	}
 
-	@Override
 	public void visit(Modification a_objModification) throws WURCSVisitorException {
-		// TODO 自動生成されたメソッド・スタブ
 		if ( a_objModification.getEdges().size() < 2 ) return;
 		String str = "";
 		int nAnomeric = 0;
@@ -71,21 +67,8 @@ public class WURCSGlycanExporterWURCS implements WURCSVisitor {
 
 	}
 
-	@Override
 	public void visit(WURCSEdge a_objWURCSEdge) throws WURCSVisitorException {
-		// TODO 自動生成されたメソッド・スタブ
-/*		Backbone backbone = a_objWURCSEdge.getBackbone();
-
-		Modification modification = a_objWURCSEdge.getModification();
-		System.err.println(
-			this.m_aBackbones.indexOf(backbone)+1 +":"+ backbone.getSkeletonCode() + " - " +
-			a_objWURCSEdge.getLinkages().get(0).getBackbonePosition()  +":"+ modification.getMAPCode() );
-
-		for ( LinkagePosition link : a_objWURCSEdge.getLinkages() ) {
-			System.err.print( link.getCOLINCode(0,true) + " " );
-		}
-		System.err.println();
-*/
+		// nothing to do
 	}
 
 	@Override
