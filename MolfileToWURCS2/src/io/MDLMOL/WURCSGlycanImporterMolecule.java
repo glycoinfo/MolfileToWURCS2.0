@@ -5,12 +5,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 
-import wurcsglycan.Backbone;
-import wurcsglycan.BackboneCarbon;
-import wurcsglycan.LinkagePosition;
-import wurcsglycan.Modification;
-import wurcsglycan.WURCSEdge;
-import wurcsglycan.WURCSException;
+import org.glycoinfo.WURCSFramework.wurcsglycan.Backbone;
+import org.glycoinfo.WURCSFramework.wurcsglycan.BackboneCarbon;
+import org.glycoinfo.WURCSFramework.wurcsglycan.LinkagePosition;
+import org.glycoinfo.WURCSFramework.wurcsglycan.Modification;
+import org.glycoinfo.WURCSFramework.wurcsglycan.WURCSEdge;
+import org.glycoinfo.WURCSFramework.wurcsglycan.WURCSException;
+import org.glycoinfo.WURCSFramework.wurcsglycan.WURCSGlycan;
+
 import chemicalgraph.Atom;
 import chemicalgraph.Connection;
 import chemicalgraph.Molecule;
@@ -21,7 +23,7 @@ import chemicalgraph.util.analytical.StructureAnalyzer;
 import chemicalgraph.util.forwurcsglycan.CarbonChainComparator;
 import chemicalgraph.util.forwurcsglycan.CarbonChainFinder;
 import chemicalgraph.util.forwurcsglycan.CarbonChainToBackbone;
-import chemicalgraph.util.forwurcsglycan.ConnectionToLinkage;
+import chemicalgraph.util.forwurcsglycan.ConnectionToLinkagePosition;
 import chemicalgraph.util.forwurcsglycan.SubGraphCreator;
 import chemicalgraph.util.forwurcsglycan.SubGraphToModification;
 
@@ -154,8 +156,10 @@ public class WURCSGlycanImporterMolecule {
 			modifications.add(modification);
 		}
 
+		WURCSGlycan objWURCSGlycan = new WURCSGlycan();
+
 		// Make Linkages and Edges
-		ConnectionToLinkage C2L = new ConnectionToLinkage(hashGraphToModificationCarbons);
+		ConnectionToLinkagePosition C2L = new ConnectionToLinkagePosition(hashGraphToModificationCarbons);
 		LinkedList<WURCSEdge> edges = new LinkedList<WURCSEdge>();
 		for ( Connection con : aLinkageConnections ) {
 			LinkedList<Atom> chain = this.m_hashConnectionToBackboneChain.get(con);
@@ -173,11 +177,12 @@ public class WURCSGlycanImporterMolecule {
 			}
 			// Make linkages if new edge is found
 			if ( !edges.contains(edge) ) {
-				edge.setBackbone(backbone);
+				objWURCSGlycan.addBackbone(backbone, edge, modification);
+/*				edge.setBackbone(backbone);
 				edge.setModification(modification);
 				backbone.addEdge(edge);
 				modification.addEdge(edge);
-
+*/
 				edges.add(edge);
 			}
 
@@ -209,10 +214,11 @@ public class WURCSGlycanImporterMolecule {
 			Backbone backbone = edge.getBackbone();
 			Modification modification = edge.getModification();
 			System.err.println(
-				backbones.indexOf(backbone) +":"+ backbone.getSkeletonCode() + "-"
+				backbones.indexOf(backbone)+1 +":"+ backbone.getSkeletonCode() + " - "
 				+ modifications.indexOf(modification) +":"+ modification.getMAPCode() );
+
 			for ( LinkagePosition link : edge.getLinkages() ) {
-				System.err.print( link.getCOLINCode(true) + " " );
+				System.err.print( link.getCOLINCode(0,true) + " " );
 			}
 			System.err.println();
 		}
@@ -224,15 +230,36 @@ public class WURCSGlycanImporterMolecule {
 			for ( WURCSEdge edge : mod.getEdges() ) {
 				if ( !str.equals("") ) str += ",";
 				Backbone backbone = edge.getBackbone();
-				str += backbones.indexOf(backbone)+1 +"("+ backbone.getSkeletonCode() +")";
+//				str += backbones.indexOf(backbone)+1 +"("+ backbone.getSkeletonCode() +")";
 				for ( LinkagePosition link : edge.getLinkages() ) {
-					str += link.getCOLINCode(true);
+					str += link.getCOLINCode(backbones.indexOf(backbone)+1,true);
 					if ( link.getBackbonePosition() == backbone.getAnomericPosition() ) nAnomeric++;
 				}
 			}
-			str += mod.getMAPCode();
+			str += ( mod.getMAPCode().equals("*O*") )? "" : mod.getMAPCode();
 			System.err.print(str);
 			System.err.println((nAnomeric>0)? (nAnomeric>1)? " both of anomeric" : " at anomeric" : "" );
+		}
+
+		for ( Backbone backbone : objWURCSGlycan.getRootBackbones() ) {
+			String skeleton = "Root: "+backbone.getSkeletonCode();
+			skeleton += "+" + backbone.getAnomericPosition();
+			skeleton += ":" + backbone.getAnomericSymbol();
+			for ( WURCSEdge edge : backbone.getEdges() ) {
+				Modification mod = edge.getModification();
+				if ( mod.getEdges().size() > 1 ) continue;
+				String MAP = mod.getMAPCode();
+				if ( MAP.equals("*O") || MAP.equals("*=O") ) continue;
+				if ( MAP.equals("*O*") ) MAP = "";
+				String COLIN = "";
+				for ( LinkagePosition link : mod.getEdges().get(0).getLinkages() ) {
+					if ( !COLIN.equals("") ) COLIN += ",";
+					COLIN += link.getBackbonePosition();
+				}
+				skeleton += "|" + COLIN + MAP;
+			}
+			System.err.println(skeleton);
+
 		}
 	}
 

@@ -3,8 +3,9 @@ package io.MDLMOL;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import org.glycoinfo.WURCSFramework.wurcsglycan.WURCSException;
+
 import chemicalgraph.Molecule;
-import wurcsglycan.WURCSException;
 
 public class example2 extends example {
 
@@ -25,7 +26,7 @@ public class example2 extends example {
 				Molecule mol = t_objCTReader.getMolecule();
 				if(mol==null) break;
 				if(!t_objParam.m_sdfileOutput){
-					System.out.print( t_objCTReader.getFieldData(t_objParam.m_ID) );
+					System.err.print( t_objCTReader.getFieldData(t_objParam.m_ID) );
 				}
 				System.err.println( t_objCTReader.getFieldData("ID") );
 
@@ -33,6 +34,7 @@ public class example2 extends example {
 					t_objImporterMol.start(mol);
 				} catch (WURCSException e) {
 					// TODO 自動生成された catch ブロック
+					System.err.println(e.getErrorMessage());
 					e.printStackTrace();
 				}
 
