@@ -77,7 +77,7 @@ public class WURCSGlycanImporterMolecule {
 //		this.m_objSubgraphCreator.clear();
 	}
 
-	public void start(Molecule a_objMolecule) throws WURCSException {
+	public WURCSGlycan start(Molecule a_objMolecule) throws WURCSException {
 		this.clear();
 		this.m_objMolecule = a_objMolecule;
 
@@ -161,6 +161,7 @@ public class WURCSGlycanImporterMolecule {
 		// Make Linkages and Edges
 		ConnectionToLinkagePosition C2L = new ConnectionToLinkagePosition(hashGraphToModificationCarbons);
 		LinkedList<WURCSEdge> edges = new LinkedList<WURCSEdge>();
+		int count = 0;
 		for ( Connection con : aLinkageConnections ) {
 			LinkedList<Atom> chain = this.m_hashConnectionToBackboneChain.get(con);
 			SubGraph graph         = this.m_hashConnectionToModificationGraph.get(con);
@@ -170,14 +171,15 @@ public class WURCSGlycanImporterMolecule {
 
 			WURCSEdge edge = new WURCSEdge();
 			for ( WURCSEdge oldedge : edges ) {
-				if ( oldedge.getBackbone() == backbone && oldedge.getModification() == modification ) {
+				if ( oldedge.getBackbone().equals(backbone) && oldedge.getModification().equals(modification) ) {
 					edge = oldedge;
 					break;
 				}
 			}
 			// Make linkages if new edge is found
 			if ( !edges.contains(edge) ) {
-				objWURCSGlycan.addBackbone(backbone, edge, modification);
+				objWURCSGlycan.addResidues(backbone, edge, modification);
+				count++;
 /*				edge.setBackbone(backbone);
 				edge.setModification(modification);
 				backbone.addEdge(edge);
@@ -189,78 +191,8 @@ public class WURCSGlycanImporterMolecule {
 			LinkagePosition link = C2L.convert(con, chain, graph);
 			edge.addLinkage(link);
 		}
-
-		for (Backbone backbone : backbones) {
-			String skeleton = backbone.getSkeletonCode();
-			skeleton += "+" + backbone.getAnomericPosition();
-			skeleton += ":" + backbone.getAnomericSymbol();
-			for ( WURCSEdge edge : backbone.getEdges() ) {
-				Modification mod = edge.getModification();
-				if ( mod.getEdges().size() > 1 ) continue;
-				String MAP = mod.getMAPCode();
-				if ( MAP.equals("*O") || MAP.equals("*=O") ) continue;
-				if ( MAP.equals("*O*") ) MAP = "";
-				String COLIN = "";
-				for ( LinkagePosition link : mod.getEdges().get(0).getLinkages() ) {
-					if ( !COLIN.equals("") ) COLIN += ",";
-					COLIN += link.getBackbonePosition();
-				}
-				skeleton += "|" + COLIN + MAP;
-			}
-			System.err.println(skeleton);
-		}
-
-		for (WURCSEdge edge : edges ) {
-			Backbone backbone = edge.getBackbone();
-			Modification modification = edge.getModification();
-			System.err.println(
-				backbones.indexOf(backbone)+1 +":"+ backbone.getSkeletonCode() + " - "
-				+ modifications.indexOf(modification) +":"+ modification.getMAPCode() );
-
-			for ( LinkagePosition link : edge.getLinkages() ) {
-				System.err.print( link.getCOLINCode(0,true) + " " );
-			}
-			System.err.println();
-		}
-
-		for ( Modification mod : modifications ) {
-			if ( mod.getEdges().size() < 2 ) continue;
-			String str = "";
-			int nAnomeric = 0;
-			for ( WURCSEdge edge : mod.getEdges() ) {
-				if ( !str.equals("") ) str += ",";
-				Backbone backbone = edge.getBackbone();
-//				str += backbones.indexOf(backbone)+1 +"("+ backbone.getSkeletonCode() +")";
-				for ( LinkagePosition link : edge.getLinkages() ) {
-					str += link.getCOLINCode(backbones.indexOf(backbone)+1,true);
-					if ( link.getBackbonePosition() == backbone.getAnomericPosition() ) nAnomeric++;
-				}
-			}
-			str += ( mod.getMAPCode().equals("*O*") )? "" : mod.getMAPCode();
-			System.err.print(str);
-			System.err.println((nAnomeric>0)? (nAnomeric>1)? " both of anomeric" : " at anomeric" : "" );
-		}
-
-		for ( Backbone backbone : objWURCSGlycan.getRootBackbones() ) {
-			String skeleton = "Root: "+backbone.getSkeletonCode();
-			skeleton += "+" + backbone.getAnomericPosition();
-			skeleton += ":" + backbone.getAnomericSymbol();
-			for ( WURCSEdge edge : backbone.getEdges() ) {
-				Modification mod = edge.getModification();
-				if ( mod.getEdges().size() > 1 ) continue;
-				String MAP = mod.getMAPCode();
-				if ( MAP.equals("*O") || MAP.equals("*=O") ) continue;
-				if ( MAP.equals("*O*") ) MAP = "";
-				String COLIN = "";
-				for ( LinkagePosition link : mod.getEdges().get(0).getLinkages() ) {
-					if ( !COLIN.equals("") ) COLIN += ",";
-					COLIN += link.getBackbonePosition();
-				}
-				skeleton += "|" + COLIN + MAP;
-			}
-			System.err.println(skeleton);
-
-		}
+		System.err.println("edge count:"+count);
+		return objWURCSGlycan;
 	}
 
 	private void printCarbonChains(LinkedList<LinkedList<Atom>> chains) {

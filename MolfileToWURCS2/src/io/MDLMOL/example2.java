@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import org.glycoinfo.WURCSFramework.wurcsglycan.WURCSException;
+import org.glycoinfo.WURCSFramework.wurcsglycan.WURCSGlycan;
+import org.glycoinfo.WURCSFramework.wurcsglycan.util.visitor.WURCSGlycanExporterWURCS;
 
 import chemicalgraph.Molecule;
 
@@ -31,7 +33,10 @@ public class example2 extends example {
 				System.err.println( t_objCTReader.getFieldData("ID") );
 
 				try {
-					t_objImporterMol.start(mol);
+					WURCSGlycan objGlycan = t_objImporterMol.start(mol);
+					WURCSGlycanExporterWURCS objExporter = new WURCSGlycanExporterWURCS();
+					objExporter.start(objGlycan);
+//					System.exit(0);
 				} catch (WURCSException e) {
 					// TODO 自動生成された catch ブロック
 					System.err.println(e.getErrorMessage());
