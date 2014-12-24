@@ -84,10 +84,10 @@ public class BackboneComparator implements Comparator<Backbone> {
 			for ( WURCSEdge edgeM2B : edgeB2M.getModification().getEdges() ) {
 				// Ignore reverse edge
 				if ( edgeM2B.equals(edgeB2M) ) continue;
-				t_nBackboneCount1++;
+				t_nBackboneCount2++;
 				if ( edgeM2B.getBackbone().getAnomericEdge() != null &&
 					!edgeM2B.getBackbone().getAnomericEdge().equals(edgeM2B) ) continue;
-				t_nChildCount1++;
+				t_nChildCount2++;
 			}
 			// Collect glycosidic linkages
 			if ( edgeB2M.getModification().getEdges().size() > 1 ) {
@@ -112,8 +112,8 @@ public class BackboneComparator implements Comparator<Backbone> {
 
 		// Compare ambiguousness
 		// Prioritize no unknown length
-		if ( !b1.hasUnknownLength() ||  b2.hasUnknownLength() ) return -1;
-		if (  b1.hasUnknownLength() || !b2.hasUnknownLength() ) return 1;
+		if ( !b1.hasUnknownLength() &&  b2.hasUnknownLength() ) return -1;
+		if (  b1.hasUnknownLength() && !b2.hasUnknownLength() ) return 1;
 
 		// Compare backbone length
 		// Prioritize longer backbone
@@ -125,11 +125,11 @@ public class BackboneComparator implements Comparator<Backbone> {
 		int score1 = 0;
 		int score2 = 0;
 		LinkedList<BackboneCarbon> t_aBCs = b1.getBackboneCarbons();
-		for ( int i=1; i<=t_aBCs.size(); i++ )
-			score1 += i * t_aBCs.get(i).getDesctriptor().getCarbonScore();
+		for ( int i=0; i<t_aBCs.size(); i++ )
+			score1 += (i+1) * t_aBCs.get(i).getDesctriptor().getCarbonScore();
 		t_aBCs = b2.getBackboneCarbons();
-		for ( int i=1; i<=t_aBCs.size(); i++ )
-			score2 += i * t_aBCs.get(i).getDesctriptor().getCarbonScore();
+		for ( int i=0; i<t_aBCs.size(); i++ )
+			score2 += (i+1) * t_aBCs.get(i).getDesctriptor().getCarbonScore();
 		// Prioritize smaller score
 		if ( score1 != score2 ) return score1 - score2;
 

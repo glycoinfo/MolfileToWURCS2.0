@@ -110,6 +110,31 @@ public class Backbone extends WURCSComponent{
 		return false;
 	}
 
+	/**
+	 * Clone
+	 * @return cloned backbone
+	 */
+	public Backbone clone() {
+		Backbone clone = new Backbone();
+		for ( BackboneCarbon bc : this.m_aCarbons ) {
+			clone.addBackboneCarbon(bc);
+		}
+		clone.removeAllEdges();
+		return clone;
+	}
+
+	/**
+	 * Invert
+	 * @return inverted backbone
+	 */
+	public Backbone invert() {
+		Backbone inverted = new Backbone();
+		for ( int i=this.m_aCarbons.size()-1 ; i>=0; i-- )
+			inverted.addBackboneCarbon( this.m_aCarbons.get(i).invert(inverted) );
+		inverted.removeAllEdges();
+		return inverted;
+	}
+
 	private void checkAnomeric(BackboneCarbon bc) {
 		// Set anomeric carbon
 		if ( this.m_objAnomericCarbon == null && bc.isAnomeric() )

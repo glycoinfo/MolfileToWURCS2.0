@@ -90,7 +90,7 @@ public enum CarbonDescriptor {
 	// Ambiguous
 	SSX_UNDEF_U    ( 'U',  "?" , 1,1, 0, null, null, "-X", null, null, 16 ), // -C(X)(Y)- or -C(=X)- ver 2.0 new ('X' and 'O')
 
-	XXX_UNKNOWN    ( '?',  null, 0,0, 0, null, null, null, null, null ); // C???
+	XXX_UNKNOWN    ( '?',  null, 0,0, 0, null, null, null, null, null,  0 ); // C???
 
 	/** Charactor of carbon descriptor */
 	private char   m_strChar;
