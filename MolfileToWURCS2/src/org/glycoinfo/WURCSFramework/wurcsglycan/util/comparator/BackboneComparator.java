@@ -37,6 +37,7 @@ public class BackboneComparator implements Comparator<Backbone> {
 		if ( t_aParents1.size() != t_aParents2.size() )
 			return t_aParents1.size() - t_aParents2.size();
 
+
 		// Compare number of connected backbone and modification
 		// If a backbone connected to this backbone with anomeric position, the backbone is child.
 		/*
@@ -46,6 +47,10 @@ public class BackboneComparator implements Comparator<Backbone> {
 		 *   +->M2--->B
 		 *   +->M3-A->B      In the case, there is 3 child of 5 connected backbone
 		 */
+		LinkedList<WURCSEdge> t_aGlycosidicLinkages1 = new LinkedList<WURCSEdge>();
+		LinkedList<WURCSEdge> t_aGlycosidicLinkages2 = new LinkedList<WURCSEdge>();
+		LinkedList<WURCSEdge> t_aSubstituentLinkages1 = new LinkedList<WURCSEdge>();
+		LinkedList<WURCSEdge> t_aSubstituentLinkages2 = new LinkedList<WURCSEdge>();
 		int t_nChildCount1 = 0;
 		int t_nChildCount2 = 0;
 		int t_nBackboneCount1 = 0;
@@ -63,8 +68,14 @@ public class BackboneComparator implements Comparator<Backbone> {
 					!edgeM2B.getBackbone().getAnomericEdge().equals(edgeM2B) ) continue;
 				t_nChildCount1++;
 			}
+			// Collect glycosidic linkages
+			if ( edgeB2M.getModification().getEdges().size() > 1 ) {
+				t_aGlycosidicLinkages1.addLast(edgeB2M);
+				continue;
+			}
 			// Ignore modification which can omit
 			if ( edgeB2M.getModification().canOmit() ) continue;
+			t_aSubstituentLinkages1.addLast(edgeB2M);
 			t_nModificationCount1++;
 		}
 		for ( WURCSEdge edgeB2M : b1.getEdges() ) {
@@ -78,8 +89,14 @@ public class BackboneComparator implements Comparator<Backbone> {
 					!edgeM2B.getBackbone().getAnomericEdge().equals(edgeM2B) ) continue;
 				t_nChildCount1++;
 			}
+			// Collect glycosidic linkages
+			if ( edgeB2M.getModification().getEdges().size() > 1 ) {
+				t_aGlycosidicLinkages2.addLast(edgeB2M);
+				continue;
+			}
 			// Ignore modification which can omit
 			if ( edgeB2M.getModification().canOmit() ) continue;
+			t_aSubstituentLinkages2.addLast(edgeB2M);
 			t_nModificationCount2++;
 		}
 		// Prioritize larger number of child backbone
@@ -104,11 +121,42 @@ public class BackboneComparator implements Comparator<Backbone> {
 			return b2.getBackboneCarbons().size() - b1.getBackboneCarbons().size();
 
 		// TODO: Compare backbone carbons
-		for ( BackboneCarbon bc : b1.getBackboneCarbons() ) {
+		// Compare backbone scores
+		int score1 = 0;
+		int score2 = 0;
+		LinkedList<BackboneCarbon> t_aBCs = b1.getBackboneCarbons();
+		for ( int i=1; i<=t_aBCs.size(); i++ )
+			score1 += i * t_aBCs.get(i).getDesctriptor().getCarbonScore();
+		t_aBCs = b2.getBackboneCarbons();
+		for ( int i=1; i<=t_aBCs.size(); i++ )
+			score2 += i * t_aBCs.get(i).getDesctriptor().getCarbonScore();
+		// Prioritize smaller score
+		if ( score1 != score2 ) return score1 - score2;
 
-		}
+		// TODO: Compare position of modification
+		score1 = 0;
+		score2 = 0;
+		for ( WURCSEdge edge : t_aSubstituentLinkages1 )
+			score1 += edge.getLinkages().getFirst().getBackbonePosition();
+		for ( WURCSEdge edge : t_aSubstituentLinkages2 )
+			score1 += edge.getLinkages().getFirst().getBackbonePosition();
+		// Prioritize smaller score
+		if ( score1 != score2 ) return score1 - score2;
 
+		// TODO: Compare position of glycosidic linkage
+		score1 = 0;
+		score2 = 0;
+		for ( WURCSEdge edge : t_aGlycosidicLinkages1 )
+			score1 += edge.getLinkages().getFirst().getBackbonePosition();
+		for ( WURCSEdge edge : t_aGlycosidicLinkages2 )
+			score1 += edge.getLinkages().getFirst().getBackbonePosition();
+		// Prioritize smaller score
+		if ( score1 != score2 ) return score1 - score2;
 		return 0;
 	}
 
+	private int compareBackboneCarbons(Backbone b1, Backbone b2) {
+
+		return 0;
+	}
 }
