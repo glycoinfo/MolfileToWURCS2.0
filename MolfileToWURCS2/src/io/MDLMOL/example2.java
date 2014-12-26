@@ -28,8 +28,10 @@ public class example2 extends example {
 				Molecule mol = t_objCTReader.getMolecule();
 				if(mol==null) break;
 				if(!t_objParam.m_sdfileOutput){
-					System.err.print( t_objCTReader.getFieldData(t_objParam.m_ID) );
+					System.err.print( t_objCTReader.getFieldData(t_objParam.m_ID)+":" );
 				}
+				String ID = t_objCTReader.getFieldData("ID");
+				if ( !ID.equals("2268") ) continue;
 				System.err.println( t_objCTReader.getFieldData("ID") );
 
 				try {
