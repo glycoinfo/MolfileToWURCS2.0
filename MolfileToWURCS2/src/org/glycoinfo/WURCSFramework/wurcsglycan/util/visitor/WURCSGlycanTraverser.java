@@ -2,7 +2,7 @@ package org.glycoinfo.WURCSFramework.wurcsglycan.util.visitor;
 
 import org.glycoinfo.WURCSFramework.wurcsglycan.WURCSComponent;
 import org.glycoinfo.WURCSFramework.wurcsglycan.WURCSEdge;
-import org.glycoinfo.WURCSFramework.wurcsglycan.WURCSGlycan;
+import org.glycoinfo.WURCSFramework.wurcsglycan.WURCSGraph;
 
 /**
  * Abstract class for WURCSGlycan traverser
@@ -32,7 +32,7 @@ public abstract class WURCSGlycanTraverser {
 //	public abstract void traverse( Modification a_objModification ) throws WURCSVisitorException;
 	public abstract void traverse( WURCSEdge    a_objEdge         ) throws WURCSVisitorException;
 
-	public abstract void traverseGraph( WURCSGlycan a_objGlycan ) throws WURCSVisitorException;
+	public abstract void traverseGraph( WURCSGraph a_objGlycan ) throws WURCSVisitorException;
 
 	public int getState() {
 		return this.m_iState;

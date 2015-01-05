@@ -3,7 +3,7 @@ package org.glycoinfo.WURCSFramework.wurcsglycan;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class WURCSGlycan {
+public class WURCSGraph {
 
 	private ArrayList<Backbone> m_aBackbones = new ArrayList<Backbone>();
 	private ArrayList<Modification> m_aModifications = new ArrayList<Modification>();

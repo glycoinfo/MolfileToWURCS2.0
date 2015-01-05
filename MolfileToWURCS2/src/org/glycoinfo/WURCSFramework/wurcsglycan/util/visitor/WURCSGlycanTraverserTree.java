@@ -11,7 +11,7 @@ import org.glycoinfo.WURCSFramework.wurcsglycan.Modification;
 import org.glycoinfo.WURCSFramework.wurcsglycan.WURCSComponent;
 import org.glycoinfo.WURCSFramework.wurcsglycan.WURCSEdge;
 import org.glycoinfo.WURCSFramework.wurcsglycan.WURCSException;
-import org.glycoinfo.WURCSFramework.wurcsglycan.WURCSGlycan;
+import org.glycoinfo.WURCSFramework.wurcsglycan.WURCSGraph;
 import org.glycoinfo.WURCSFramework.wurcsglycan.util.comparator.BackboneComparator;
 import org.glycoinfo.WURCSFramework.wurcsglycan.util.comparator.WURCSEdgeComparator;
 
@@ -74,7 +74,7 @@ public class WURCSGlycanTraverserTree extends WURCSGlycanTraverser {
 	}
 
 	@Override
-	public void traverseGraph(WURCSGlycan a_objGlycan) throws WURCSVisitorException {
+	public void traverseGraph(WURCSGraph a_objGlycan) throws WURCSVisitorException {
 		ArrayList<Backbone> t_aRoot;
 		try {
 			// get root nodes of forest of graphs

@@ -7,7 +7,7 @@ import org.glycoinfo.WURCSFramework.wurcsglycan.Backbone;
 import org.glycoinfo.WURCSFramework.wurcsglycan.LinkagePosition;
 import org.glycoinfo.WURCSFramework.wurcsglycan.Modification;
 import org.glycoinfo.WURCSFramework.wurcsglycan.WURCSEdge;
-import org.glycoinfo.WURCSFramework.wurcsglycan.WURCSGlycan;
+import org.glycoinfo.WURCSFramework.wurcsglycan.WURCSGraph;
 import org.glycoinfo.WURCSFramework.wurcsglycan.util.comparator.BackboneComparator;
 import org.glycoinfo.WURCSFramework.wurcsglycan.util.comparator.WURCSEdgeComparator;
 
@@ -83,7 +83,7 @@ public class WURCSGlycanExporterWURCS implements WURCSVisitor {
 	}
 
 	@Override
-	public void start(WURCSGlycan a_objGraph) throws WURCSVisitorException {
+	public void start(WURCSGraph a_objGraph) throws WURCSVisitorException {
 		this.clear();
 
 		System.err.println("Backbone count: "+a_objGraph.getBackbones().size());
