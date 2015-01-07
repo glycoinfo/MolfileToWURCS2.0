@@ -20,11 +20,12 @@ public class WURCSGraph {
 			t_objBackbone = t_iterBackbone.next();
 
 			if ( !t_objBackbone.hasParent() ) t_aResult.add(t_objBackbone);
-
 		}
+		// TODO: To add cyclic checker
+
 		if ( t_aResult.size() < 1 )
 		{
-			throw new WURCSException("WURCSGlycan seems not to have at least one root residue");
+			throw new WURCSException("WURCSGraph seems not to have at least one root residue");
 		}
 		return t_aResult;
 	}
@@ -191,4 +192,5 @@ public class WURCSGraph {
 
 		return copy;
 	}
+
 }
