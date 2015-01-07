@@ -151,7 +151,7 @@ public class BackboneComparator implements Comparator<Backbone> {
 		for ( WURCSEdge edge : t_aGlycosidicLinkages2 )
 			score1 += edge.getLinkages().getFirst().getBackbonePosition();
 		// Prioritize smaller score
-		if ( score1 != score2 ) return score1 - score2;
+		if ( score1 != score2 ) return score2 - score1;
 		return 0;
 	}
 
