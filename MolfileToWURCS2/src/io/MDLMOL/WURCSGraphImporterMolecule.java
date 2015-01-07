@@ -162,39 +162,27 @@ public class WURCSGraphImporterMolecule {
 		ConnectionToLinkagePosition C2L = new ConnectionToLinkagePosition(hashGraphToModificationCarbons);
 		LinkedList<WURCSEdge> edges = new LinkedList<WURCSEdge>();
 		int count = 0;
-		int count2 = 0;
 		for ( Connection con : aLinkageConnections ) {
+			// Make linkage
 			LinkedList<Atom> chain = this.m_hashConnectionToBackboneChain.get(con);
 			SubGraph graph         = this.m_hashConnectionToModificationGraph.get(con);
 
+			LinkagePosition link = C2L.convert(con, chain, graph);
+
+			// Make edge
+			WURCSEdge edge = new WURCSEdge();
+			edge.addLinkage(link);
+
+			// Connect backbone and modification in graph
 			Backbone backbone         = hashChainToBackbone.get(chain);
 			Modification modification = hashGraphToModification.get(graph);
 
-			WURCSEdge edge = new WURCSEdge();
-			for ( WURCSEdge oldedge : edges ) {
-				if ( oldedge.getBackbone().equals(backbone) && oldedge.getModification().equals(modification) ) {
-					edge = oldedge;
-					break;
-				}
-			}
-			// Make linkages if new edge is found
-			if ( !edges.contains(edge) ) {
-				objWURCSGlycan.addResidues(backbone, edge, modification);
-				count++;
-/*				edge.setBackbone(backbone);
-				edge.setModification(modification);
-				backbone.addEdge(edge);
-				modification.addEdge(edge);
-*/
-				edges.add(edge);
-			}
+			objWURCSGlycan.addResidues(backbone, edge, modification);
+			edges.add(edge);
 
-			LinkagePosition link = C2L.convert(con, chain, graph);
-			edge.addLinkage(link);
-			count2++;
+			count++;
 		}
 		System.err.println("edge count:"+count);
-		System.err.println("link count:"+count2);
 		return objWURCSGlycan;
 	}
 

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import org.glycoinfo.WURCSFramework.wurcsglycan.WURCSException;
 import org.glycoinfo.WURCSFramework.wurcsglycan.WURCSGraph;
+import org.glycoinfo.WURCSFramework.wurcsglycan.util.visitor.WURCSGlycanExporterWURCS;
 import org.glycoinfo.WURCSFramework.wurcsglycan.util.visitor.WURCSGraphNormalizer;
 
 import chemicalgraph.Molecule;
@@ -38,6 +39,8 @@ public class example2 extends example {
 					WURCSGraph objGlycan = t_objImporterMol.start(mol);
 					WURCSGraphNormalizer objNormalizer = new WURCSGraphNormalizer();
 					objNormalizer.start(objGlycan);
+					WURCSGlycanExporterWURCS objExporter = new WURCSGlycanExporterWURCS();
+					objExporter.start(objGlycan);
 //					System.exit(0);
 				} catch (WURCSException e) {
 					// TODO 自動生成された catch ブロック
@@ -54,6 +57,7 @@ public class example2 extends example {
 				}
 */
 				if(mols!=null) mols.add(mol);
+				break;
 			}
 
 			// close CTfile
