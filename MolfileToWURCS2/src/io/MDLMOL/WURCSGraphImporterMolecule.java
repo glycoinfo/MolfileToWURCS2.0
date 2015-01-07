@@ -11,7 +11,7 @@ import org.glycoinfo.WURCSFramework.wurcsglycan.LinkagePosition;
 import org.glycoinfo.WURCSFramework.wurcsglycan.Modification;
 import org.glycoinfo.WURCSFramework.wurcsglycan.WURCSEdge;
 import org.glycoinfo.WURCSFramework.wurcsglycan.WURCSException;
-import org.glycoinfo.WURCSFramework.wurcsglycan.WURCSGlycan;
+import org.glycoinfo.WURCSFramework.wurcsglycan.WURCSGraph;
 
 import chemicalgraph.Atom;
 import chemicalgraph.Connection;
@@ -32,7 +32,7 @@ import chemicalgraph.util.forwurcsglycan.SubGraphToModification;
  * @author Masaaki Matsubara
  *
  */
-public class WURCSGlycanImporterMolecule {
+public class WURCSGraphImporterMolecule {
 	private Molecule m_objMolecule;
 
 //	private SubGraphCreator     m_objSubgraphCreator     = new SubGraphCreator();
@@ -51,7 +51,7 @@ public class WURCSGlycanImporterMolecule {
 
 	public  LinkedList<LinkedList<LinkedList<Atom>>> m_aCandidateBackboneGroups = new LinkedList<LinkedList<LinkedList<Atom>>>();
 
-	public WURCSGlycanImporterMolecule() {
+	public WURCSGraphImporterMolecule() {
 	}
 
 	/**
@@ -77,7 +77,7 @@ public class WURCSGlycanImporterMolecule {
 //		this.m_objSubgraphCreator.clear();
 	}
 
-	public WURCSGlycan start(Molecule a_objMolecule) throws WURCSException {
+	public WURCSGraph start(Molecule a_objMolecule) throws WURCSException {
 		this.clear();
 		this.m_objMolecule = a_objMolecule;
 
@@ -119,7 +119,7 @@ public class WURCSGlycanImporterMolecule {
 		// Find components for carbohydrate
 		LinkedList<LinkedList<Atom>> aBackboneChains     = this.findCarbonChainsForBackbones(candidateBackbones);
 		LinkedList<SubGraph>         aModificationGraphs = this.findModificationGraphs(aBackboneChains);
-		LinkedList<Connection>       aLinkageConnections = this.findLinkageConnections(aBackboneChains, aModificationGraphs);
+		HashSet<Connection>       aLinkageConnections = this.findLinkageConnections(aBackboneChains, aModificationGraphs);
 
 //		this.printCarbonChains(aBackboneChains);
 
@@ -156,12 +156,13 @@ public class WURCSGlycanImporterMolecule {
 			modifications.add(modification);
 		}
 
-		WURCSGlycan objWURCSGlycan = new WURCSGlycan();
+		WURCSGraph objWURCSGlycan = new WURCSGraph();
 
 		// Make Linkages and Edges
 		ConnectionToLinkagePosition C2L = new ConnectionToLinkagePosition(hashGraphToModificationCarbons);
 		LinkedList<WURCSEdge> edges = new LinkedList<WURCSEdge>();
 		int count = 0;
+		int count2 = 0;
 		for ( Connection con : aLinkageConnections ) {
 			LinkedList<Atom> chain = this.m_hashConnectionToBackboneChain.get(con);
 			SubGraph graph         = this.m_hashConnectionToModificationGraph.get(con);
@@ -190,8 +191,10 @@ public class WURCSGlycanImporterMolecule {
 
 			LinkagePosition link = C2L.convert(con, chain, graph);
 			edge.addLinkage(link);
+			count2++;
 		}
 		System.err.println("edge count:"+count);
+		System.err.println("link count:"+count2);
 		return objWURCSGlycan;
 	}
 
@@ -375,9 +378,9 @@ public class WURCSGlycanImporterMolecule {
 	 * @param graphs Modification subgraphs
 	 * @return List of connections linked from backbone to modification
 	 */
-	private LinkedList<Connection> findLinkageConnections(LinkedList<LinkedList<Atom>> chains, LinkedList<SubGraph> graphs) {
+	private HashSet<Connection> findLinkageConnections(LinkedList<LinkedList<Atom>> chains, LinkedList<SubGraph> graphs) {
 		// Collect connections from backbone to modification
-		LinkedList<Connection> aConB2M = new LinkedList<Connection>();
+		HashSet<Connection> aConB2M = new HashSet<Connection>();
 		for ( LinkedList<Atom> chain : chains ) {
 			for ( Atom atom : chain ) {
 				for ( Connection con : atom.getConnections() ) {
