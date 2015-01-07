@@ -16,6 +16,7 @@ public class WURCSEdge implements WURCSVisitable {
 	private Backbone m_objBackbone;
 	private Modification m_objModification;
 	private LinkedList<LinkagePosition> m_aLinkages = new LinkedList<LinkagePosition>();
+	private boolean m_bIsReverse = false;
 
 	public void setBackbone(Backbone backbone) {
 		this.m_objBackbone = backbone;
@@ -42,20 +43,20 @@ public class WURCSEdge implements WURCSVisitable {
 		return this.m_aLinkages;
 	}
 
+	public void reverse() {
+		this.m_bIsReverse = true;
+	}
+
+	public boolean isReverse() {
+		return this.m_bIsReverse;
+	}
+
 	public WURCSEdge copy() {
 		WURCSEdge copy = new WURCSEdge();
 		for ( LinkagePosition link : this.m_aLinkages ) {
 			copy.addLinkage( link.copy() );
 		}
 		return copy;
-	}
-
-	public void invertBackbonePositions() throws WURCSException {
-		if ( this.getBackbone() == null )
-			throw new WURCSException("Backbone must be set.");
-		for ( LinkagePosition link : this.m_aLinkages ) {
-			link.invertBackbonePosition(this.getBackbone().getBackboneCarbons().size());
-		}
 	}
 
 	@Override

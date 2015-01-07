@@ -91,16 +91,35 @@ public class Backbone extends WURCSComponent{
 	}
 
 	/**
-	 * Get anomeric edge
+	 * Get anomeric edge which is not fazzy and contain glycosidic linkage
 	 * @return edge Edge on anomeric position
 	 */
 	public WURCSEdge getAnomericEdge() {
 		for ( WURCSEdge edge : this.getEdges() ) {
 			if ( edge.getLinkages().size()>1 ) continue;
 			if ( edge.getLinkages().get(0).getBackbonePosition() != this.getAnomericPosition() ) continue;
+			if ( edge.getModification() == null ) continue;
+			if ( !edge.getModification().isGlycosidic() ) continue;
 			return edge;
 		}
 		return null;
+	}
+
+	/**
+	 * Whether or not the backbone has parent
+	 * @return
+	 */
+	public boolean hasParent() {
+		WURCSEdge t_objAnomEdge = this.getAnomericEdge();
+		// If no anomeric position
+		if ( t_objAnomEdge == null ) return false;
+
+		for ( WURCSEdge edge : this.getEdges() ) {
+			if ( !edge.equals( t_objAnomEdge ) ) continue;
+			edge.reverse();
+			return true;
+		}
+		return false;
 	}
 
 	public boolean hasUnknownLength() {
@@ -148,11 +167,10 @@ public class Backbone extends WURCSComponent{
 			this.m_aCarbons.add(inv);
 			this.checkAnomeric(inv);
 		}
-		try {
-			for ( WURCSEdge edge : this.getEdges() )
-				edge.invertBackbonePositions();
-		} catch (WURCSException e) {
-			// Do nothing because exist backbone
+		for ( WURCSEdge edge : this.getEdges() ) {
+			for ( LinkagePosition link : edge.getLinkages() ) {
+				link.invertBackbonePosition(this.getBackboneCarbons().size());
+			}
 		}
 	}
 

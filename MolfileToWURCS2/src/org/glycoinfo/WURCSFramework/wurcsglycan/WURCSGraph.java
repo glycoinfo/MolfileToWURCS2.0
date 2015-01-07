@@ -1,6 +1,7 @@
 package org.glycoinfo.WURCSFramework.wurcsglycan;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 
 public class WURCSGraph {
@@ -18,9 +19,7 @@ public class WURCSGraph {
 		{
 			t_objBackbone = t_iterBackbone.next();
 
-			WURCSEdge t_objParentEdge = t_objBackbone.getAnomericEdge();
-			if ( t_objParentEdge == null || t_objParentEdge.getModification().isAglycone() )
-				t_aResult.add(t_objBackbone);
+			if ( !t_objBackbone.hasParent() ) t_aResult.add(t_objBackbone);
 
 		}
 		if ( t_aResult.size() < 1 )
@@ -147,6 +146,7 @@ public class WURCSGraph {
 		if ( !this.m_aModifications.contains(a_objModification) )
 			throw new WURCSException("Critical error imposible to add residue.");
 
+/*
 		// Check other linkage between the backbone and modification
 		for ( WURCSEdge edge : a_objBackbone.getEdges() ) {
 			if ( !edge.getModification().equals(a_objModification) ) continue;
@@ -157,7 +157,7 @@ public class WURCSGraph {
 			if ( !edge.getBackbone().equals(a_objBackbone) ) continue;
 			throw new WURCSException("The backbone and modification has already been connected.");
 		}
-
+*/
 		// Test for indirect cyclic structures
 //		if ( this.isParent(a_objModification,a_objBackbone) )
 //		{
@@ -168,15 +168,24 @@ public class WURCSGraph {
 		a_objBackbone.addEdge(a_objLinkage);
 		a_objLinkage.setModification(a_objModification);
 		a_objLinkage.setBackbone(a_objBackbone);
+
 		return true;
 	}
 
 	public WURCSGraph copy() throws WURCSException {
+		HashMap<Backbone, Backbone> t_hashOrigToCopy = new HashMap<Backbone, Backbone>();
+		WURCSGraph copy = this.copy(t_hashOrigToCopy);
+		return copy;
+	}
+
+	public WURCSGraph copy( HashMap<Backbone, Backbone> a_hashOrigToCopyBackbone ) throws WURCSException {
 		WURCSGraph copy = new WURCSGraph();
 
 		for ( Backbone t_originalBackbone : this.m_aBackbones ) {
+			Backbone copyBackbone = t_originalBackbone.copy();
+			a_hashOrigToCopyBackbone.put(t_originalBackbone, copyBackbone);
 			for ( WURCSEdge origEdge : t_originalBackbone.getEdges() ) {
-				copy.addResidues( t_originalBackbone.copy(), origEdge.copy(), origEdge.getModification().copy() );
+				copy.addResidues( copyBackbone, origEdge.copy(), origEdge.getModification().copy() );
 			}
 		}
 

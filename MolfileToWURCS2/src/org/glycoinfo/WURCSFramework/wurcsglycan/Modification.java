@@ -1,6 +1,7 @@
 package org.glycoinfo.WURCSFramework.wurcsglycan;
 
 import java.util.HashSet;
+import java.util.LinkedList;
 
 import org.glycoinfo.WURCSFramework.wurcsglycan.util.visitor.WURCSVisitor;
 import org.glycoinfo.WURCSFramework.wurcsglycan.util.visitor.WURCSVisitorException;
@@ -31,6 +32,17 @@ public class Modification extends WURCSComponent{
 				&& edge.getBackbone().getAnomericPosition() == edge.getLinkages().get(0).getBackbonePosition() ) continue;
 			return false;
 		}
+		return true;
+	}
+
+	public boolean isGlycosidic() {
+		LinkedList<WURCSEdge> edges = this.getEdges();
+		if ( edges.isEmpty() || edges.size() == 1 ) return false;
+		HashSet<Backbone> uniqBackbones = new HashSet<Backbone>();
+		for ( WURCSEdge edge : edges ) {
+			uniqBackbones.add( edge.getBackbone() );
+		}
+		if ( uniqBackbones.size() < 2 ) return false;
 		return true;
 	}
 
