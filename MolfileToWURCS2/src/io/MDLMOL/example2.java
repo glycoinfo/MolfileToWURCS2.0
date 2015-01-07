@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import org.glycoinfo.WURCSFramework.wurcsglycan.WURCSException;
-import org.glycoinfo.WURCSFramework.wurcsglycan.WURCSGlycan;
-import org.glycoinfo.WURCSFramework.wurcsglycan.util.visitor.WURCSGlycanExporterWURCS;
+import org.glycoinfo.WURCSFramework.wurcsglycan.WURCSGraph;
+import org.glycoinfo.WURCSFramework.wurcsglycan.util.visitor.WURCSGraphNormalizer;
 
 import chemicalgraph.Molecule;
 
@@ -15,7 +15,7 @@ public class example2 extends example {
 		// read argument and files using SelectFileDialog
 		ParameterReader t_objParam = new ParameterReader(args, true);
 
-		WURCSGlycanImporterMolecule t_objImporterMol = new WURCSGlycanImporterMolecule();
+		WURCSGraphImporterMolecule t_objImporterMol = new WURCSGraphImporterMolecule();
 		// Set parameters for backbone creation
 		t_objImporterMol.getCarbonChainCreator().setParameters(t_objParam.m_minNOS, t_objParam.m_minO, t_objParam.m_minBackboneLength, t_objParam.m_maxBackboneLength, t_objParam.m_ratioBackboneNOS);
 
@@ -35,9 +35,9 @@ public class example2 extends example {
 				System.err.println( t_objCTReader.getFieldData("ID") );
 
 				try {
-					WURCSGlycan objGlycan = t_objImporterMol.start(mol);
-					WURCSGlycanExporterWURCS objExporter = new WURCSGlycanExporterWURCS();
-					objExporter.start(objGlycan);
+					WURCSGraph objGlycan = t_objImporterMol.start(mol);
+					WURCSGraphNormalizer objNormalizer = new WURCSGraphNormalizer();
+					objNormalizer.start(objGlycan);
 //					System.exit(0);
 				} catch (WURCSException e) {
 					// TODO 自動生成された catch ブロック
