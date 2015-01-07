@@ -34,10 +34,10 @@ public class WURCSGlycanTraverserTree extends WURCSGlycanTraverser {
 		WURCSEdgeComparator t_oComp = new WURCSEdgeComparator();
 		Collections.sort(t_aEdges, t_oComp);
 		for ( WURCSEdge t_oEdge : t_aEdges ) {
-			if ( a_objResidue.getClass() == Backbone.class )
-				this.m_iNode  = WURCSGlycanTraverser.BACKBONE;
-			if ( a_objResidue.getClass() == Modification.class )
-				this.m_iNode  = WURCSGlycanTraverser.MODIFICATION;
+
+			if ( a_objResidue.getClass() == Backbone.class     &&  t_oEdge.isReverse() ) continue;
+			if ( a_objResidue.getClass() == Modification.class && !t_oEdge.isReverse() ) continue;
+
 			this.traverse( t_oEdge );
 			// callback after return
 //			this.m_iState = WURCSGlycanTraverser.RETURN;
@@ -50,7 +50,6 @@ public class WURCSGlycanTraverserTree extends WURCSGlycanTraverser {
 
 	@Override
 	public void traverse(WURCSEdge a_objEdge) throws WURCSVisitorException {
-		if ( this.m_aSearchedEdges.contains(a_objEdge) ) return;
 
 		// callback of the function before subtree
 		this.m_iState = WURCSGlycanTraverser.ENTER;
@@ -59,12 +58,12 @@ public class WURCSGlycanTraverserTree extends WURCSGlycanTraverser {
 		this.m_aSearchedEdges.add(a_objEdge);
 
 		// traverse subtree
-		if ( this.m_iNode == WURCSGlycanTraverser.BACKBONE ) {
-			this.traverse(a_objEdge.getModification());
-		} else if ( this.m_iNode == WURCSGlycanTraverser.MODIFICATION ) {
+
+		if ( a_objEdge.isReverse() ) {
 			this.traverse(a_objEdge.getBackbone());
-		} else
-			throw new WURCSVisitorException("Traverse unkown node state.");
+		} else {
+			this.traverse(a_objEdge.getModification());
+		}
 
 		// callback of the function after subtree
 //		this.m_iState = WURCSGlycanTraverser.LEAVE;

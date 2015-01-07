@@ -13,8 +13,6 @@ public abstract class WURCSGlycanTraverser {
 	public static final int ENTER  = 0;
 	public static final int LEAVE  = 1;
 	public static final int RETURN = 2;
-	public static final int BACKBONE     = 0;
-	public static final int MODIFICATION = 1;
 
 	protected WURCSVisitor m_objVisitor = null;
 	protected int m_iState = 0;

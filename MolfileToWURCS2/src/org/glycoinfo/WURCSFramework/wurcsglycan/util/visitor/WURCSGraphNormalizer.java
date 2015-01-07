@@ -1,6 +1,8 @@
 package org.glycoinfo.WURCSFramework.wurcsglycan.util.visitor;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 
 import org.glycoinfo.WURCSFramework.wurcsglycan.Backbone;
@@ -14,21 +16,24 @@ import org.glycoinfo.WURCSFramework.wurcsglycan.util.comparator.WURCSEdgeCompara
 
 public class WURCSGraphNormalizer implements WURCSVisitor {
 
-	private String m_strVersion = "2.0";
-	private int    m_iBMUCounter = 0;
-	private int    m_iMLUCounter = 0;
-	private String m_strBMUs = "";
-	private String m_strMLUs = "";
 	private LinkedList<Backbone> m_aBackbones = new LinkedList<Backbone>();
+	private HashSet<Backbone> m_aSearchedBackbones = new HashSet<Backbone>();
 	private LinkedList<Backbone> m_aSymmetricBackbone = new LinkedList<Backbone>();
 
 	public void visit(Backbone a_objBackbone) throws WURCSVisitorException {
 		if ( !this.m_aBackbones.contains(a_objBackbone) ) this.m_aBackbones.addLast(a_objBackbone);
+		if ( this.m_aSearchedBackbones.contains(a_objBackbone) ) return;
+		this.m_aSearchedBackbones.add(a_objBackbone);
 
-		if ( this.checkBackboneSymmetry(a_objBackbone) ) {
-			System.err.println("Symmetry is found:");
+		// Symmetry check
+		Backbone copy   = a_objBackbone.copy();
+		Backbone invert = a_objBackbone.copy();
+		invert.invert();
+		if ( this.checkBackboneSymmetry(copy, invert) == 0 ) {
+			System.err.println( "Symmetry backbone: " + a_objBackbone.getSkeletonCode() );
 			this.m_aSymmetricBackbone.addLast(a_objBackbone);
 		}
+
 		String skeleton = a_objBackbone.getSkeletonCode();
 		if ( a_objBackbone.getAnomericPosition() != 0 ) {
 			skeleton += "-" + a_objBackbone.getAnomericPosition();
@@ -37,27 +42,26 @@ public class WURCSGraphNormalizer implements WURCSVisitor {
 		LinkedList<WURCSEdge> edges = a_objBackbone.getEdges();
 		WURCSEdgeComparator edgeComp = new WURCSEdgeComparator();
 		Collections.sort(edges, edgeComp);
+		HashSet<Modification> searchedMods = new HashSet<Modification>();
 		for ( WURCSEdge edge : edges ) {
 			Modification mod = edge.getModification();
-			if ( mod.getEdges().size() > 1 ) continue;
-			String MAP = mod.getMAPCode();
-			if ( MAP.equals("*O") || MAP.equals("*=O") ) continue;
-			if ( MAP.equals("*O*") ) MAP = "";
-			String COLIN = "";
-			for ( LinkagePosition link : mod.getEdges().get(0).getLinkages() ) {
-				if ( !COLIN.equals("") ) COLIN += ",";
-				COLIN += link.getBackbonePosition();
-			}
-			skeleton += "|" + COLIN + MAP;
+			if ( searchedMods.contains(mod) ) continue;
+			if ( mod.isGlycosidic() ) continue;
+
+			String MOD = this.makeMOD(mod);
+			if ( MOD == null ) continue;
+			skeleton += "|" + MOD;
+
+			searchedMods.add(mod);
+			if ( !edge.isReverse() ) continue;
+			System.err.println("has parent");
 		}
-		this.m_strBMUs += "["+skeleton+"]";
 		System.err.println(skeleton);
 
-		this.m_iBMUCounter++;
 	}
 
 	public void visit(Modification a_objModification) throws WURCSVisitorException {
-		if ( a_objModification.getEdges().size() < 2 ) return;
+		if ( !a_objModification.isGlycosidic() ) return;
 		String str = "";
 		int nAnomeric = 0;
 		LinkedList<WURCSEdge> edges = a_objModification.getEdges();
@@ -77,8 +81,6 @@ public class WURCSGraphNormalizer implements WURCSVisitor {
 		System.err.print(str);
 		System.err.println((nAnomeric>0)? (nAnomeric>1)? " both of anomeric:"+nAnomeric : "" : " at non-anomeric" );
 
-		this.m_strMLUs += "|" + str;
-		this.m_iMLUCounter++;
 	}
 
 	public void visit(WURCSEdge a_objWURCSEdge) throws WURCSVisitorException {
@@ -95,54 +97,79 @@ public class WURCSGraphNormalizer implements WURCSVisitor {
 		WURCSGlycanTraverser t_objTraverser = this.getTraverser(this);
 		t_objTraverser.traverseGraph(a_objGraph);
 		try {
-			for ( Backbone symm : this.m_aSymmetricBackbone ) {
-				WURCSGraph copy = a_objGraph.copy();
-
+			for ( Backbone origBackbone : this.m_aSymmetricBackbone ) {
+				HashMap<Backbone, Backbone> t_hashOrigToInvert = new HashMap<Backbone, Backbone>();
+				a_objGraph.copy(t_hashOrigToInvert);
+				Backbone copyBackbone = t_hashOrigToInvert.get(origBackbone);
+				copyBackbone.invert();
+				if ( this.checkBackboneSymmetry(origBackbone, copyBackbone) > 0 ) {
+					System.err.println("Invert Backbone");
+					origBackbone.invert();
+				}
 
 			}
 		} catch (WURCSException e) {
 			throw new WURCSVisitorException(e.getErrorMessage());
 		}
-//		makeWURCS(t_objTraverser);
-		System.err.println("WURCS="+this.m_strVersion+"/"+this.m_iBMUCounter+","+this.m_iMLUCounter+"/"+this.m_strBMUs+this.m_strMLUs);
 	}
 
 	@Override
 	public WURCSGlycanTraverser getTraverser(WURCSVisitor a_objVisitor) throws WURCSVisitorException {
-		// TODO 自動生成されたメソッド・スタブ
 		return new WURCSGlycanTraverserTree(a_objVisitor);
 	}
 
 	@Override
 	public void clear() {
-		this.m_strVersion = "2.0";
-		this.m_iBMUCounter = 0;
-		this.m_iMLUCounter = 0;
-		this.m_strBMUs = "";
-		this.m_strMLUs = "";
 		this.m_aBackbones = new LinkedList<Backbone>();
+		this.m_aSearchedBackbones = new HashSet<Backbone>();
+		this.m_aSymmetricBackbone = new LinkedList<Backbone>();
 
 	}
 
-	private boolean checkBackboneSymmetry(Backbone backbone) {
-		Backbone copy   = backbone.copy();
-		Backbone invert = backbone.copy();
-		invert.invert();
-		System.err.println("Code:"+ copy.getSkeletonCode() +" vs "+ invert.getSkeletonCode() );
-		System.err.println("AnomPos:"+ copy.getAnomericPosition() +" vs "+ invert.getAnomericPosition() );
-		System.err.println("AnomSymbol:"+ copy.getAnomericSymbol() +" vs "+ invert.getAnomericSymbol() );
-		for ( int i=0; i<copy.getEdges().size(); i++ ) {
-			for ( int j=0; j<copy.getEdges().get(i).getLinkages().size(); j++ ) {
-				int copyPos = copy.getEdges().get(i).getLinkages().get(j).getBackbonePosition();
-				int invPos  = invert.getEdges().get(i).getLinkages().get(j).getBackbonePosition();
-				System.err.println(i+":"+j+": " + copyPos+","+invPos);
+	private int checkBackboneSymmetry(Backbone original, Backbone invert) {
+/*
+		System.err.println("AnomPos:"+ original.getAnomericPosition() +" vs "+ invert.getAnomericPosition() );
+		System.err.println("AnomSymbol:"+ original.getAnomericSymbol() +" vs "+ invert.getAnomericSymbol() );
+		for ( int i=0; i<original.getEdges().size(); i++ ) {
+			WURCSEdge origEdge = original.getEdges().get(i);
+			WURCSEdge invEdge = invert.getEdges().get(i);
+			for ( int j=0; j<origEdge.getLinkages().size(); j++ ) {
+				int origPos = origEdge.getLinkages().get(j).getBackbonePosition();
+				int invPos  = invEdge.getLinkages().get(j).getBackbonePosition();
+				System.err.println(i+":"+j+": " + origPos+","+invPos + origEdge.getModification().getMAPCode());
 			}
 		}
+*/
 		BackboneComparator t_oComp = new BackboneComparator();
-		System.err.println("Comp:"+ t_oComp.compare(copy, invert) );
-		if ( t_oComp.compare(copy, invert) == 0 ) return true;
-		return false;
+//		System.err.println("Comp:"+ t_oComp.compare(original, invert) );
+		return t_oComp.compare(original, invert);
 	}
 
+	private String makeMOD(Modification mod) {
+		String MOD = "";
+		LinkedList<WURCSEdge> edges = mod.getEdges();
+		WURCSEdgeComparator edgeComp = new WURCSEdgeComparator();
+		Collections.sort(edges, edgeComp);
+		for ( WURCSEdge modEdge : edges ) {
+			if ( !MOD.equals("") ) MOD += "_";
+			MOD += this.makeCOLIN(modEdge);
+		}
+		String MAP = mod.getMAPCode();
+		// Omittion
+		if ( MAP.equals("*O") || MAP.equals("*=O") ) return null;
+		if ( MAP.equals("*O*") ) MAP = "";
+		MOD += MAP;
+		return MOD;
+	}
 
+	private String makeCOLIN(WURCSEdge edge) {
+		String COLINs = "";
+		int nLink = edge.getLinkages().size();
+		for ( LinkagePosition link : edge.getLinkages() ) {
+			String COLIN = ""+link.getBackbonePosition();
+			if ( nLink > 1 ) COLIN = "("+COLIN+")";
+			COLINs += COLIN;
+		}
+		return COLINs;
+	}
 }
