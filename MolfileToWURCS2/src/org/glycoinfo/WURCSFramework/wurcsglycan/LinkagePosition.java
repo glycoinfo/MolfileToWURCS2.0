@@ -84,12 +84,12 @@ public class LinkagePosition {
 		String COLINCode = "";
 
 		if ( a_iNodeID > 0 )
-			COLINCode += a_iNodeID + "+";
+			COLINCode += a_iNodeID + "-";
 		COLINCode += this.m_iBackbonePosition;
 		if ( !a_bCompress || !this.m_bCanCompressDMB )
-			COLINCode +=  ":" + this.m_strDirection;
+			COLINCode += ":" + this.m_strDirection;
 		if ( !a_bCompress || !this.m_bCanCompressPCM )
-			COLINCode +=  "-" + this.m_iModificationPosition;
+			COLINCode += "+" + this.m_iModificationPosition;
 
 		if ( this.m_dProbabilityLower == 1.0 ) return COLINCode;
 
@@ -110,5 +110,16 @@ public class LinkagePosition {
 			COLINCode += strProb;
 		}
 		return COLINCode;
+	}
+
+	public LinkagePosition copy() {
+		return new LinkagePosition(this.m_iBackbonePosition, this.m_strDirection, this.m_bCanCompressDMB, this.m_iModificationPosition, this.m_bCanCompressPCM);
+	}
+
+	public void invertBackbonePosition(int length) {
+		if ( this.m_iBackbonePosition != 1 && this.m_iBackbonePosition != length )
+			this.m_strDirection = (this.m_strDirection.equals("1"))? "2" :
+							  (this.m_strDirection.equals("2"))? "1" : this.m_strDirection;
+		this.m_iBackbonePosition = length + 1 - this.m_iBackbonePosition;
 	}
 }

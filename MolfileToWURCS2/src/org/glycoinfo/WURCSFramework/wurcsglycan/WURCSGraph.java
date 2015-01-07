@@ -171,4 +171,15 @@ public class WURCSGraph {
 		return true;
 	}
 
+	public WURCSGraph copy() throws WURCSException {
+		WURCSGraph copy = new WURCSGraph();
+
+		for ( Backbone t_originalBackbone : this.m_aBackbones ) {
+			for ( WURCSEdge origEdge : t_originalBackbone.getEdges() ) {
+				copy.addResidues( t_originalBackbone.copy(), origEdge.copy(), origEdge.getModification().copy() );
+			}
+		}
+
+		return copy;
+	}
 }

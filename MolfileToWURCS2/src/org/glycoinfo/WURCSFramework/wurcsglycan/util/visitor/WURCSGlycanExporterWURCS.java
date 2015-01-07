@@ -28,7 +28,7 @@ public class WURCSGlycanExporterWURCS implements WURCSVisitor {
 		}
 		String skeleton = a_objBackbone.getSkeletonCode();
 		if ( a_objBackbone.getAnomericPosition() != 0 ) {
-			skeleton += "+" + a_objBackbone.getAnomericPosition();
+			skeleton += "-" + a_objBackbone.getAnomericPosition();
 			skeleton += ":" + a_objBackbone.getAnomericSymbol();
 		}
 		LinkedList<WURCSEdge> edges = a_objBackbone.getEdges();
@@ -61,7 +61,7 @@ public class WURCSGlycanExporterWURCS implements WURCSVisitor {
 		WURCSEdgeComparator edgeComp = new WURCSEdgeComparator();
 		Collections.sort(edges, edgeComp);
 		for ( WURCSEdge edge : edges ) {
-			if ( !str.equals("") ) str += ",";
+			if ( !str.equals("") ) str += "_";
 			Backbone backbone = edge.getBackbone();
 			if ( !this.m_aBackbones.contains(backbone) ) this.m_aBackbones.addLast(backbone);
 //			str += this.m_aBackbones.indexOf(backbone)+1 +"("+ backbone.getSkeletonCode() +")";

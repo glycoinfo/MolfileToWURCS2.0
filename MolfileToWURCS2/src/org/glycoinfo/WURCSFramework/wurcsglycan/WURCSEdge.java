@@ -42,8 +42,25 @@ public class WURCSEdge implements WURCSVisitable {
 		return this.m_aLinkages;
 	}
 
+	public WURCSEdge copy() {
+		WURCSEdge copy = new WURCSEdge();
+		for ( LinkagePosition link : this.m_aLinkages ) {
+			copy.addLinkage( link.copy() );
+		}
+		return copy;
+	}
+
+	public void invertBackbonePositions() throws WURCSException {
+		if ( this.getBackbone() == null )
+			throw new WURCSException("Backbone must be set.");
+		for ( LinkagePosition link : this.m_aLinkages ) {
+			link.invertBackbonePosition(this.getBackbone().getBackboneCarbons().size());
+		}
+	}
+
 	@Override
 	public void accept(WURCSVisitor a_objVisitor) throws WURCSVisitorException {
 		a_objVisitor.visit(this);
 	}
+
 }

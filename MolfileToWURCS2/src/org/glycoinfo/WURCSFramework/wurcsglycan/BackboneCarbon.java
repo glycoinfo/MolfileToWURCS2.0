@@ -60,7 +60,7 @@ public class BackboneCarbon {
 	 * @param backbone
 	 * @return clone backbone carbon
 	 */
-	public BackboneCarbon clone(Backbone backbone) {
+	public BackboneCarbon copy(Backbone backbone) {
 		return new BackboneCarbon(backbone, this.m_objCarbonDescriptor, this.m_bIsAnomericLike, this.m_bHasUnknownLength);
 	}
 

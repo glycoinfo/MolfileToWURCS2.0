@@ -17,7 +17,6 @@ public class WURCSEdgeComparator implements Comparator<WURCSEdge> {
 	@Override
 	public int compare(WURCSEdge o1, WURCSEdge o2) {
 		// TODO 自動生成されたメソッド・スタブ
-		// Compare size of LinkagePosition, bigger comes first
 		// Compare connected Backbone
 		if ( !o1.getBackbone().equals(o2.getBackbone()) ) {
 			BackboneComparator t_oBComp = new BackboneComparator();
@@ -30,6 +29,7 @@ public class WURCSEdgeComparator implements Comparator<WURCSEdge> {
 			return t_oMComp.compare(o1.getModification(), o2.getModification());
 		}
 
+		// Compare size of LinkagePosition, bigger comes first
 		if (o1.getLinkages().size() > o2.getLinkages().size()) return 1;
 		if (o1.getLinkages().size() < o2.getLinkages().size()) return -1;
 

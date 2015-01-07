@@ -110,29 +110,50 @@ public class Backbone extends WURCSComponent{
 		return false;
 	}
 
+	private void clear() {
+		this.m_aCarbons.clear();
+		this.m_objAnomericCarbon = null;
+	}
+
 	/**
-	 * Clone
-	 * @return cloned backbone
+	 * Copy
+	 * @return copied backbone
 	 */
-	public Backbone clone() {
-		Backbone clone = new Backbone();
+	public Backbone copy() {
+		Backbone copy = new Backbone();
 		for ( BackboneCarbon bc : this.m_aCarbons ) {
-			clone.addBackboneCarbon(bc);
+			copy.addBackboneCarbon(bc.copy(copy));
 		}
-		clone.removeAllEdges();
-		return clone;
+		copy.removeAllEdges();
+		for ( WURCSEdge edge : this.getEdges() ) {
+			WURCSEdge copyEdge = edge.copy();
+			copyEdge.setBackbone(copy);
+			copyEdge.setModification(edge.getModification().copy());
+			copy.addEdge(copyEdge);
+		}
+		return copy;
 	}
 
 	/**
 	 * Invert
 	 * @return inverted backbone
+	 * @throws WURCSException
 	 */
-	public Backbone invert() {
-		Backbone inverted = new Backbone();
-		for ( int i=this.m_aCarbons.size()-1 ; i>=0; i-- )
-			inverted.addBackboneCarbon( this.m_aCarbons.get(i).invert(inverted) );
-		inverted.removeAllEdges();
-		return inverted;
+	public void invert() {
+		LinkedList<BackboneCarbon> inverts = new LinkedList<BackboneCarbon>();
+		for ( BackboneCarbon orig : this.m_aCarbons )
+			inverts.addFirst( orig.invert(this) );
+		this.clear();
+		for ( BackboneCarbon inv : inverts ) {
+			this.m_aCarbons.add(inv);
+			this.checkAnomeric(inv);
+		}
+		try {
+			for ( WURCSEdge edge : this.getEdges() )
+				edge.invertBackbonePositions();
+		} catch (WURCSException e) {
+			// Do nothing because exist backbone
+		}
 	}
 
 	private void checkAnomeric(BackboneCarbon bc) {

@@ -9,7 +9,7 @@ package org.glycoinfo.WURCSFramework.wurcsglycan;
 public enum CarbonDescriptor {
 
 	// Terminal
-	SZ3_METHYL_L   ( 'm', "sp3", 1,0, 1, null, null, "-H", "-H", "-H",  1 ), // -C(H)(H)(H)
+	SZ3_METHYL_L   ( 'm', "sp3", 1,0, 1, null, null, "-H", "-H", "-H",  4 ), // -C(H)(H)(H)
 	SZ3_METHYL_U   ( 'M', "sp3", 1,0, 1, null, null, "-X", "-X", "-X", 10 ), // -C(X)(X)(X)
 	SZ3_HYDROXYL_L ( 'h', "sp3", 1,0, 2, null, null, "-H", "-H", "-O",  5 ), // -C(H)(H)(O)
 	SZ3_HYDROXYL_U ( 'H', "sp3", 1,0, 2, null, null, "-H", "-H", "-X",  6 ), // -C(H)(H)(X)

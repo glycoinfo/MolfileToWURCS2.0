@@ -51,4 +51,5 @@ public abstract class WURCSComponent implements WURCSVisitable{
 		this.m_aEdges = new LinkedList<WURCSEdge>();
 	}
 
+	public abstract WURCSComponent copy();
 }

@@ -47,6 +47,10 @@ public class Modification extends WURCSComponent{
 		return false;
 	}
 
+	public Modification copy() {
+		return new Modification(this.m_strMAPCode);
+	}
+
 	@Override
 	public void accept(WURCSVisitor a_objVisitor) throws WURCSVisitorException {
 		// TODO 自動生成されたメソッド・スタブ
