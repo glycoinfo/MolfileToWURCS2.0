@@ -1,4 +1,4 @@
-package org.glycoinfo.WURCSFramework.wurcsglycan;
+package org.glycoinfo.WURCSFramework.wurcsgraph;
 
 import java.text.NumberFormat;
 

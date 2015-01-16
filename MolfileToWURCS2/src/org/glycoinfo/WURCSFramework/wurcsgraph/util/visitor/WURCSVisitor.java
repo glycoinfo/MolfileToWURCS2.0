@@ -1,9 +1,9 @@
-package org.glycoinfo.WURCSFramework.wurcsglycan.util.visitor;
+package org.glycoinfo.WURCSFramework.wurcsgraph.util.visitor;
 
-import org.glycoinfo.WURCSFramework.wurcsglycan.Backbone;
-import org.glycoinfo.WURCSFramework.wurcsglycan.Modification;
-import org.glycoinfo.WURCSFramework.wurcsglycan.WURCSEdge;
-import org.glycoinfo.WURCSFramework.wurcsglycan.WURCSGraph;
+import org.glycoinfo.WURCSFramework.wurcsgraph.Backbone;
+import org.glycoinfo.WURCSFramework.wurcsgraph.Modification;
+import org.glycoinfo.WURCSFramework.wurcsgraph.WURCSEdge;
+import org.glycoinfo.WURCSFramework.wurcsgraph.WURCSGraph;
 
 /**
  * Interface of WURCSVisitor
@@ -17,7 +17,7 @@ public interface WURCSVisitor {
 
 	public void start( WURCSGraph   a_objGraph       ) throws WURCSVisitorException;
 
-	public WURCSGlycanTraverser getTraverser( WURCSVisitor a_objVisitor ) throws WURCSVisitorException;
+	public WURCSGraphTraverser getTraverser( WURCSVisitor a_objVisitor ) throws WURCSVisitorException;
 
 	public void clear();
 

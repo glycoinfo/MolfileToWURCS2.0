@@ -1,10 +1,10 @@
-package org.glycoinfo.WURCSFramework.wurcsglycan;
+package org.glycoinfo.WURCSFramework.wurcsgraph;
 
 import java.util.LinkedList;
 
-import org.glycoinfo.WURCSFramework.wurcsglycan.util.visitor.WURCSVisitable;
-import org.glycoinfo.WURCSFramework.wurcsglycan.util.visitor.WURCSVisitor;
-import org.glycoinfo.WURCSFramework.wurcsglycan.util.visitor.WURCSVisitorException;
+import org.glycoinfo.WURCSFramework.wurcsgraph.util.visitor.WURCSVisitable;
+import org.glycoinfo.WURCSFramework.wurcsgraph.util.visitor.WURCSVisitor;
+import org.glycoinfo.WURCSFramework.wurcsgraph.util.visitor.WURCSVisitorException;
 
 /**
  * Class for edge between Backbone and Modification

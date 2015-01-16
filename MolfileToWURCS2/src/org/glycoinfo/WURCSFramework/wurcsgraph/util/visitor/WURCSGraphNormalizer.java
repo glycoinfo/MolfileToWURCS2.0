@@ -1,18 +1,18 @@
-package org.glycoinfo.WURCSFramework.wurcsglycan.util.visitor;
+package org.glycoinfo.WURCSFramework.wurcsgraph.util.visitor;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 
-import org.glycoinfo.WURCSFramework.wurcsglycan.Backbone;
-import org.glycoinfo.WURCSFramework.wurcsglycan.LinkagePosition;
-import org.glycoinfo.WURCSFramework.wurcsglycan.Modification;
-import org.glycoinfo.WURCSFramework.wurcsglycan.WURCSEdge;
-import org.glycoinfo.WURCSFramework.wurcsglycan.WURCSException;
-import org.glycoinfo.WURCSFramework.wurcsglycan.WURCSGraph;
-import org.glycoinfo.WURCSFramework.wurcsglycan.util.comparator.BackboneComparator;
-import org.glycoinfo.WURCSFramework.wurcsglycan.util.comparator.WURCSEdgeComparator;
+import org.glycoinfo.WURCSFramework.wurcsgraph.Backbone;
+import org.glycoinfo.WURCSFramework.wurcsgraph.LinkagePosition;
+import org.glycoinfo.WURCSFramework.wurcsgraph.Modification;
+import org.glycoinfo.WURCSFramework.wurcsgraph.WURCSEdge;
+import org.glycoinfo.WURCSFramework.wurcsgraph.WURCSException;
+import org.glycoinfo.WURCSFramework.wurcsgraph.WURCSGraph;
+import org.glycoinfo.WURCSFramework.wurcsgraph.util.comparator.BackboneComparator;
+import org.glycoinfo.WURCSFramework.wurcsgraph.util.comparator.WURCSEdgeComparator;
 
 public class WURCSGraphNormalizer implements WURCSVisitor {
 
@@ -94,7 +94,7 @@ public class WURCSGraphNormalizer implements WURCSVisitor {
 		System.err.println("Backbone count: "+a_objGraph.getBackbones().size());
 		System.err.println("Modification count: "+a_objGraph.getModifications().size());
 
-		WURCSGlycanTraverser t_objTraverser = this.getTraverser(this);
+		WURCSGraphTraverser t_objTraverser = this.getTraverser(this);
 		t_objTraverser.traverseGraph(a_objGraph);
 		try {
 			for ( Backbone origBackbone : this.m_aSymmetricBackbone ) {
@@ -114,8 +114,8 @@ public class WURCSGraphNormalizer implements WURCSVisitor {
 	}
 
 	@Override
-	public WURCSGlycanTraverser getTraverser(WURCSVisitor a_objVisitor) throws WURCSVisitorException {
-		return new WURCSGlycanTraverserTree(a_objVisitor);
+	public WURCSGraphTraverser getTraverser(WURCSVisitor a_objVisitor) throws WURCSVisitorException {
+		return new WURCSGraphTraverserTree(a_objVisitor);
 	}
 
 	@Override

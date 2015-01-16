@@ -1,17 +1,17 @@
-package org.glycoinfo.WURCSFramework.wurcsglycan.util.visitor;
+package org.glycoinfo.WURCSFramework.wurcsgraph.util.visitor;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 
-import org.glycoinfo.WURCSFramework.wurcsglycan.Backbone;
-import org.glycoinfo.WURCSFramework.wurcsglycan.LinkagePosition;
-import org.glycoinfo.WURCSFramework.wurcsglycan.Modification;
-import org.glycoinfo.WURCSFramework.wurcsglycan.WURCSEdge;
-import org.glycoinfo.WURCSFramework.wurcsglycan.WURCSGraph;
-import org.glycoinfo.WURCSFramework.wurcsglycan.util.comparator.WURCSEdgeComparator;
+import org.glycoinfo.WURCSFramework.wurcsgraph.Backbone;
+import org.glycoinfo.WURCSFramework.wurcsgraph.LinkagePosition;
+import org.glycoinfo.WURCSFramework.wurcsgraph.Modification;
+import org.glycoinfo.WURCSFramework.wurcsgraph.WURCSEdge;
+import org.glycoinfo.WURCSFramework.wurcsgraph.WURCSGraph;
+import org.glycoinfo.WURCSFramework.wurcsgraph.util.comparator.WURCSEdgeComparator;
 
-public class WURCSGlycanExporterWURCS implements WURCSVisitor {
+public class WURCSGraphExporterWURCS implements WURCSVisitor {
 
 	private String m_strVersion = "2.0";
 	private int    m_iBMUCounter = 0;
@@ -66,7 +66,7 @@ public class WURCSGlycanExporterWURCS implements WURCSVisitor {
 	public void start(WURCSGraph a_objGraph) throws WURCSVisitorException {
 		this.clear();
 
-		WURCSGlycanTraverser t_objTraverser = this.getTraverser(this);
+		WURCSGraphTraverser t_objTraverser = this.getTraverser(this);
 		t_objTraverser.traverseGraph(a_objGraph);
 		for ( Modification mod : this.m_aGlycosidicModifications ) {
 			this.makeMLU(mod);
@@ -76,8 +76,8 @@ public class WURCSGlycanExporterWURCS implements WURCSVisitor {
 	}
 
 	@Override
-	public WURCSGlycanTraverser getTraverser(WURCSVisitor a_objVisitor) throws WURCSVisitorException {
-		return new WURCSGlycanTraverserTree(a_objVisitor);
+	public WURCSGraphTraverser getTraverser(WURCSVisitor a_objVisitor) throws WURCSVisitorException {
+		return new WURCSGraphTraverserTree(a_objVisitor);
 	}
 
 	@Override

@@ -1,6 +1,6 @@
-package org.glycoinfo.WURCSFramework.wurcsglycan.util.visitor;
+package org.glycoinfo.WURCSFramework.wurcsgraph.util.visitor;
 
-import org.glycoinfo.WURCSFramework.wurcsglycan.WURCSException;
+import org.glycoinfo.WURCSFramework.wurcsgraph.WURCSException;
 
 public class WURCSVisitorException extends WURCSException {
 

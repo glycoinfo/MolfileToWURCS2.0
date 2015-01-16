@@ -1,8 +1,8 @@
-package org.glycoinfo.WURCSFramework.wurcsglycan.util.comparator;
+package org.glycoinfo.WURCSFramework.wurcsgraph.util.comparator;
 
 import java.util.Comparator;
 
-import org.glycoinfo.WURCSFramework.wurcsglycan.Modification;
+import org.glycoinfo.WURCSFramework.wurcsgraph.Modification;
 
 /**
  * Class for Modificaiton comparison

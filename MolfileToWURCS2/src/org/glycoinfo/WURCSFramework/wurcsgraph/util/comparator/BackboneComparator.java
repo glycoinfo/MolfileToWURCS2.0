@@ -1,11 +1,11 @@
-package org.glycoinfo.WURCSFramework.wurcsglycan.util.comparator;
+package org.glycoinfo.WURCSFramework.wurcsgraph.util.comparator;
 
 import java.util.Comparator;
 import java.util.LinkedList;
 
-import org.glycoinfo.WURCSFramework.wurcsglycan.Backbone;
-import org.glycoinfo.WURCSFramework.wurcsglycan.BackboneCarbon;
-import org.glycoinfo.WURCSFramework.wurcsglycan.WURCSEdge;
+import org.glycoinfo.WURCSFramework.wurcsgraph.Backbone;
+import org.glycoinfo.WURCSFramework.wurcsgraph.BackboneCarbon;
+import org.glycoinfo.WURCSFramework.wurcsgraph.WURCSEdge;
 
 /**
  * Class for Backbone comparison

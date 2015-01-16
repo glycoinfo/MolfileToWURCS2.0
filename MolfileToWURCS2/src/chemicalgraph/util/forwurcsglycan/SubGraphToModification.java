@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 
-import org.glycoinfo.WURCSFramework.wurcsglycan.Modification;
+import org.glycoinfo.WURCSFramework.wurcsgraph.Modification;
 
 import chemicalgraph.Atom;
 import chemicalgraph.Bond;

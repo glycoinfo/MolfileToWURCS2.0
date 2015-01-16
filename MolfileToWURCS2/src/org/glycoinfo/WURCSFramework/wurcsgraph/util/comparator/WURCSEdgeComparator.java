@@ -1,11 +1,11 @@
-package org.glycoinfo.WURCSFramework.wurcsglycan.util.comparator;
+package org.glycoinfo.WURCSFramework.wurcsgraph.util.comparator;
 
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 
-import org.glycoinfo.WURCSFramework.wurcsglycan.LinkagePosition;
-import org.glycoinfo.WURCSFramework.wurcsglycan.WURCSEdge;
+import org.glycoinfo.WURCSFramework.wurcsgraph.LinkagePosition;
+import org.glycoinfo.WURCSFramework.wurcsgraph.WURCSEdge;
 
 /**
  * Class for WURCSEdge comparison

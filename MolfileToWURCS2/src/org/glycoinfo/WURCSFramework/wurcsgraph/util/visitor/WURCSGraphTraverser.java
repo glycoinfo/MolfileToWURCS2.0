@@ -1,15 +1,15 @@
-package org.glycoinfo.WURCSFramework.wurcsglycan.util.visitor;
+package org.glycoinfo.WURCSFramework.wurcsgraph.util.visitor;
 
-import org.glycoinfo.WURCSFramework.wurcsglycan.WURCSComponent;
-import org.glycoinfo.WURCSFramework.wurcsglycan.WURCSEdge;
-import org.glycoinfo.WURCSFramework.wurcsglycan.WURCSGraph;
+import org.glycoinfo.WURCSFramework.wurcsgraph.WURCSComponent;
+import org.glycoinfo.WURCSFramework.wurcsgraph.WURCSEdge;
+import org.glycoinfo.WURCSFramework.wurcsgraph.WURCSGraph;
 
 /**
  * Abstract class for WURCSGlycan traverser
  * @author MasaakiMatsubara
  *
  */
-public abstract class WURCSGlycanTraverser {
+public abstract class WURCSGraphTraverser {
 	public static final int ENTER  = 0;
 	public static final int LEAVE  = 1;
 	public static final int RETURN = 2;
@@ -18,7 +18,7 @@ public abstract class WURCSGlycanTraverser {
 	protected int m_iState = 0;
 	protected int m_iNode = 0;
 
-	public WURCSGlycanTraverser ( WURCSVisitor a_objVisitor ) throws WURCSVisitorException {
+	public WURCSGraphTraverser ( WURCSVisitor a_objVisitor ) throws WURCSVisitorException {
 		if ( a_objVisitor == null )
 			throw new WURCSVisitorException("Null visitor given to traverser");
 

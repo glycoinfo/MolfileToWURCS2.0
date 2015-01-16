@@ -1,4 +1,4 @@
-package org.glycoinfo.WURCSFramework.wurcsglycan.util.visitor;
+package org.glycoinfo.WURCSFramework.wurcsgraph.util.visitor;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -6,20 +6,20 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import org.glycoinfo.WURCSFramework.wurcsglycan.Backbone;
-import org.glycoinfo.WURCSFramework.wurcsglycan.Modification;
-import org.glycoinfo.WURCSFramework.wurcsglycan.WURCSComponent;
-import org.glycoinfo.WURCSFramework.wurcsglycan.WURCSEdge;
-import org.glycoinfo.WURCSFramework.wurcsglycan.WURCSException;
-import org.glycoinfo.WURCSFramework.wurcsglycan.WURCSGraph;
-import org.glycoinfo.WURCSFramework.wurcsglycan.util.comparator.BackboneComparator;
-import org.glycoinfo.WURCSFramework.wurcsglycan.util.comparator.WURCSEdgeComparator;
+import org.glycoinfo.WURCSFramework.wurcsgraph.Backbone;
+import org.glycoinfo.WURCSFramework.wurcsgraph.Modification;
+import org.glycoinfo.WURCSFramework.wurcsgraph.WURCSComponent;
+import org.glycoinfo.WURCSFramework.wurcsgraph.WURCSEdge;
+import org.glycoinfo.WURCSFramework.wurcsgraph.WURCSException;
+import org.glycoinfo.WURCSFramework.wurcsgraph.WURCSGraph;
+import org.glycoinfo.WURCSFramework.wurcsgraph.util.comparator.BackboneComparator;
+import org.glycoinfo.WURCSFramework.wurcsgraph.util.comparator.WURCSEdgeComparator;
 
-public class WURCSGlycanTraverserTree extends WURCSGlycanTraverser {
+public class WURCSGraphTraverserTree extends WURCSGraphTraverser {
 
 	private HashSet<WURCSEdge> m_aSearchedEdges = new HashSet<WURCSEdge>();
 
-	public WURCSGlycanTraverserTree(WURCSVisitor a_objVisitor) throws WURCSVisitorException {
+	public WURCSGraphTraverserTree(WURCSVisitor a_objVisitor) throws WURCSVisitorException {
 		super(a_objVisitor);
 	}
 
@@ -27,7 +27,7 @@ public class WURCSGlycanTraverserTree extends WURCSGlycanTraverser {
 	public void traverse(WURCSComponent a_objResidue) throws WURCSVisitorException {
 
 		// callback of the function before subtree
-		this.m_iState = WURCSGlycanTraverser.ENTER;
+		this.m_iState = WURCSGraphTraverser.ENTER;
 		a_objResidue.accept(this.m_objVisitor);
 
 		LinkedList<WURCSEdge> t_aEdges = a_objResidue.getEdges();
@@ -52,7 +52,7 @@ public class WURCSGlycanTraverserTree extends WURCSGlycanTraverser {
 	public void traverse(WURCSEdge a_objEdge) throws WURCSVisitorException {
 
 		// callback of the function before subtree
-		this.m_iState = WURCSGlycanTraverser.ENTER;
+		this.m_iState = WURCSGraphTraverser.ENTER;
 		a_objEdge.accept(this.m_objVisitor);
 
 		this.m_aSearchedEdges.add(a_objEdge);
