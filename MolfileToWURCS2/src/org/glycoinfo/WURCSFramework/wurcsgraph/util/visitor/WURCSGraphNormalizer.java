@@ -35,10 +35,9 @@ public class WURCSGraphNormalizer implements WURCSVisitor {
 		}
 
 		String skeleton = a_objBackbone.getSkeletonCode();
-		if ( a_objBackbone.getAnomericPosition() != 0 ) {
-			skeleton += "-" + a_objBackbone.getAnomericPosition();
-			skeleton += ":" + a_objBackbone.getAnomericSymbol();
-		}
+		if ( a_objBackbone.getAnomericPosition() != 0 )
+			skeleton += "-" + a_objBackbone.getAnomericPosition() + a_objBackbone.getAnomericSymbol();
+
 		LinkedList<WURCSEdge> edges = a_objBackbone.getEdges();
 		WURCSEdgeComparator edgeComp = new WURCSEdgeComparator();
 		Collections.sort(edges, edgeComp);
@@ -50,7 +49,7 @@ public class WURCSGraphNormalizer implements WURCSVisitor {
 
 			String MOD = this.makeMOD(mod);
 			if ( MOD == null ) continue;
-			skeleton += "|" + MOD;
+			skeleton += "_" + MOD;
 
 			searchedMods.add(mod);
 			if ( !edge.isReverse() ) continue;
@@ -151,8 +150,8 @@ public class WURCSGraphNormalizer implements WURCSVisitor {
 		WURCSEdgeComparator edgeComp = new WURCSEdgeComparator();
 		Collections.sort(edges, edgeComp);
 		for ( WURCSEdge modEdge : edges ) {
-			if ( !MOD.equals("") ) MOD += "_";
-			MOD += this.makeCOLIN(modEdge);
+			if ( !MOD.equals("") ) MOD += "-";
+			MOD += this.makeLIP(modEdge);
 		}
 		String MAP = mod.getMAPCode();
 		// Omittion
@@ -162,12 +161,11 @@ public class WURCSGraphNormalizer implements WURCSVisitor {
 		return MOD;
 	}
 
-	private String makeCOLIN(WURCSEdge edge) {
+	private String makeLIP(WURCSEdge edge) {
 		String COLINs = "";
-		int nLink = edge.getLinkages().size();
 		for ( LinkagePosition link : edge.getLinkages() ) {
+			if (! COLINs.equals("") ) COLINs += "|";
 			String COLIN = ""+link.getBackbonePosition();
-			if ( nLink > 1 ) COLIN = "("+COLIN+")";
 			COLINs += COLIN;
 		}
 		return COLINs;
