@@ -13,7 +13,7 @@ public class LinkagePosition {
 	/** Carbon number in linked Backbone (calling "PCB" in WURCS) */
 	private int m_iBackbonePosition = 0;
 	/** Direction type of Modification on the Backbone carbon (calling "DMB" in WURCS) */
-	private String m_strDirection;
+	private DirectionDescriptor m_enumDirection;
 	/** Carbon number in linked Modification (calling "PCM" in WURCS) */
 	private int m_iModificationPosition;
 	private boolean m_bCanCompressDMB;
@@ -26,16 +26,16 @@ public class LinkagePosition {
 	public static final int MODIFICATIONSIDE = 2;
 	private int m_iProbabilityPosition = LinkagePosition.BACKBONESIDE;
 
-	public LinkagePosition(int iPCB, String strDMB, boolean compressDMB, int iPCM, boolean compressPCM) {
-		this.m_iBackbonePosition = iPCB;
-		this.m_strDirection = strDMB;
-		this.m_bCanCompressDMB = compressDMB;
-		this.m_iModificationPosition = iPCM;
-		this.m_bCanCompressPCM = compressPCM;
+	public LinkagePosition(int a_iPCB, DirectionDescriptor a_enumDMB, boolean a_bCompressDMB, int a_iPCM, boolean a_bCompressPCM) {
+		this.m_iBackbonePosition = a_iPCB;
+		this.m_enumDirection = a_enumDMB;
+		this.m_bCanCompressDMB = a_bCompressDMB;
+		this.m_iModificationPosition = a_iPCM;
+		this.m_bCanCompressPCM = a_bCompressPCM;
 	}
 
-	public LinkagePosition(int iPCB, String strDMB, int iPCM) {
-		this(iPCB, strDMB, true, iPCM, true);
+	public LinkagePosition(int a_iPCB, DirectionDescriptor a_enumDMB, int a_iPCM) {
+		this(a_iPCB, a_enumDMB, true, a_iPCM, true);
 	}
 
 	public void setProbabilityUpper(double prob) throws WURCSException {
@@ -56,8 +56,8 @@ public class LinkagePosition {
 		this.m_iProbabilityPosition = pos;
 	}
 
-	public String getDirection() {
-		return this.m_strDirection;
+	public DirectionDescriptor getDirection() {
+		return this.m_enumDirection;
 	}
 
 	public int getBackbonePosition() {
@@ -87,7 +87,7 @@ public class LinkagePosition {
 			COLINCode += a_iNodeID + "-";
 		COLINCode += this.m_iBackbonePosition;
 		if ( !a_bCompress || !this.m_bCanCompressDMB )
-			COLINCode += ":" + this.m_strDirection;
+			COLINCode += ":" + this.m_enumDirection.getDirection();
 		if ( !a_bCompress || !this.m_bCanCompressPCM )
 			COLINCode += "+" + this.m_iModificationPosition;
 
@@ -113,13 +113,15 @@ public class LinkagePosition {
 	}
 
 	public LinkagePosition copy() {
-		return new LinkagePosition(this.m_iBackbonePosition, this.m_strDirection, this.m_bCanCompressDMB, this.m_iModificationPosition, this.m_bCanCompressPCM);
+		return new LinkagePosition(this.m_iBackbonePosition, this.m_enumDirection, this.m_bCanCompressDMB, this.m_iModificationPosition, this.m_bCanCompressPCM);
 	}
 
 	public void invertBackbonePosition(int length) {
 		if ( this.m_iBackbonePosition != 1 && this.m_iBackbonePosition != length )
-			this.m_strDirection = (this.m_strDirection.equals("1"))? "2" :
-							  (this.m_strDirection.equals("2"))? "1" : this.m_strDirection;
+			this.m_enumDirection
+				= ( this.m_enumDirection.equals(DirectionDescriptor.U) )? DirectionDescriptor.D :
+				  ( this.m_enumDirection.equals(DirectionDescriptor.D) )? DirectionDescriptor.U :
+					this.m_enumDirection;
 		this.m_iBackbonePosition = length + 1 - this.m_iBackbonePosition;
 	}
 }

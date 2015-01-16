@@ -296,6 +296,13 @@ public class CarbonChainToBackbone {
 		Atom B1 = null;
 
 		// sp2 terminal
+		/**
+		 *  M1      ?     M2      ?
+		 *    \    /        \    /
+		 *     C==C1   or    C==C1
+		 *    /    \        /    \
+		 *  M2      Cx    M1      Cx
+		 */
 		if ( carbonType == SP2_TERMINAL ) {
 			B0 = ( conC1 != null )? conC1.endAtom() : conC2.endAtom();
 			A1 = M1;

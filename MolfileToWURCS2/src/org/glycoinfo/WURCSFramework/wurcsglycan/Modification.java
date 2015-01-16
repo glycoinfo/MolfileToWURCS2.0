@@ -50,7 +50,7 @@ public class Modification extends WURCSComponent{
 	 *
 	 * @return true if MAP code of the Modification is omission terget
 	 */
-	public boolean canOmit() {
+	public boolean canOmitMAP() {
 		HashSet<String> omissions = new HashSet<String>();
 		omissions.add("*O");
 		omissions.add("*O*");

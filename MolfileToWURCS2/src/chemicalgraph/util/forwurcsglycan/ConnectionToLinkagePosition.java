@@ -3,6 +3,7 @@ package chemicalgraph.util.forwurcsglycan;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import org.glycoinfo.WURCSFramework.wurcsglycan.DirectionDescriptor;
 import org.glycoinfo.WURCSFramework.wurcsglycan.LinkagePosition;
 
 import chemicalgraph.Atom;
@@ -40,12 +41,13 @@ public class ConnectionToLinkagePosition {
 		int PCB = chain.indexOf( con.startAtom() )+1;
 
 		// DMB: Get direction of modification on the backbone carbon
-		String DMB = this.getConnectionDirection( con, chain );
+		String strDMB = this.getConnectionDirection( con, chain );
+		DirectionDescriptor DMB = this.convertDirectionDesctiptorString(strDMB);
 
 		// Check DMB can ellipsis
 //		ConnectTypeList types = new ConnectTypeList(connect.start(), connect.start().backbone);
 //		if(outputFullInformation || types.get(types.uniqBackboneNum).connects.size() != 1){
-		boolean ellipsisDMB = ( this.countModificationNumber(con, chain) == 0 );
+		boolean ellipsisDMB = ( this.countModificationNumberOnCarbon(con, chain) == 0 );
 
 		// PCA: Get carbon poistion in the modification
 		LinkedList<Atom> modCarbons = this.m_hashGraphToModificationCarbons.get(graph);
@@ -63,7 +65,7 @@ public class ConnectionToLinkagePosition {
 	 * Get direction for connection from backbone to modification
 	 * @param conB2M Connection from backbone to modification
 	 * @param chain Backbone carbon chain
-	 * @return String which indicate connection direction
+	 * @return DirectionDescriptor which indicate connection direction
 	 */
 	private String getConnectionDirection(Connection conB2M, LinkedList<Atom> chain) {
 //		Atom Co = connectBackboneToMod.start();
@@ -76,8 +78,7 @@ public class ConnectionToLinkagePosition {
 		Atom CSmall = (Co != chain.getFirst()) ? chain.get(indexCo-1) : null;
 		Atom CLarge = (Co != chain.getLast() ) ? chain.get(indexCo+1) : null;
 		if ( CSmall==null || CLarge==null ) {
-			// 環状糖の環を構成している原子をダミーの主鎖炭素として扱う処理
-			// Consider ring ester atom as dammy backbone carbon
+			// Consider ring ester atom as backbone carbon
 			for ( Connection con : Co.getConnections() ) {
 				Atom conatom = con.endAtom();
 				if ( conatom == Mo) continue;
@@ -118,7 +119,7 @@ public class ConnectionToLinkagePosition {
 		if(orbitalCo.equals("sp3")){
 			// ?Co-Mo?
 //			if(Co.stereoMolecule!=null && Co.stereoMolecule.equals("X")){
-			if ( Co.getChirality()!=null && Co.getChirality().equals("X") ) return "x";
+			if ( Co.getChirality()!=null && Co.getChirality().equals("X") ) return "X";
 
 			// sp3 non terminal
 			if ( CSmall!=null && CLarge!=null ) {
@@ -154,7 +155,7 @@ public class ConnectionToLinkagePosition {
 			}
 			String stereoBond = conDBond.getBond().getGeometric();
 			if( stereoBond == null     ) return "0";
-			if( stereoBond.equals("X") ) return "x";
+			if( stereoBond.equals("X") ) return "X";
 
 			// ?Co=Mo?
 			if ( conDBond == conB2M ) {
@@ -276,7 +277,23 @@ public class ConnectionToLinkagePosition {
 		// ?Co#Mo? or ?=Co=Mo? or ?#Co-Mo?
 		if( orbitalCo.equals("sp") ) return "0";
 
-		return "?";
+		return "N";
+	}
+
+	/**
+	 * Get DirectionDescriptor form DMB string
+	 * @param strDMB String of DMB
+	 * @return DirectionDescriptor of DMB
+	 */
+	private DirectionDescriptor convertDirectionDesctiptorString (String strDMB) {
+		return	(strDMB.equals("N"))? DirectionDescriptor.N :
+				(strDMB.equals("0"))? DirectionDescriptor.N :
+				(strDMB.equals("1"))? DirectionDescriptor.U :
+				(strDMB.equals("2"))? DirectionDescriptor.D :
+				(strDMB.equals("3"))? DirectionDescriptor.T :
+				(strDMB.equals("E"))? DirectionDescriptor.E :
+				(strDMB.equals("Z"))? DirectionDescriptor.Z :
+				(strDMB.equals("X"))? DirectionDescriptor.X : null;
 	}
 
 	/**
@@ -285,7 +302,7 @@ public class ConnectionToLinkagePosition {
 	 * @param chain Backbone carbon chain
 	 * @return Number of other modifications
 	 */
-	private int countModificationNumber(Connection conB2M, LinkedList<Atom> chain) {
+	private int countModificationNumberOnCarbon(Connection conB2M, LinkedList<Atom> chain) {
 		CarbonChainAnalyzer analCC = new CarbonChainAnalyzer();
 		Atom anomC = analCC.setCarbonChain(chain).getAnomericCarbon();
 		Atom Co = conB2M.startAtom();

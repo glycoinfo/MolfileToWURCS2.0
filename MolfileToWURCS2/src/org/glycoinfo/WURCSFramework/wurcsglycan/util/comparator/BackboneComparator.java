@@ -74,7 +74,7 @@ public class BackboneComparator implements Comparator<Backbone> {
 				continue;
 			}
 			// Ignore modification which can omit
-			if ( edgeB2M.getModification().canOmit() ) continue;
+			if ( edgeB2M.getModification().canOmitMAP() ) continue;
 			t_aSubstituentLinkages1.addLast(edgeB2M);
 			t_nModificationCount1++;
 		}
@@ -95,7 +95,7 @@ public class BackboneComparator implements Comparator<Backbone> {
 				continue;
 			}
 			// Ignore modification which can omit
-			if ( edgeB2M.getModification().canOmit() ) continue;
+			if ( edgeB2M.getModification().canOmitMAP() ) continue;
 			t_aSubstituentLinkages2.addLast(edgeB2M);
 			t_nModificationCount2++;
 		}
