@@ -1,4 +1,4 @@
-package org.glycoinfo.WURCSFramework.wurcsgraph.util.visitor;
+package org.glycoinfo.WURCSFramework.wurcsgraph.visitor;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -9,7 +9,7 @@ import org.glycoinfo.WURCSFramework.wurcsgraph.LinkagePosition;
 import org.glycoinfo.WURCSFramework.wurcsgraph.Modification;
 import org.glycoinfo.WURCSFramework.wurcsgraph.WURCSEdge;
 import org.glycoinfo.WURCSFramework.wurcsgraph.WURCSGraph;
-import org.glycoinfo.WURCSFramework.wurcsgraph.util.comparator.WURCSEdgeComparator;
+import org.glycoinfo.WURCSFramework.wurcsgraph.comparator.WURCSEdgeComparator;
 
 public class WURCSGraphExporterWURCS implements WURCSVisitor {
 

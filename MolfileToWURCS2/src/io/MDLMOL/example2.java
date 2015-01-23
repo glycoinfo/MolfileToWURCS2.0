@@ -5,8 +5,8 @@ import java.util.ArrayList;
 
 import org.glycoinfo.WURCSFramework.wurcsgraph.WURCSException;
 import org.glycoinfo.WURCSFramework.wurcsgraph.WURCSGraph;
-import org.glycoinfo.WURCSFramework.wurcsgraph.util.visitor.WURCSGraphExporterWURCS;
-import org.glycoinfo.WURCSFramework.wurcsgraph.util.visitor.WURCSGraphNormalizer;
+import org.glycoinfo.WURCSFramework.wurcsgraph.visitor.WURCSGraphExporterWURCS;
+import org.glycoinfo.WURCSFramework.wurcsgraph.visitor.WURCSGraphNormalizer;
 
 import chemicalgraph.Molecule;
 

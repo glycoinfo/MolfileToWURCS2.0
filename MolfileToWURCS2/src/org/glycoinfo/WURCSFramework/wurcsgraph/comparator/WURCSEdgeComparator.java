@@ -1,4 +1,4 @@
-package org.glycoinfo.WURCSFramework.wurcsgraph.util.comparator;
+package org.glycoinfo.WURCSFramework.wurcsgraph.comparator;
 
 import java.util.Collections;
 import java.util.Comparator;

@@ -1,4 +1,4 @@
-package org.glycoinfo.WURCSFramework.wurcsgraph.util.visitor;
+package org.glycoinfo.WURCSFramework.wurcsgraph.visitor;
 
 import org.glycoinfo.WURCSFramework.wurcsgraph.Backbone;
 import org.glycoinfo.WURCSFramework.wurcsgraph.Modification;

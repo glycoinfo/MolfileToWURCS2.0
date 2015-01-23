@@ -1,4 +1,4 @@
-package org.glycoinfo.WURCSFramework.wurcsgraph.util.visitor;
+package org.glycoinfo.WURCSFramework.wurcsgraph.visitor;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -11,8 +11,8 @@ import org.glycoinfo.WURCSFramework.wurcsgraph.Modification;
 import org.glycoinfo.WURCSFramework.wurcsgraph.WURCSEdge;
 import org.glycoinfo.WURCSFramework.wurcsgraph.WURCSException;
 import org.glycoinfo.WURCSFramework.wurcsgraph.WURCSGraph;
-import org.glycoinfo.WURCSFramework.wurcsgraph.util.comparator.BackboneComparator;
-import org.glycoinfo.WURCSFramework.wurcsgraph.util.comparator.WURCSEdgeComparator;
+import org.glycoinfo.WURCSFramework.wurcsgraph.comparator.BackboneComparator;
+import org.glycoinfo.WURCSFramework.wurcsgraph.comparator.WURCSEdgeComparator;
 
 public class WURCSGraphNormalizer implements WURCSVisitor {
 
