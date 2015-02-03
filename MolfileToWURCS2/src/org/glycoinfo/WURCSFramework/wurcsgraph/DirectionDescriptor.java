@@ -10,16 +10,16 @@ public enum DirectionDescriptor {
 	Z('z', 5), // Cis (zusammen)
 	X('x', 6); // Unknown
 
-	private char m_cDirection;
+	private char m_cName;
 	private int  m_iScore;
 
 	private DirectionDescriptor(char a_cDirection, int a_iScore) {
-		this.m_cDirection = a_cDirection;
+		this.m_cName = a_cDirection;
 		this.m_iScore = a_iScore;
 	}
 
-	public char getDirection() {
-		return this.m_cDirection;
+	public char getName() {
+		return this.m_cName;
 	}
 
 	public int getScore() {
@@ -28,7 +28,7 @@ public enum DirectionDescriptor {
 
 	public static DirectionDescriptor forChar(char a_cDirection) {
 		for ( DirectionDescriptor DD : DirectionDescriptor.values() ) {
-			if ( DD.m_cDirection == a_cDirection ) return DD;
+			if ( DD.m_cName == a_cDirection ) return DD;
 		}
 		return null;
 	}

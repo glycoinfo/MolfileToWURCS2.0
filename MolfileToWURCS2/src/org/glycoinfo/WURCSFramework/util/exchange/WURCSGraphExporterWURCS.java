@@ -1,4 +1,4 @@
-package org.glycoinfo.WURCSFramework.wurcsgraph.visitor;
+package org.glycoinfo.WURCSFramework.util.exchange;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -10,6 +10,10 @@ import org.glycoinfo.WURCSFramework.wurcsgraph.Modification;
 import org.glycoinfo.WURCSFramework.wurcsgraph.WURCSEdge;
 import org.glycoinfo.WURCSFramework.wurcsgraph.WURCSGraph;
 import org.glycoinfo.WURCSFramework.wurcsgraph.comparator.WURCSEdgeComparator;
+import org.glycoinfo.WURCSFramework.wurcsgraph.visitor.WURCSGraphTraverser;
+import org.glycoinfo.WURCSFramework.wurcsgraph.visitor.WURCSGraphTraverserTree;
+import org.glycoinfo.WURCSFramework.wurcsgraph.visitor.WURCSVisitor;
+import org.glycoinfo.WURCSFramework.wurcsgraph.visitor.WURCSVisitorException;
 
 public class WURCSGraphExporterWURCS implements WURCSVisitor {
 

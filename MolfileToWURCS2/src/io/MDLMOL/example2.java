@@ -3,14 +3,14 @@ package io.MDLMOL;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import org.glycoinfo.WURCSFramework.util.exchange.WURCSGraphToArray;
 import org.glycoinfo.WURCSFramework.wurcsgraph.WURCSException;
 import org.glycoinfo.WURCSFramework.wurcsgraph.WURCSGraph;
-import org.glycoinfo.WURCSFramework.wurcsgraph.visitor.WURCSGraphExporterWURCS;
 import org.glycoinfo.WURCSFramework.wurcsgraph.visitor.WURCSGraphNormalizer;
 
 import chemicalgraph.Molecule;
 
-public class example2 extends example {
+public class example2 {
 
 	public static void main(String[] args) {
 		// read argument and files using SelectFileDialog
@@ -39,8 +39,9 @@ public class example2 extends example {
 					WURCSGraph objGlycan = t_objImporterMol.start(mol);
 					WURCSGraphNormalizer objNormalizer = new WURCSGraphNormalizer();
 					objNormalizer.start(objGlycan);
-					WURCSGraphExporterWURCS objExporter = new WURCSGraphExporterWURCS();
+					WURCSGraphToArray objExporter = new WURCSGraphToArray();
 					objExporter.start(objGlycan);
+					objExporter.getWURCSArray();
 //					System.exit(0);
 				} catch (WURCSException e) {
 					// TODO 自動生成された catch ブロック

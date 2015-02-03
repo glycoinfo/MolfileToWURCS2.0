@@ -87,7 +87,7 @@ public class LinkagePosition {
 			COLINCode += a_iNodeID + "-";
 		COLINCode += this.m_iBackbonePosition;
 		if ( !a_bCompress || !this.m_bCanCompressDMB )
-			COLINCode += ":" + this.m_enumDirection.getDirection();
+			COLINCode += ":" + this.m_enumDirection.getName();
 		if ( !a_bCompress || !this.m_bCanCompressPCM )
 			COLINCode += "+" + this.m_iModificationPosition;
 
