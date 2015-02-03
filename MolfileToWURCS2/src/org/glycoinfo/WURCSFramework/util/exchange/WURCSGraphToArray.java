@@ -111,6 +111,7 @@ public class WURCSGraphToArray implements WURCSVisitor {
 		for ( Modification mod : this.m_aGlycosidicModifications ) {
 			this.m_aLIN.addLast( this.makeLIN(mod) );
 		}
+
 		this.m_oWURCS = new WURCSArray(this.m_strVersion, this.m_aURES.size(), this.m_aRES.size(), this.m_aLIN.size());
 		for ( UniqueRES t_oURES : this.m_aURES )
 			this.m_oWURCS.addUniqueRES(t_oURES);
@@ -162,7 +163,7 @@ public class WURCSGraphToArray implements WURCSVisitor {
 	}
 
 	private LIPs makeLIPs(WURCSEdge a_oEdge) {
-		boolean t_bCanOmitModif = a_oEdge.getModification().getMAPCode().equals("*O*");
+		boolean t_bCanOmitModif = a_oEdge.getModification().canOmitMAP();
 		LinkedList<LIP> t_aLIPs = new LinkedList<LIP>();
 
 		for ( LinkagePosition t_oLinkPos : a_oEdge.getLinkages() ) {
@@ -195,7 +196,7 @@ public class WURCSGraphToArray implements WURCSVisitor {
 	}
 
 	private GLIPs makeGLIPs(WURCSEdge a_oEdge, String t_strRESIndex) {
-		boolean t_bCanOmitModif = a_oEdge.getModification().getMAPCode().equals("*O*");
+		boolean t_bCanOmitModif = a_oEdge.getModification().canOmitMAP();
 		LinkedList<GLIP> t_aGLIPs = new LinkedList<GLIP>();
 		for ( LinkagePosition t_oLinkPos : a_oEdge.getLinkages() ) {
 			GLIP t_oGLIP = new GLIP(

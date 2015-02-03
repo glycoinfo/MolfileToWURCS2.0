@@ -47,6 +47,10 @@ public class WURCSEdge implements WURCSVisitable {
 		this.m_bIsReverse = true;
 	}
 
+	public void forward() {
+		this.m_bIsReverse = false;
+	}
+
 	public boolean isReverse() {
 		return this.m_bIsReverse;
 	}

@@ -1,8 +1,11 @@
 package org.glycoinfo.WURCSFramework.wurcsgraph;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+
+import org.glycoinfo.WURCSFramework.wurcsgraph.comparator.BackboneComparator;
 
 public class WURCSGraph {
 
@@ -14,29 +17,54 @@ public class WURCSGraph {
 
 		Backbone t_objBackbone;
 		// for all residues of the glycan
-		Iterator<Backbone> t_iterBackbone = this.getNodeIterator();
+		Iterator<Backbone> t_iterBackbone = this.getBackboneIterator();
 		while (t_iterBackbone.hasNext())
 		{
 			t_objBackbone = t_iterBackbone.next();
 
 			if ( !t_objBackbone.hasParent() ) t_aResult.add(t_objBackbone);
 		}
+		if ( t_aResult.size() > 0 ) return t_aResult;
+
+		// TODO: To be added linkage between anomeric positions
+		BackboneComparator t_oBComp = new BackboneComparator();
+		Modification t_objModification;
+		Iterator<Modification> t_iterModification = this.getModificationIterator();
+		while (t_iterModification.hasNext())
+		{
+			t_objModification = t_iterModification.next();
+			if ( !t_objModification.isAglycone() ) continue;
+
+			for ( WURCSEdge t_oEdge : t_objModification.getEdges() )
+				t_aResult.add( t_oEdge.getBackbone() );
+
+			Collections.sort(t_aResult, t_oBComp);
+			for ( WURCSEdge t_oEdge : t_objModification.getEdges() ) {
+				if ( t_oEdge.getBackbone().equals(t_aResult.get(0)) ) continue;
+				t_oEdge.forward();
+			}
+		}
+		if ( t_aResult.size() > 0 ) return t_aResult;
+
 		// TODO: To add cyclic checker
 
-		if ( t_aResult.size() < 1 )
-		{
-			throw new WURCSException("WURCSGraph seems not to have at least one root residue");
-		}
-		return t_aResult;
+
+
+		throw new WURCSException("WURCSGraph seems not to have at least one root residue");
 	}
 
 	/**
 	 *
 	 * @return
 	 */
-	public Iterator<Backbone> getNodeIterator()
+	public Iterator<Backbone> getBackboneIterator()
 	{
 		return this.m_aBackbones.iterator();
+	}
+
+	public Iterator<Modification> getModificationIterator()
+	{
+		return this.m_aModifications.iterator();
 	}
 
 	/**

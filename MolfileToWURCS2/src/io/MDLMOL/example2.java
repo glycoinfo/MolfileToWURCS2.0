@@ -28,12 +28,12 @@ public class example2 {
 				// read a record from CTFile
 				Molecule mol = t_objCTReader.getMolecule();
 				if(mol==null) break;
+				String ID = t_objCTReader.getFieldData(t_objParam.m_ID);
+				if ( !ID.equals("119") ) continue;
 				if(!t_objParam.m_sdfileOutput){
-					System.err.print( t_objCTReader.getFieldData(t_objParam.m_ID)+":" );
+					System.err.print( ID+":" );
 				}
-				String ID = t_objCTReader.getFieldData("ID");
-				if ( !ID.equals("2268") ) continue;
-				System.err.println( t_objCTReader.getFieldData("ID") );
+				System.err.println(t_objCTReader.getFieldData("ID") );
 
 				try {
 					WURCSGraph objGlycan = t_objImporterMol.start(mol);
@@ -41,6 +41,7 @@ public class example2 {
 					objNormalizer.start(objGlycan);
 					WURCSGraphToArray objExporter = new WURCSGraphToArray();
 					objExporter.start(objGlycan);
+					System.out.print(t_objCTReader.getFieldData(t_objParam.m_ID)+"\t");
 					objExporter.getWURCSArray();
 //					System.exit(0);
 				} catch (WURCSException e) {
