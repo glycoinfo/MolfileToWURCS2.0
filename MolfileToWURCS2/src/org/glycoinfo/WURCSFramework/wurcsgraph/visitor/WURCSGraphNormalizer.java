@@ -14,11 +14,18 @@ import org.glycoinfo.WURCSFramework.wurcsgraph.WURCSGraph;
 import org.glycoinfo.WURCSFramework.wurcsgraph.comparator.BackboneComparator;
 import org.glycoinfo.WURCSFramework.wurcsgraph.comparator.WURCSEdgeComparator;
 
+/**
+ * Class for normalizer of WURCSGraph
+ * @author MasaakiMatsubara
+ *
+ */
 public class WURCSGraphNormalizer implements WURCSVisitor {
 
 	private LinkedList<Backbone> m_aBackbones = new LinkedList<Backbone>();
 	private HashSet<Backbone> m_aSearchedBackbones = new HashSet<Backbone>();
 	private LinkedList<Backbone> m_aSymmetricBackbone = new LinkedList<Backbone>();
+
+	private BackboneComparator m_objBackboneComp = new BackboneComparator();
 
 	public void visit(Backbone a_objBackbone) throws WURCSVisitorException {
 		if ( !this.m_aBackbones.contains(a_objBackbone) ) this.m_aBackbones.addLast(a_objBackbone);
@@ -29,7 +36,7 @@ public class WURCSGraphNormalizer implements WURCSVisitor {
 		Backbone copy   = a_objBackbone.copy();
 		Backbone invert = a_objBackbone.copy();
 		invert.invert();
-		if ( this.checkBackboneSymmetry(copy, invert) == 0 ) {
+		if ( this.m_objBackboneComp.compare(copy, invert) == 0 ) {
 			System.err.println( "Symmetry backbone: " + a_objBackbone.getSkeletonCode() );
 			this.m_aSymmetricBackbone.addLast(a_objBackbone);
 		}
@@ -101,7 +108,7 @@ public class WURCSGraphNormalizer implements WURCSVisitor {
 				a_objGraph.copy(t_hashOrigToInvert);
 				Backbone copyBackbone = t_hashOrigToInvert.get(origBackbone);
 				copyBackbone.invert();
-				if ( this.checkBackboneSymmetry(origBackbone, copyBackbone) > 0 ) {
+				if ( this.m_objBackboneComp.compare(origBackbone, copyBackbone) > 0 ) {
 					System.err.println("Invert Backbone");
 					origBackbone.invert();
 				}
@@ -123,25 +130,6 @@ public class WURCSGraphNormalizer implements WURCSVisitor {
 		this.m_aSearchedBackbones = new HashSet<Backbone>();
 		this.m_aSymmetricBackbone = new LinkedList<Backbone>();
 
-	}
-
-	private int checkBackboneSymmetry(Backbone original, Backbone invert) {
-/*
-		System.err.println("AnomPos:"+ original.getAnomericPosition() +" vs "+ invert.getAnomericPosition() );
-		System.err.println("AnomSymbol:"+ original.getAnomericSymbol() +" vs "+ invert.getAnomericSymbol() );
-		for ( int i=0; i<original.getEdges().size(); i++ ) {
-			WURCSEdge origEdge = original.getEdges().get(i);
-			WURCSEdge invEdge = invert.getEdges().get(i);
-			for ( int j=0; j<origEdge.getLinkages().size(); j++ ) {
-				int origPos = origEdge.getLinkages().get(j).getBackbonePosition();
-				int invPos  = invEdge.getLinkages().get(j).getBackbonePosition();
-				System.err.println(i+":"+j+": " + origPos+","+invPos + origEdge.getModification().getMAPCode());
-			}
-		}
-*/
-		BackboneComparator t_oComp = new BackboneComparator();
-//		System.err.println("Comp:"+ t_oComp.compare(original, invert) );
-		return t_oComp.compare(original, invert);
 	}
 
 	private String makeMOD(Modification mod) {

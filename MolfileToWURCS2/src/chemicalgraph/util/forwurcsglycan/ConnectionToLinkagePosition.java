@@ -65,7 +65,7 @@ public class ConnectionToLinkagePosition {
 	 * Get direction for connection from backbone to modification
 	 * @param conB2M Connection from backbone to modification
 	 * @param chain Backbone carbon chain
-	 * @return DirectionDescriptor which indicate connection direction
+	 * @return String of direction which indicate connection direction
 	 */
 	private String getConnectionDirection(Connection conB2M, LinkedList<Atom> chain) {
 //		Atom Co = connectBackboneToMod.start();
