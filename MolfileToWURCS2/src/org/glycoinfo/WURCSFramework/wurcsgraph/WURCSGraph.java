@@ -44,14 +44,37 @@ public class WURCSGraph {
 
 			// Reorder direction of edge for root backbone
 			for ( WURCSEdge t_oEdge : t_objModification.getEdges() ) {
-				if (! t_oEdge.getBackbone().equals(t_aRootCandidate.get(0)) ) continue;
+				if (! t_oEdge.getBackbone().equals(t_aRootCandidate.getFirst()) ) continue;
 				t_oEdge.forward();
 			}
-			t_aResult.add(t_aRootCandidate.get(0));
+			t_aResult.add(t_aRootCandidate.getFirst());
 		}
 		if ( t_aResult.size() > 0 ) return t_aResult;
 
-		// TODO: To add cyclic checker
+		// For cyclic
+		t_iterBackbone = this.getBackboneIterator();
+		while (t_iterBackbone.hasNext())
+		{
+			LinkedList<Backbone> t_aCyclicBackbones = new LinkedList<Backbone>();
+			t_aCyclicBackbones.addFirst( t_iterBackbone.next() );
+
+			// Check cyclic recursive
+			if ( !this.checkCyclic(t_aCyclicBackbones) ) continue;
+/*
+			for ( Backbone b : t_aCyclicBackbones ) {
+				System.err.print("-"+this.m_aBackbones.indexOf(b));
+			}
+			System.err.println(":");
+*/
+			// Sort Backbones in cyclic
+			Collections.sort( t_aCyclicBackbones, t_oBComp );
+			for ( WURCSEdge t_oEdge : t_aCyclicBackbones.getFirst().getEdges() ) {
+				if ( !t_oEdge.isReverse() ) continue;
+				t_oEdge.forward();
+			}
+			t_aResult.add(t_aCyclicBackbones.getFirst() );
+		}
+		if ( t_aResult.size() > 0 ) return t_aResult;
 
 
 
@@ -231,4 +254,25 @@ public class WURCSGraph {
 		return copy;
 	}
 
+	private boolean checkCyclic(LinkedList<Backbone> a_aBackbones) {
+		Backbone t_oHead = a_aBackbones.getFirst();
+		WURCSEdge t_oParentEdge = t_oHead.getAnomericEdge();
+		// Head backbone is root
+		if ( ! t_oParentEdge.isReverse() ) return false;
+
+		Modification t_oParentModif = t_oParentEdge.getModification();
+		for ( WURCSEdge t_oModifEdge : t_oParentModif.getEdges() ) {
+			if ( t_oModifEdge.isReverse() ) continue;
+
+			// Check cyclic
+			Backbone t_oParentBack = t_oModifEdge.getBackbone();
+			if ( a_aBackbones.contains(t_oParentBack) ) return true;
+
+			// Recursive search
+			a_aBackbones.addFirst(t_oModifEdge.getBackbone());
+			if ( this.checkCyclic(a_aBackbones) ) return true;
+			a_aBackbones.removeFirst();
+		}
+		return false;
+	}
 }

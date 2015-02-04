@@ -176,7 +176,12 @@ public class Backbone extends WURCSComponent{
 
 	private void checkAnomeric(BackboneCarbon bc) {
 		// Set anomeric carbon
-		if ( this.m_objAnomericCarbon == null && bc.isAnomeric() )
+		if ( ! bc.isAnomeric() ) return;
+		if ( this.m_objAnomericCarbon == null )
+			this.m_objAnomericCarbon = bc;
+		if ( this.m_objAnomericCarbon.getDesctriptor() == bc.getDesctriptor() ) return;
+
+		if ( this.m_objAnomericCarbon.getDesctriptor().getCarbonScore() - bc.getDesctriptor().getCarbonScore() < 0 )
 			this.m_objAnomericCarbon = bc;
 	}
 

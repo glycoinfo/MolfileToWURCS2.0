@@ -29,7 +29,7 @@ public class example2 {
 				Molecule mol = t_objCTReader.getMolecule();
 				if(mol==null) break;
 				String ID = t_objCTReader.getFieldData(t_objParam.m_ID);
-				if ( !ID.equals("2268") ) continue;
+				if ( !ID.equals("12865") ) continue;
 				if(!t_objParam.m_sdfileOutput){
 					System.err.print( ID+":" );
 				}

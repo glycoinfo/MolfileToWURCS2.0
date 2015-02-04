@@ -33,9 +33,14 @@ public class WURCSGraphNormalizer implements WURCSVisitor {
 		Backbone copy   = a_objBackbone.copy();
 		Backbone invert = a_objBackbone.copy();
 		invert.invert();
-		if ( this.m_objBackboneComp.compare(copy, invert) != 0 ) return;
+		int iComp = this.m_objBackboneComp.compare(copy, invert);
+		if ( iComp < 0 ) return;
+		if ( iComp > 0 ) {
+			a_objBackbone.invert();
+			return;
+		}
 
-		System.err.println( "Symmetry backbone: " + a_objBackbone.getSkeletonCode() );
+		System.err.println( "For invert backbone: " + a_objBackbone.getSkeletonCode() );
 		this.m_aSymmetricBackbone.addLast(a_objBackbone);
 	}
 

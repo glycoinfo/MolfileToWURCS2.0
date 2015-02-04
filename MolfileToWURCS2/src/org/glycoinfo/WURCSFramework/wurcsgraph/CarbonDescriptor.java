@@ -17,30 +17,30 @@ public enum CarbonDescriptor {
 	SZ3_ACETAL_U   ( 'C', "sp3", 1,0, 2, null, null, "-O", "-O", "-X",  7 ), // -C(O)(O)(X) ver 2.0 new
 	SZ3_DOUBLE_L   ( 'd', "sp3", 1,0, 2, null, null, "-X", "-X", "-H",  7 ), // -C(X)(X)(H) ver 2.0 change (from 'W')
 	SZ3_DOUBLE_U   ( 'D', "sp3", 1,0, 2, null, null, "-X", "-X", "-X", 10 ), // -C(X)(X)(Y) ver 2.0 change (from 'L')
-	SZ3_STEREO_S   ( '1', "sp3", 1,0, 3,  "S", true, "-X", "-X", "-H", 19 ), // -C(X)(Y)(H) ver 2.0 new
-	SZ3_STEREO_R   ( '2', "sp3", 1,0, 3,  "R", true, "-X", "-X", "-H", 20 ), // -C(X)(Y)(H) ver 2.0 new
-	SZ3_STEREO_s   ( '3', "sp3", 1,0, 3,  "s", true, "-X", "-X", "-H", 19 ), // -C(X)(Y)(H) ver 2.0 new
-	SZ3_STEREO_r   ( '4', "sp3", 1,0, 3,  "r", true, "-X", "-X", "-H", 20 ), // -C(X)(Y)(H) ver 2.0 new
-	SZ3_STEREO_X   ( 'x', "sp3", 1,0, 3,  "X", true, "-X", "-X", "-H", 18 ), // -C(X)(Y)(H) ver 2.0 new
+	SZ3_STEREO_S   ( '1', "sp3", 1,0, 3,  "S", true, "-X", "-X", "-H", 19 ), // -C(X)(Y)(H) ver 2.0 new                anomer
+	SZ3_STEREO_R   ( '2', "sp3", 1,0, 3,  "R", true, "-X", "-X", "-H", 20 ), // -C(X)(Y)(H) ver 2.0 new                anomer
+	SZ3_STEREO_s   ( '3', "sp3", 1,0, 3,  "s", true, "-X", "-X", "-H", 19 ), // -C(X)(Y)(H) ver 2.0 new                anomer
+	SZ3_STEREO_r   ( '4', "sp3", 1,0, 3,  "r", true, "-X", "-X", "-H", 20 ), // -C(X)(Y)(H) ver 2.0 new                anomer
+	SZ3_STEREO_X   ( 'x', "sp3", 1,0, 3,  "X", true, "-X", "-X", "-H", 18 ), // -C(X)(Y)(H) ver 2.0 new                anomer
 	SZ3_NORING_S_L ( 's', "sp3", 1,0, 3,  "S", false,"-X", "-X", "-H",  9 ), // -C(X)(Y)(H) ver 2.0 new
 	SZ3_NORING_R_L ( 'r', "sp3", 1,0, 3,  "R", false,"-X", "-X", "-H", 10 ), // -C(X)(Y)(H) ver 2.0 new
 	SZ3_NORING_s_L ( 's', "sp3", 1,0, 3,  "s", false,"-X", "-X", "-H",  9 ), // -C(X)(Y)(H) ver 2.0 new
 	SZ3_NORING_r_L ( 'r', "sp3", 1,0, 3,  "r", false,"-X", "-X", "-H", 10 ), // -C(X)(Y)(H) ver 2.0 new
 	SZ3_NORING_X_L ( 'q', "sp3", 1,0, 3,  "X", false,"-X", "-X", "-H",  8 ), // -C(X)(Y)(H) ver 2.0 change (from 'U')
-	SZ3_CHIRAL_S   ( '5', "sp3", 1,0, 3,  "S", true, "-X", "-X", "-X", 21 ), // -C(X)(Y)(X) ver 2.0 change (from '1')
-	SZ3_CHIRAL_R   ( '6', "sp3", 1,0, 3,  "R", true, "-X", "-X", "-X", 22 ), // -C(X)(Y)(X) ver 2.0 change (from '2')
-	SZ3_CHIRAL_s   ( '7', "sp3", 1,0, 3,  "s", true, "-X", "-X", "-X", 21 ), // -C(X)(Y)(Z) ver 2.0 change (from '3')
-	SZ3_CHIRAL_r   ( '8', "sp3", 1,0, 3,  "r", true, "-X", "-X", "-X", 22 ), // -C(X)(Y)(Z) ver 2.0 change (from '4')
-	SZ3_CHIRAL_X   ( 'X', "sp3", 1,0, 3,  "X", true, "-X", "-X", "-X", 20 ), // -C(X)(Y)(Z)
+	SZ3_CHIRAL_S   ( '5', "sp3", 1,0, 3,  "S", true, "-X", "-X", "-X", 22 ), // -C(X)(Y)(X) ver 2.0 change (from '1')  anomer
+	SZ3_CHIRAL_R   ( '6', "sp3", 1,0, 3,  "R", true, "-X", "-X", "-X", 23 ), // -C(X)(Y)(X) ver 2.0 change (from '2')  anomer
+	SZ3_CHIRAL_s   ( '7', "sp3", 1,0, 3,  "s", true, "-X", "-X", "-X", 22 ), // -C(X)(Y)(Z) ver 2.0 change (from '3')  anomer
+	SZ3_CHIRAL_r   ( '8', "sp3", 1,0, 3,  "r", true, "-X", "-X", "-X", 23 ), // -C(X)(Y)(Z) ver 2.0 change (from '4')  anomer
+	SZ3_CHIRAL_X   ( 'X', "sp3", 1,0, 3,  "X", true, "-X", "-X", "-X", 21 ), // -C(X)(Y)(Z)                            anomer
 	SZ3_NORING_S_U ( 'S', "sp3", 1,0, 3,  "S", false,"-X", "-X", "-X", 11 ), // -C(X)(Y)(Z) ver 2.0 new
 	SZ3_NORING_R_U ( 'R', "sp3", 1,0, 3,  "R", false,"-X", "-X", "-X", 12 ), // -C(X)(Y)(Z) ver 2.0 new
 	SZ3_NORING_s_U ( 'S', "sp3", 1,0, 3,  "s", false,"-X", "-X", "-X", 11 ), // -C(X)(Y)(Z) ver 2.0 new
 	SZ3_NORING_r_U ( 'R', "sp3", 1,0, 3,  "r", false,"-X", "-X", "-X", 12 ), // -C(X)(Y)(Z) ver 2.0 new
 	SZ3_NORING_X_U ( 'Q', "sp3", 1,0, 3,  "X", false,"-X", "-X", "-X", 10 ), // -C(X)(Y)(Z) ver 2.0 change (from 'R')
-	SZ2_ALDEHYDE_L ( 'o', "sp2", 1,0, 2, null, null, "=O", "-H", null, 21 ), // -C(=O)(H)
-	SZ2_ACID_L     ( 'a', "sp2", 1,0, 2, null, null, "=O", "-O", null, 17 ), // -C(=O)(O)
-	SZ2_ALDEHYDE_U ( 'O', "sp2", 1,0, 2, null, null, "=X", "-H", null, 23 ), // -C(=X)(H)
-	SZ2_ACID_U     ( 'A', "sp2", 1,0, 2, null, null, "=X", "-X", null, 20 ), // -C(=X)(Y)
+	SZ2_ALDEHYDE_L ( 'o', "sp2", 1,0, 2, null, null, "=O", "-H", null, 16 ), // -C(=O)(H)                              anomer
+	SZ2_ACID_L     ( 'a', "sp2", 1,0, 2, null, null, "=O", "-O", null, 13 ), // -C(=O)(O)
+	SZ2_ALDEHYDE_U ( 'O', "sp2", 1,0, 2, null, null, "=X", "-H", null, 17 ), // -C(=X)(H)                              anomer
+	SZ2_ACID_U     ( 'A', "sp2", 1,0, 2, null, null, "=X", "-X", null, 14 ), // -C(=X)(Y)
 	DZ2_METHYLENE_L( 'n', "sp2", 2,0, 1, null, null, "-H", "-H", null,  4 ), // =C(H)(H) ver 2.0 change (from 'v')
 //	DZ2_ETHENE_L   ( 'c', "sp2", 2,0, 1, null, null, "-O", "-O", null,  6 ), // =C(O)(O) ver 2.0 reduce (merged into DZ2_METHYLENE_U)
 	DZ2_METHYLENE_U( 'N', "sp2", 2,0, 1, null, null, "-X", "-X", null,  8 ), // =C(X)(X) ver 2.0 change (from 'V')
@@ -58,8 +58,8 @@ public enum CarbonDescriptor {
 	TZ1_ETHYNE_L   ( 't', "sp" , 3,0, 1, null, null, "-H", null, null,  4 ), // #C(H)
 	TZ1_ETHYNE_U   ( 'T', "sp" , 3,0, 1, null, null, "-X", null, null,  6 ), // #C(X)
 	// Ambiguous
-	SZX_UNDEF_L    ( 'u',  "?" , 1,0, 0, null, null, "-X", "-H", null, 21 ), // -C(X)(Y)(H) or -C(=O)(H) ver 2.0 new ('x' and 'O')
-	SZX_UNDEF_U    ( 'U',  "?" , 1,0, 0, null, null, "-X", "-X", null, 17 ), // -C(X)(Y)(Z) or -C(=X)(X) ver 2.0 new ('X' and 'A')
+	SZX_UNDEF_L    ( 'u',  "?" , 1,0, 0, null, null, "-X", "-H", null, 15 ), // -C(X)(Y)(H) or -C(=O)(H) ver 2.0 new ('x' and 'O')
+	SZX_UNDEF_U    ( 'U',  "?" , 1,0, 0, null, null, "-X", "-X", null, 16 ), // -C(X)(Y)(Z) or -C(=X)(X) ver 2.0 new ('X' and 'A')
 
 	// Non-terminal
 	SS3_METHYNE    ( 'd', "sp3", 1,1, 1, null, null, "-H", "-H", null,  4 ), // -C(H)(H)-
@@ -70,13 +70,13 @@ public enum CarbonDescriptor {
 	SS3_STEREO_s   ( '3', "sp3", 1,1, 2,  "s", null, "-X", "-H", null,  7 ), // -C(X)(Y)- ver 2.0 new
 	SS3_STEREO_r   ( '4', "sp3", 1,1, 2,  "r", null, "-X", "-H", null,  8 ), // -C(X)(Y)- ver 2.0 new
 	SS3_STEREO_X   ( 'x', "sp3", 1,1, 2,  "X", null, "-X", "-H", null,  6 ), // -C(X)(Y)- ver 2.0 new
-	SS3_CHIRAL_S   ( '5', "sp3", 1,1, 2,  "S", null, "-X", "-X", null, 19 ), // -C(X)(Y)- ver 2.0 change (from '1')
-	SS3_CHIRAL_R   ( '6', "sp3", 1,1, 2,  "R", null, "-X", "-X", null, 20 ), // -C(X)(Y)- ver 2.0 change (from '2')
-	SS3_CHIRAL_s   ( '7', "sp3", 1,1, 2,  "s", null, "-X", "-X", null, 19 ), // -C(X)(Y)- ver 2.0 change (from '3')
-	SS3_CHIRAL_r   ( '8', "sp3", 1,1, 2,  "r", null, "-X", "-X", null, 20 ), // -C(X)(Y)- ver 2.0 change (from '4')
-	SS3_CHIRAL_X   ( 'X', "sp3", 1,1, 2,  "X", null, "-X", "-X", null, 18 ), // -C(X)(Y)-
-	SS2_KETONE_L   ( 'o', "sp2", 1,1, 1, null, null, "=O", null, null, 16 ), // -C(=O)- ver 2.0 change (from 'k')
-	SS2_KETONE_U   ( 'O', "sp2", 1,1, 1, null, null, "=X", null, null, 18 ), // -C(=X)- ver 2.0 change (from 'K')
+	SS3_CHIRAL_S   ( '5', "sp3", 1,1, 2,  "S", null, "-X", "-X", null, 19 ), // -C(X)(Y)- ver 2.0 change (from '1')    anomer
+	SS3_CHIRAL_R   ( '6', "sp3", 1,1, 2,  "R", null, "-X", "-X", null, 20 ), // -C(X)(Y)- ver 2.0 change (from '2')    anomer
+	SS3_CHIRAL_s   ( '7', "sp3", 1,1, 2,  "s", null, "-X", "-X", null, 19 ), // -C(X)(Y)- ver 2.0 change (from '3')    anomer
+	SS3_CHIRAL_r   ( '8', "sp3", 1,1, 2,  "r", null, "-X", "-X", null, 20 ), // -C(X)(Y)- ver 2.0 change (from '4')    anomer
+	SS3_CHIRAL_X   ( 'X', "sp3", 1,1, 2,  "X", null, "-X", "-X", null, 18 ), // -C(X)(Y)-                              anomer
+	SS2_KETONE_L   ( 'o', "sp2", 1,1, 1, null, null, "=O", null, null, 16 ), // -C(=O)- ver 2.0 change (from 'k')      anomer
+	SS2_KETONE_U   ( 'O', "sp2", 1,1, 1, null, null, "=X", null, null, 17 ), // -C(=X)- ver 2.0 change (from 'K')      anomer
 	DS2_CISTRANS_EL( 'e', "sp2", 2,1, 1,  "E", null, "-H", null, null,  5 ), // =C(H)-
 	DS2_CISTRANS_ZL( 'z', "sp2", 2,1, 1,  "Z", null, "-H", null, null,  6 ), // =C(H)-
 	DS2_CISTRANS_NL( 'n', "sp2", 2,1, 1,  "N", null, "-H", null, null,  4 ), // =C(H)-
@@ -88,7 +88,7 @@ public enum CarbonDescriptor {
 	DD1_KETENE     ( 'K',  "sp", 2,2, 0, null, null, null, null, null,  4 ), // =C= ver 2.0 change (from 'q')
 	TS1_ETHYNE     ( 'T',  "sp", 3,1, 0, null, null, null, null, null,  4 ), // #C- ver 2.0 change (from 'y')
 	// Ambiguous
-	SSX_UNDEF_U    ( 'U',  "?" , 1,1, 0, null, null, "-X", null, null, 16 ), // -C(X)(Y)- or -C(=X)- ver 2.0 new ('X' and 'O')
+	SSX_UNDEF_U    ( 'U',  "?" , 1,1, 0, null, null, "-X", null, null, 15 ), // -C(X)(Y)- or -C(=X)- ver 2.0 new ('X' and 'O')
 
 	XXX_UNKNOWN    ( '?',  null, 0,0, 0, null, null, null, null, null,  0 ); // C???
 
