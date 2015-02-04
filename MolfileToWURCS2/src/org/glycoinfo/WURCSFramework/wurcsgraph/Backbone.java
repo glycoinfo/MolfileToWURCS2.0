@@ -113,13 +113,9 @@ public class Backbone extends WURCSComponent{
 		WURCSEdge t_objAnomEdge = this.getAnomericEdge();
 		// If no anomeric position
 		if ( t_objAnomEdge == null ) return false;
+		if ( t_objAnomEdge.getModification().isAglycone() ) return false;
 
-		for ( WURCSEdge edge : this.getEdges() ) {
-			if ( !edge.equals( t_objAnomEdge ) ) continue;
-			edge.reverse();
-			return true;
-		}
-		return false;
+		return true;
 	}
 
 	public boolean hasUnknownLength() {

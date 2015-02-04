@@ -92,11 +92,22 @@ public class WURCSGraphToArray implements WURCSVisitor {
 	public void visit(Modification a_objModification) throws WURCSVisitorException {
 		if ( !a_objModification.isGlycosidic() ) return;
 		// Add modifiation at glycosidic linkage
+		if ( this.m_aGlycosidicModifications.contains(a_objModification) ) return;
 		this.m_aGlycosidicModifications.addLast(a_objModification);
 	}
 
 	@Override
 	public void visit(WURCSEdge a_objWURCSEdge) throws WURCSVisitorException {
+/*
+		// Search test
+		if ( !a_objWURCSEdge.isReverse() ) {
+			Backbone t_oB = a_objWURCSEdge.getBackbone();
+			System.err.println( this.m_aBackbones.indexOf( t_oB ) +":"+t_oB.getSkeletonCode()+":"+a_objWURCSEdge.getLinkages().getFirst().getBackbonePosition() );
+		} else {
+			Modification t_oM = a_objWURCSEdge.getModification();
+			System.err.println( "M to B: "+a_objWURCSEdge.getLinkages().getFirst().getBackbonePosition() );
+		}
+*/
 		// Nothing to do
 	}
 
@@ -119,8 +130,9 @@ public class WURCSGraphToArray implements WURCSVisitor {
 		for ( RES t_oRES : this.m_aRES )
 			this.m_oWURCS.addRES(t_oRES);
 
-		for ( LIN t_oLIN : this.m_aLIN )
+		for ( LIN t_oLIN : this.m_aLIN ) {
 			this.m_oWURCS.addLIN(t_oLIN);
+		}
 	}
 
 	@Override

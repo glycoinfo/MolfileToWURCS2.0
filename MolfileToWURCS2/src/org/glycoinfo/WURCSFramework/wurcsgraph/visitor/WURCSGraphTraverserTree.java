@@ -50,10 +50,13 @@ public class WURCSGraphTraverserTree extends WURCSGraphTraverser {
 
 	@Override
 	public void traverse(WURCSEdge a_objEdge) throws WURCSVisitorException {
+		if ( this.m_aSearchedEdges.contains(a_objEdge) )
+			throw new WURCSVisitorException("Illegal traverse.");
 
 		// callback of the function before subtree
 		this.m_iState = WURCSGraphTraverser.ENTER;
 		a_objEdge.accept(this.m_objVisitor);
+
 
 		this.m_aSearchedEdges.add(a_objEdge);
 

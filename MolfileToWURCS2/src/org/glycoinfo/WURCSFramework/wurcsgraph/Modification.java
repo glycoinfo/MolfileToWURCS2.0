@@ -25,11 +25,15 @@ public class Modification extends WURCSComponent{
 		return this.m_strMAPCode;
 	}
 
+	/**
+	 * Whether or not this is an aglycone
+	 * @return True or false
+	 */
 	public boolean isAglycone() {
 		if ( this.getEdges().isEmpty() ) return false;
 		for ( WURCSEdge edge : this.getEdges() ) {
 			if ( edge.getLinkages().size() == 1
-				&& edge.getBackbone().getAnomericPosition() == edge.getLinkages().get(0).getBackbonePosition() ) continue;
+				&& edge.getBackbone().getAnomericPosition() == edge.getLinkages().getFirst().getBackbonePosition() ) continue;
 			return false;
 		}
 		return true;

@@ -1,16 +1,19 @@
 package org.glycoinfo.WURCSFramework.wurcsgraph;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 
-import org.glycoinfo.WURCSFramework.wurcsgraph.comparator.BackboneComparator;
-
+/**
+ * Class for WURCSGraph
+ * @author MasaakiMatsubara
+ *
+ */
 public class WURCSGraph {
 
+	/** Contained Backbones */
 	private ArrayList<Backbone> m_aBackbones = new ArrayList<Backbone>();
+	/** Contained Modifications */
 	private ArrayList<Modification> m_aModifications = new ArrayList<Modification>();
 
 	public ArrayList<Backbone> getRootBackbones() throws WURCSException {
@@ -23,60 +26,10 @@ public class WURCSGraph {
 		{
 			t_objBackbone = t_iterBackbone.next();
 
-			if ( !t_objBackbone.hasParent() ) t_aResult.add(t_objBackbone);
+			WURCSEdge t_oEdge = t_objBackbone.getAnomericEdge();
+			if ( t_oEdge == null || !t_oEdge.isReverse() ) t_aResult.add(t_objBackbone);
 		}
 		if ( t_aResult.size() > 0 ) return t_aResult;
-
-		// For glycosidic linkage between anomeric positions
-		BackboneComparator t_oBComp = new BackboneComparator();
-		Modification t_objModification;
-		Iterator<Modification> t_iterModification = this.getModificationIterator();
-		while (t_iterModification.hasNext())
-		{
-			t_objModification = t_iterModification.next();
-			if ( !t_objModification.isAglycone() ) continue;
-
-			// Sort candidate root backbone
-			LinkedList<Backbone> t_aRootCandidate = new LinkedList<Backbone>();
-			for ( WURCSEdge t_oEdge : t_objModification.getEdges() )
-				t_aRootCandidate.add( t_oEdge.getBackbone() );
-			Collections.sort(t_aRootCandidate, t_oBComp);
-
-			// Reorder direction of edge for root backbone
-			for ( WURCSEdge t_oEdge : t_objModification.getEdges() ) {
-				if (! t_oEdge.getBackbone().equals(t_aRootCandidate.getFirst()) ) continue;
-				t_oEdge.forward();
-			}
-			t_aResult.add(t_aRootCandidate.getFirst());
-		}
-		if ( t_aResult.size() > 0 ) return t_aResult;
-
-		// For cyclic
-		t_iterBackbone = this.getBackboneIterator();
-		while (t_iterBackbone.hasNext())
-		{
-			LinkedList<Backbone> t_aCyclicBackbones = new LinkedList<Backbone>();
-			t_aCyclicBackbones.addFirst( t_iterBackbone.next() );
-
-			// Check cyclic recursive
-			if ( !this.checkCyclic(t_aCyclicBackbones) ) continue;
-/*
-			for ( Backbone b : t_aCyclicBackbones ) {
-				System.err.print("-"+this.m_aBackbones.indexOf(b));
-			}
-			System.err.println(":");
-*/
-			// Sort Backbones in cyclic
-			Collections.sort( t_aCyclicBackbones, t_oBComp );
-			for ( WURCSEdge t_oEdge : t_aCyclicBackbones.getFirst().getEdges() ) {
-				if ( !t_oEdge.isReverse() ) continue;
-				t_oEdge.forward();
-			}
-			t_aResult.add(t_aCyclicBackbones.getFirst() );
-		}
-		if ( t_aResult.size() > 0 ) return t_aResult;
-
-
 
 		throw new WURCSException("WURCSGraph seems not to have at least one root residue");
 	}
@@ -252,27 +205,5 @@ public class WURCSGraph {
 		}
 
 		return copy;
-	}
-
-	private boolean checkCyclic(LinkedList<Backbone> a_aBackbones) {
-		Backbone t_oHead = a_aBackbones.getFirst();
-		WURCSEdge t_oParentEdge = t_oHead.getAnomericEdge();
-		// Head backbone is root
-		if ( ! t_oParentEdge.isReverse() ) return false;
-
-		Modification t_oParentModif = t_oParentEdge.getModification();
-		for ( WURCSEdge t_oModifEdge : t_oParentModif.getEdges() ) {
-			if ( t_oModifEdge.isReverse() ) continue;
-
-			// Check cyclic
-			Backbone t_oParentBack = t_oModifEdge.getBackbone();
-			if ( a_aBackbones.contains(t_oParentBack) ) return true;
-
-			// Recursive search
-			a_aBackbones.addFirst(t_oModifEdge.getBackbone());
-			if ( this.checkCyclic(a_aBackbones) ) return true;
-			a_aBackbones.removeFirst();
-		}
-		return false;
 	}
 }

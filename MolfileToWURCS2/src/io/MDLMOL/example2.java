@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import org.glycoinfo.WURCSFramework.util.exchange.WURCSGraphToArray;
 import org.glycoinfo.WURCSFramework.wurcsgraph.WURCSException;
 import org.glycoinfo.WURCSFramework.wurcsgraph.WURCSGraph;
-import org.glycoinfo.WURCSFramework.wurcsgraph.visitor.WURCSGraphNormalizer;
+import org.glycoinfo.WURCSFramework.wurcsgraph.WURCSGraphNormalizer;
 
 import chemicalgraph.Molecule;
 
@@ -29,7 +29,7 @@ public class example2 {
 				Molecule mol = t_objCTReader.getMolecule();
 				if(mol==null) break;
 				String ID = t_objCTReader.getFieldData(t_objParam.m_ID);
-				if ( !ID.equals("12865") ) continue;
+//				if ( !ID.equals("12865") ) continue;
 				if(!t_objParam.m_sdfileOutput){
 					System.err.print( ID+":" );
 				}
@@ -59,7 +59,7 @@ public class example2 {
 				}
 */
 				if(mols!=null) mols.add(mol);
-				break;
+//				break;
 			}
 
 			// close CTfile
