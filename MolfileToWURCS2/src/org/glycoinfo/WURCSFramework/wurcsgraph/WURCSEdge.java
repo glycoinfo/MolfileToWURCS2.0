@@ -60,6 +60,7 @@ public class WURCSEdge implements WURCSVisitable {
 		for ( LinkagePosition link : this.m_aLinkages ) {
 			copy.addLinkage( link.copy() );
 		}
+		copy.m_bIsReverse = this.m_bIsReverse;
 		return copy;
 	}
 

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 
 import org.glycoinfo.WURCSFramework.wurcsgraph.comparator.BackboneComparator;
 
@@ -26,7 +27,7 @@ public class WURCSGraph {
 		}
 		if ( t_aResult.size() > 0 ) return t_aResult;
 
-		// TODO: To be added linkage between anomeric positions
+		// For glycosidic linkage between anomeric positions
 		BackboneComparator t_oBComp = new BackboneComparator();
 		Modification t_objModification;
 		Iterator<Modification> t_iterModification = this.getModificationIterator();
@@ -35,14 +36,18 @@ public class WURCSGraph {
 			t_objModification = t_iterModification.next();
 			if ( !t_objModification.isAglycone() ) continue;
 
+			// Sort candidate root backbone
+			LinkedList<Backbone> t_aRootCandidate = new LinkedList<Backbone>();
 			for ( WURCSEdge t_oEdge : t_objModification.getEdges() )
-				t_aResult.add( t_oEdge.getBackbone() );
+				t_aRootCandidate.add( t_oEdge.getBackbone() );
+			Collections.sort(t_aRootCandidate, t_oBComp);
 
-			Collections.sort(t_aResult, t_oBComp);
+			// Reorder direction of edge for root backbone
 			for ( WURCSEdge t_oEdge : t_objModification.getEdges() ) {
-				if ( t_oEdge.getBackbone().equals(t_aResult.get(0)) ) continue;
+				if (! t_oEdge.getBackbone().equals(t_aRootCandidate.get(0)) ) continue;
 				t_oEdge.forward();
 			}
+			t_aResult.add(t_aRootCandidate.get(0));
 		}
 		if ( t_aResult.size() > 0 ) return t_aResult;
 
@@ -210,11 +215,16 @@ public class WURCSGraph {
 	public WURCSGraph copy( HashMap<Backbone, Backbone> a_hashOrigToCopyBackbone ) throws WURCSException {
 		WURCSGraph copy = new WURCSGraph();
 
-		for ( Backbone t_originalBackbone : this.m_aBackbones ) {
-			Backbone copyBackbone = t_originalBackbone.copy();
-			a_hashOrigToCopyBackbone.put(t_originalBackbone, copyBackbone);
-			for ( WURCSEdge origEdge : t_originalBackbone.getEdges() ) {
-				copy.addResidues( copyBackbone, origEdge.copy(), origEdge.getModification().copy() );
+		HashMap<Modification, Modification> t_hashOrigToCopyModification = new HashMap<Modification, Modification>();
+		for ( Backbone t_origBack : this.m_aBackbones ) {
+			Backbone t_copyBack = t_origBack.copy();
+			a_hashOrigToCopyBackbone.put(t_origBack, t_copyBack);
+			for ( WURCSEdge t_origEdge : t_origBack.getEdges() ) {
+				Modification t_origModif = t_origEdge.getModification();
+				if ( !t_hashOrigToCopyModification.containsKey(t_origModif) )
+					t_hashOrigToCopyModification.put(t_origModif, t_origModif.copy());
+				Modification t_copyModif = t_hashOrigToCopyModification.get(t_origModif);
+				copy.addResidues( t_copyBack, t_origEdge.copy(), t_copyModif );
 			}
 		}
 

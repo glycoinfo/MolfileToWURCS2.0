@@ -40,7 +40,7 @@ public class WURCSGraphNormalizer implements WURCSVisitor {
 	}
 
 	public void visit(Modification a_objModification) throws WURCSVisitorException {
-		if ( !a_objModification.isGlycosidic() ) return;
+//		if ( !a_objModification.isGlycosidic() ) return;
 
 	}
 
@@ -57,17 +57,18 @@ public class WURCSGraphNormalizer implements WURCSVisitor {
 
 		WURCSGraphTraverser t_objTraverser = this.getTraverser(this);
 		t_objTraverser.traverseGraph(a_objGraph);
+
+		// Invert backbone for symmetric backbones
 		try {
+			HashMap<Backbone, Backbone> t_hashOrigToInvert = new HashMap<Backbone, Backbone>();
+			a_objGraph.copy(t_hashOrigToInvert);
 			for ( Backbone origBackbone : this.m_aSymmetricBackbone ) {
-				HashMap<Backbone, Backbone> t_hashOrigToInvert = new HashMap<Backbone, Backbone>();
-				a_objGraph.copy(t_hashOrigToInvert);
 				Backbone copyBackbone = t_hashOrigToInvert.get(origBackbone);
 				copyBackbone.invert();
 				if ( this.m_objBackboneComp.compare(origBackbone, copyBackbone) > 0 ) {
 					System.err.println("Invert Backbone");
 					origBackbone.invert();
 				}
-
 			}
 		} catch (WURCSException e) {
 			throw new WURCSVisitorException(e.getErrorMessage());
@@ -86,5 +87,4 @@ public class WURCSGraphNormalizer implements WURCSVisitor {
 		this.m_aSymmetricBackbone = new LinkedList<Backbone>();
 
 	}
-
 }

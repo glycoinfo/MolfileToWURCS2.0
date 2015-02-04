@@ -1,6 +1,5 @@
 package org.glycoinfo.WURCSFramework.wurcsgraph;
 
-import java.text.NumberFormat;
 
 
 /**
@@ -80,6 +79,7 @@ public class LinkagePosition {
 		return this.m_iProbabilityPosition;
 	}
 
+/*
 	public String getCOLINCode(int a_iNodeID, boolean a_bCompress) {
 		String COLINCode = "";
 
@@ -111,6 +111,7 @@ public class LinkagePosition {
 		}
 		return COLINCode;
 	}
+*/
 
 	public LinkagePosition copy() {
 		return new LinkagePosition(this.m_iBackbonePosition, this.m_enumDirection, this.m_bCanCompressDMB, this.m_iModificationPosition, this.m_bCanCompressPCM);
