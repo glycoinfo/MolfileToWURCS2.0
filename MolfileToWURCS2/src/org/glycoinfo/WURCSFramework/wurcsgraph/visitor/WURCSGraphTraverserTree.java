@@ -7,7 +7,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 import org.glycoinfo.WURCSFramework.wurcsgraph.Backbone;
-import org.glycoinfo.WURCSFramework.wurcsgraph.Modification;
 import org.glycoinfo.WURCSFramework.wurcsgraph.WURCSComponent;
 import org.glycoinfo.WURCSFramework.wurcsgraph.WURCSEdge;
 import org.glycoinfo.WURCSFramework.wurcsgraph.WURCSException;
@@ -17,6 +16,7 @@ import org.glycoinfo.WURCSFramework.wurcsgraph.comparator.WURCSEdgeComparator;
 
 public class WURCSGraphTraverserTree extends WURCSGraphTraverser {
 
+	WURCSEdgeComparator m_oComp = new WURCSEdgeComparator();
 	private HashSet<WURCSEdge> m_aSearchedEdges = new HashSet<WURCSEdge>();
 
 	public WURCSGraphTraverserTree(WURCSVisitor a_objVisitor) throws WURCSVisitorException {
@@ -31,12 +31,10 @@ public class WURCSGraphTraverserTree extends WURCSGraphTraverser {
 		a_objResidue.accept(this.m_objVisitor);
 
 		LinkedList<WURCSEdge> t_aEdges = a_objResidue.getEdges();
-		WURCSEdgeComparator t_oComp = new WURCSEdgeComparator();
-		Collections.sort(t_aEdges, t_oComp);
+		Collections.sort(t_aEdges, this.m_oComp);
 		for ( WURCSEdge t_oEdge : t_aEdges ) {
 
-			if ( a_objResidue.getClass() == Backbone.class     &&  t_oEdge.isReverse() ) continue;
-			if ( a_objResidue.getClass() == Modification.class && !t_oEdge.isReverse() ) continue;
+			if ( a_objResidue.equals( t_oEdge.getNextComponent() ) ) continue;
 
 			this.traverse( t_oEdge );
 			// callback after return
@@ -57,22 +55,13 @@ public class WURCSGraphTraverserTree extends WURCSGraphTraverser {
 		this.m_iState = WURCSGraphTraverser.ENTER;
 		a_objEdge.accept(this.m_objVisitor);
 
-
 		this.m_aSearchedEdges.add(a_objEdge);
 
-		// traverse subtree
-
-		if ( a_objEdge.isReverse() ) {
-			this.traverse(a_objEdge.getBackbone());
-		} else {
-			this.traverse(a_objEdge.getModification());
-		}
+		this.traverse( a_objEdge.getNextComponent() );
 
 		// callback of the function after subtree
 //		this.m_iState = WURCSGlycanTraverser.LEAVE;
 //		a_objEdge.accept(this.m_objVisitor);
-
-
 	}
 
 	@Override

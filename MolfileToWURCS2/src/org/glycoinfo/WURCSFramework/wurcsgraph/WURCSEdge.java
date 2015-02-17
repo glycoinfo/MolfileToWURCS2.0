@@ -18,6 +18,12 @@ public class WURCSEdge implements WURCSVisitable {
 	private LinkedList<LinkagePosition> m_aLinkages = new LinkedList<LinkagePosition>();
 	private boolean m_bIsReverse = false;
 
+	public WURCSComponent getNextComponent() {
+		if ( this.m_bIsReverse )
+			return (WURCSComponent)this.m_objBackbone;
+		return (WURCSComponent)this.m_objModification;
+	}
+
 	public void setBackbone(Backbone backbone) {
 		this.m_objBackbone = backbone;
 	}
