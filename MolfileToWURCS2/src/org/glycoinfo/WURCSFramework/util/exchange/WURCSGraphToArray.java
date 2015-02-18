@@ -18,6 +18,8 @@ import org.glycoinfo.WURCSFramework.wurcs.WURCSArray;
 import org.glycoinfo.WURCSFramework.wurcsgraph.Backbone;
 import org.glycoinfo.WURCSFramework.wurcsgraph.LinkagePosition;
 import org.glycoinfo.WURCSFramework.wurcsgraph.Modification;
+import org.glycoinfo.WURCSFramework.wurcsgraph.ModificationAlternative;
+import org.glycoinfo.WURCSFramework.wurcsgraph.ModificationRepeat;
 import org.glycoinfo.WURCSFramework.wurcsgraph.WURCSEdge;
 import org.glycoinfo.WURCSFramework.wurcsgraph.WURCSGraph;
 import org.glycoinfo.WURCSFramework.wurcsgraph.comparator.WURCSEdgeComparator;
@@ -95,6 +97,19 @@ public class WURCSGraphToArray implements WURCSVisitor {
 		if ( this.m_aGlycosidicModifications.contains(a_objModification) ) return;
 		this.m_aGlycosidicModifications.addLast(a_objModification);
 	}
+
+	@Override
+	public void visit(ModificationRepeat a_objModificationRepeat) throws WURCSVisitorException {
+		// TODO 自動生成されたメソッド・スタブ
+
+	}
+
+	@Override
+	public void visit(ModificationAlternative a_objModificationAlternative) throws WURCSVisitorException {
+		// TODO 自動生成されたメソッド・スタブ
+
+	}
+
 
 	@Override
 	public void visit(WURCSEdge a_objWURCSEdge) throws WURCSVisitorException {

@@ -55,11 +55,8 @@ public class Modification extends WURCSComponent{
 	 * @return true if MAP code of the Modification is omission terget
 	 */
 	public boolean canOmitMAP() {
-		HashSet<String> omissions = new HashSet<String>();
-		omissions.add("*O");
-		omissions.add("*O*");
-		omissions.add("*=O");
-		if ( omissions.contains( this.m_strMAPCode ) ) return true;
+		if ( this.m_strMAPCode.equals("*O") || this.m_strMAPCode.equals("*=O") || this.m_strMAPCode.equals("*O*") )
+			return true;
 		return false;
 	}
 
@@ -69,7 +66,6 @@ public class Modification extends WURCSComponent{
 
 	@Override
 	public void accept(WURCSVisitor a_objVisitor) throws WURCSVisitorException {
-		// TODO 自動生成されたメソッド・スタブ
 		a_objVisitor.visit(this);
 	}
 

@@ -4,27 +4,27 @@ import java.util.LinkedList;
 
 public class ModificationAlternative extends Modification {
 
-	private LinkedList<WURCSEdge> m_aReadInEdges  = new LinkedList<WURCSEdge>();
-	private LinkedList<WURCSEdge> m_aReadOutEdges = new LinkedList<WURCSEdge>();
+	private LinkedList<WURCSEdge> m_aLeadInEdges  = new LinkedList<WURCSEdge>();
+	private LinkedList<WURCSEdge> m_aLeadOutEdges = new LinkedList<WURCSEdge>();
 
 	public ModificationAlternative(String MAPCode) {
 		super(MAPCode);
 	}
 
-	public void addReadInEdge(WURCSEdge a_oInEdge) {
-		this.m_aReadInEdges.addLast(a_oInEdge);
+	public void addLeadInEdge(WURCSEdge a_oInEdge) {
+		this.m_aLeadInEdges.addLast(a_oInEdge);
 	}
 
-	public LinkedList<WURCSEdge> getReadInEdges() {
-		return this.m_aReadInEdges;
+	public LinkedList<WURCSEdge> getLeadInEdges() {
+		return this.m_aLeadInEdges;
 	}
 
-	public void addReadOutEdge(WURCSEdge a_oOutEdge) {
-		this.m_aReadOutEdges.addLast(a_oOutEdge);
+	public void addLeadOutEdge(WURCSEdge a_oOutEdge) {
+		this.m_aLeadOutEdges.addLast(a_oOutEdge);
 	}
 
-	public LinkedList<WURCSEdge> getReadOutEdges() {
-		return this.m_aReadOutEdges;
+	public LinkedList<WURCSEdge> getLeadOutEdges() {
+		return this.m_aLeadOutEdges;
 	}
 
 }
