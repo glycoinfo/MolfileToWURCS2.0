@@ -70,11 +70,16 @@ public enum CarbonDescriptor {
 	SS3_STEREO_s   ( '3', "sp3", 1,1, 2,  "s", null, "-X", "-H", null,  7 ), // -C(X)(Y)- ver 2.0 new
 	SS3_STEREO_r   ( '4', "sp3", 1,1, 2,  "r", null, "-X", "-H", null,  8 ), // -C(X)(Y)- ver 2.0 new
 	SS3_STEREO_X   ( 'x', "sp3", 1,1, 2,  "X", null, "-X", "-H", null,  6 ), // -C(X)(Y)- ver 2.0 new
-	SS3_CHIRAL_S   ( '5', "sp3", 1,1, 2,  "S", null, "-X", "-X", null, 19 ), // -C(X)(Y)- ver 2.0 change (from '1')    anomer
-	SS3_CHIRAL_R   ( '6', "sp3", 1,1, 2,  "R", null, "-X", "-X", null, 20 ), // -C(X)(Y)- ver 2.0 change (from '2')    anomer
-	SS3_CHIRAL_s   ( '7', "sp3", 1,1, 2,  "s", null, "-X", "-X", null, 19 ), // -C(X)(Y)- ver 2.0 change (from '3')    anomer
-	SS3_CHIRAL_r   ( '8', "sp3", 1,1, 2,  "r", null, "-X", "-X", null, 20 ), // -C(X)(Y)- ver 2.0 change (from '4')    anomer
-	SS3_CHIRAL_X   ( 'X', "sp3", 1,1, 2,  "X", null, "-X", "-X", null, 18 ), // -C(X)(Y)-                              anomer
+	SS3_CHIRALA_S  ( '5', "sp3", 1,1, 2,  "S", true, "-X", "-X", null, 19 ), // -C(X)(Y)- ver 2.0 change (from '1')    anomer
+	SS3_CHIRALA_R  ( '6', "sp3", 1,1, 2,  "R", true, "-X", "-X", null, 20 ), // -C(X)(Y)- ver 2.0 change (from '2')    anomer
+	SS3_CHIRALA_s  ( '7', "sp3", 1,1, 2,  "s", true, "-X", "-X", null, 19 ), // -C(X)(Y)- ver 2.0 change (from '3')    anomer
+	SS3_CHIRALA_r  ( '8', "sp3", 1,1, 2,  "r", true, "-X", "-X", null, 20 ), // -C(X)(Y)- ver 2.0 change (from '4')    anomer
+	SS3_CHIRALA_X  ( 'X', "sp3", 1,1, 2,  "X", true, "-X", "-X", null, 18 ), // -C(X)(Y)-                              anomer
+	SS3_CHIRAL_S   ( '5', "sp3", 1,1, 2,  "S", false,"-X", "-X", null,  9 ), // -C(X)(Y)- ver 2.0 change (from '1')
+	SS3_CHIRAL_R   ( '6', "sp3", 1,1, 2,  "R", false,"-X", "-X", null, 10 ), // -C(X)(Y)- ver 2.0 change (from '2')
+	SS3_CHIRAL_s   ( '7', "sp3", 1,1, 2,  "s", false,"-X", "-X", null,  9 ), // -C(X)(Y)- ver 2.0 change (from '3')
+	SS3_CHIRAL_r   ( '8', "sp3", 1,1, 2,  "r", false,"-X", "-X", null, 10 ), // -C(X)(Y)- ver 2.0 change (from '4')
+	SS3_CHIRAL_X   ( 'X', "sp3", 1,1, 2,  "X", false,"-X", "-X", null,  8 ), // -C(X)(Y)-
 	SS2_KETONE_L   ( 'o', "sp2", 1,1, 1, null, null, "=O", null, null, 16 ), // -C(=O)- ver 2.0 change (from 'k')      anomer
 	SS2_KETONE_U   ( 'O', "sp2", 1,1, 1, null, null, "=X", null, null, 17 ), // -C(=X)- ver 2.0 change (from 'K')      anomer
 	DS2_CISTRANS_EL( 'e', "sp2", 2,1, 1,  "E", null, "-H", null, null,  5 ), // =C(H)-
@@ -169,9 +174,9 @@ public enum CarbonDescriptor {
 		return this.m_strStereo;
 	}
 
-	/** Whether or not the carbon is foot of bridge */
-	public Boolean isFootOfBridge() {
-		return this.m_bIsFootOfBridge;
+	/** Whether or not the carbon is foot of bridge (null to false) */
+	public boolean isFootOfBridge() {
+		return  this.m_bIsFootOfBridge == null ? false : this.m_bIsFootOfBridge;
 	}
 
 	/**

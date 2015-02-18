@@ -50,6 +50,9 @@ public class Backbone extends WURCSComponent{
 
 	public int getAnomericPosition() {
 		if ( this.m_objAnomericCarbon == null ) return 0;
+		// For open chain
+		CarbonDescriptor CD = this.m_objAnomericCarbon.getDesctriptor();
+		if ( ! CD.isFootOfBridge() ) return 0;
 		return this.getBackboneCarbons().indexOf(this.m_objAnomericCarbon)+1;
 	}
 

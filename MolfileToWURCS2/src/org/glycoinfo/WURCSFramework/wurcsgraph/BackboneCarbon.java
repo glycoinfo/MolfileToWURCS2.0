@@ -16,21 +16,28 @@ public class BackboneCarbon {
 	private boolean m_bHasUnknownLength = false;
 
 	/**
-	 * Constructor
-	 * @param backbone Backbone which contain this
-	 * @param cd CarbonDescriptor
-	 * @param chiral Whether or not this is chirality
-	 * @param anom Whether or not this is anomeric like
+	 * Private constructor
+	 * @param a_oBackbone Backbone which contain this
+	 * @param a_enumCarbonDescriptor CarbonDescriptor
+	 * @param a_bIsAnomeric Whether this is anomeric like or not 
+	 * @param a_bIsUnknown Whether the length is unknown or not
 	 */
-	public BackboneCarbon( Backbone backbone, CarbonDescriptor cd, boolean anom, boolean unknown ) {
-		this.m_objBackbone         = backbone;
-		this.m_objCarbonDescriptor = cd;
-		this.m_bIsAnomericLike     = anom;
-		this.m_bHasUnknownLength   = unknown;
+	public BackboneCarbon( Backbone a_oBackbone, CarbonDescriptor a_enumCarbonDescriptor, boolean a_bIsAnomeric, boolean a_bIsUnknown ) {
+		this.m_objBackbone         = a_oBackbone;
+		this.m_objCarbonDescriptor = a_enumCarbonDescriptor;
+		this.m_bIsAnomericLike     = a_bIsAnomeric;
+		this.m_bHasUnknownLength   = a_bIsUnknown;
 	}
 
-	public BackboneCarbon( Backbone backbone, CarbonDescriptor cd, boolean anom ) {
-		this(backbone, cd, anom, false);
+	/**
+	 * Constructor for not unknown length
+	 * @param a_oBackbone Backbone which contain this
+	 * @param a_enumCarbonDescriptor CarbonDescriptor
+	 * @param a_bIsAnomeric Whether or not this is anomeric like
+	 * @param a_bIsUnknown Whether or not have unknown length
+	 */
+	public BackboneCarbon( Backbone a_oBackbone, CarbonDescriptor a_enumCarbonDescriptor, boolean a_bIsAnomeric ) {
+		this(a_oBackbone, a_enumCarbonDescriptor, a_bIsAnomeric, false);
 	}
 
 

@@ -2,13 +2,14 @@ package org.glycoinfo.WURCSFramework.wurcsgraph;
 
 public enum DirectionDescriptor {
 
-	N('n', 0), // No chiral
-	U('u', 1), // First (uno)
-	D('d', 2), // Second (dos)
-	T('t', 3), // Third (tres)
+	N('n', 0), // No chiral or no geometrical isomerism for terminal carbon
+	U('u', 1), // First (uno or up)
+	D('d', 2), // Second (dos or down)
+	T('t', 3), // Third (tres) for terminal chiral carbon
 	E('e', 4), // Trans (entgegen)
 	Z('z', 5), // Cis (zusammen)
-	X('x', 6); // Unknown
+	X('x', 6), // Unknown chiral or unknown geometrical isomerism
+	_(' ', 7); // Compressed
 
 	private char m_cName;
 	private int  m_iScore;
