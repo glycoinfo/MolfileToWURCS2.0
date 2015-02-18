@@ -118,21 +118,7 @@ public class WURCSGraphToArray implements WURCSVisitor {
 		WURCSGraphTraverser t_objTraverser = this.getTraverser(this);
 		t_objTraverser.traverseGraph(a_objGraph);
 
-		// Make LIN list
-		for ( Modification mod : this.m_aGlycosidicModifications ) {
-			this.m_aLIN.addLast( this.makeLIN(mod) );
-		}
-
-		this.m_oWURCS = new WURCSArray(this.m_strVersion, this.m_aURES.size(), this.m_aRES.size(), this.m_aLIN.size());
-		for ( UniqueRES t_oURES : this.m_aURES )
-			this.m_oWURCS.addUniqueRES(t_oURES);
-
-		for ( RES t_oRES : this.m_aRES )
-			this.m_oWURCS.addRES(t_oRES);
-
-		for ( LIN t_oLIN : this.m_aLIN ) {
-			this.m_oWURCS.addLIN(t_oLIN);
-		}
+		this.makeWURCSArray();
 	}
 
 	@Override
@@ -157,6 +143,24 @@ public class WURCSGraphToArray implements WURCSVisitor {
 		return this.m_oWURCS;
 	}
 
+	private void makeWURCSArray() {
+		// Make LIN list
+		for ( Modification mod : this.m_aGlycosidicModifications ) {
+			this.m_aLIN.addLast( this.makeLIN(mod) );
+		}
+
+		this.m_oWURCS = new WURCSArray(this.m_strVersion, this.m_aURES.size(), this.m_aRES.size(), this.m_aLIN.size());
+		for ( UniqueRES t_oURES : this.m_aURES )
+			this.m_oWURCS.addUniqueRES(t_oURES);
+
+		for ( RES t_oRES : this.m_aRES )
+			this.m_oWURCS.addRES(t_oRES);
+
+		for ( LIN t_oLIN : this.m_aLIN )
+			this.m_oWURCS.addLIN(t_oLIN);
+
+	}
+
 	private MOD makeMOD(Modification a_oMod) {
 
 		String t_strMAP = a_oMod.getMAPCode();
@@ -176,14 +180,27 @@ public class WURCSGraphToArray implements WURCSVisitor {
 
 	private LIPs makeLIPs(WURCSEdge a_oEdge) {
 		boolean t_bCanOmitModif = a_oEdge.getModification().canOmitMAP();
+		boolean t_bIsSingle = ( a_oEdge.getModification().getEdges().size() == 1 );
 		LinkedList<LIP> t_aLIPs = new LinkedList<LIP>();
 
+		// For each LinkagePosition
 		for ( LinkagePosition t_oLinkPos : a_oEdge.getLinkages() ) {
 			LIP t_oLIP = new LIP(
 					t_oLinkPos.getBackbonePosition(),
-					t_bCanOmitModif ? ' ' : t_oLinkPos.getDirection().getName(),
-					t_bCanOmitModif ? 0 : t_oLinkPos.getModificationPosition()
+					( t_bCanOmitModif || t_bIsSingle ) ? ' ' : t_oLinkPos.getDirection().getName(),
+					( t_bCanOmitModif || t_bIsSingle ) ? 0 : t_oLinkPos.getModificationPosition()
 				);
+			// Set probability
+			if ( t_oLinkPos.getProbabilityLower() != 1 || t_oLinkPos.getProbabilityUpper() != 1 ) {
+				if ( t_oLinkPos.getProbabilityPosition() == LinkagePosition.BACKBONESIDE ) {
+					t_oLIP.setBackboneProbabilityLower( t_oLinkPos.getProbabilityLower() );
+					t_oLIP.setBackboneProbabilityUpper( t_oLinkPos.getProbabilityUpper() );
+				}
+				if ( t_oLinkPos.getProbabilityPosition() == LinkagePosition.MODIFICATIONSIDE ) {
+					t_oLIP.setModificationProbabilityLower( t_oLinkPos.getProbabilityLower() );
+					t_oLIP.setModificationProbabilityUpper( t_oLinkPos.getProbabilityUpper() );
+				}
+			}
 			t_aLIPs.addLast(t_oLIP);
 		}
 		return new LIPs(t_aLIPs);
@@ -217,6 +234,17 @@ public class WURCSGraphToArray implements WURCSVisitor {
 					t_bCanOmitModif ? ' ' : t_oLinkPos.getDirection().getName(),
 					t_bCanOmitModif ? 0 : t_oLinkPos.getModificationPosition()
 				);
+			// Set probability
+			if ( t_oLinkPos.getProbabilityLower() != 1 || t_oLinkPos.getProbabilityUpper() != 1 ) {
+				if ( t_oLinkPos.getProbabilityPosition() == LinkagePosition.BACKBONESIDE ) {
+					t_oGLIP.setBackboneProbabilityLower( t_oLinkPos.getProbabilityLower() );
+					t_oGLIP.setBackboneProbabilityUpper( t_oLinkPos.getProbabilityUpper() );
+				}
+				if ( t_oLinkPos.getProbabilityPosition() == LinkagePosition.MODIFICATIONSIDE ) {
+					t_oGLIP.setModificationProbabilityLower( t_oLinkPos.getProbabilityLower() );
+					t_oGLIP.setModificationProbabilityUpper( t_oLinkPos.getProbabilityUpper() );
+				}
+			}
 			t_aGLIPs.addLast(t_oGLIP);
 		}
 		return new GLIPs(t_aGLIPs);
