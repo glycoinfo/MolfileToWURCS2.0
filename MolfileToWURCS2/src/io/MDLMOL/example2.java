@@ -20,6 +20,9 @@ public class example2 {
 		// Set parameters for backbone creation
 		t_objImporterMol.getCarbonChainCreator().setParameters(t_objParam.m_minNOS, t_objParam.m_minO, t_objParam.m_minBackboneLength, t_objParam.m_maxBackboneLength, t_objParam.m_ratioBackboneNOS);
 
+		WURCSGraphNormalizer t_objGraphNormalizer = new WURCSGraphNormalizer();
+		WURCSGraphToArray    t_objGraphToArray    = new WURCSGraphToArray();
+
 		ArrayList<Molecule> mols = new ArrayList<Molecule>();
 		for ( String t_strFilepath : t_objParam.getCTfileList() ){
 			// read CTFiles
@@ -29,20 +32,18 @@ public class example2 {
 				Molecule mol = t_objCTReader.getMolecule();
 				if(mol==null) break;
 				String ID = t_objCTReader.getFieldData(t_objParam.m_ID);
-//				if ( !ID.equals("12865") ) continue;
-				if(!t_objParam.m_sdfileOutput){
-					System.err.print( ID+":" );
-				}
-				System.err.println(t_objCTReader.getFieldData("ID") );
+//				if ( !ID.equals("23373") ) continue;
+//				if(!t_objParam.m_sdfileOutput){
+//					System.err.print( ID+":" );
+//				}
+//				System.err.println(t_objCTReader.getFieldData("ID") );
 
 				try {
-					WURCSGraph objGlycan = t_objImporterMol.start(mol);
-					WURCSGraphNormalizer objNormalizer = new WURCSGraphNormalizer();
-					objNormalizer.start(objGlycan);
-					WURCSGraphToArray objExporter = new WURCSGraphToArray();
-					objExporter.start(objGlycan);
+					WURCSGraph t_objGlycan = t_objImporterMol.start(mol);
+					t_objGraphNormalizer.start(t_objGlycan);
+					t_objGraphToArray.start(t_objGlycan);
 					System.out.print(t_objCTReader.getFieldData(t_objParam.m_ID)+"\t");
-					objExporter.getWURCSArray();
+					t_objGraphToArray.getWURCSArray();
 //					System.exit(0);
 				} catch (WURCSException e) {
 					// TODO 自動生成された catch ブロック
@@ -50,15 +51,7 @@ public class example2 {
 					e.printStackTrace();
 				}
 
-//				mol.generateWURCS(t_objParam.m_minNOS, t_objParam.m_minO, t_objParam.m_minBackboneLength, t_objParam.m_maxBackboneLength, t_objParam.m_ratioBackboneNOS);  //Issaku YAMADA
-				// generate WURCS
-/*				try {
-					t_objGlycanImporter.generateWURCS(mol);
-				} catch (WURCSGlycanObjectException e) {
-					e.printStackTrace();
-				}
-*/
-				if(mols!=null) mols.add(mol);
+//				if(mols!=null) mols.add(mol);
 //				break;
 			}
 

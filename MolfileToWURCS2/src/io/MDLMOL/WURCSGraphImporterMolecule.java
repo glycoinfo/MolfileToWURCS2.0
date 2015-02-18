@@ -137,7 +137,7 @@ public class WURCSGraphImporterMolecule {
 				hashAtomToBackboneCarbon.put( chain.get(i), backbone.getBackboneCarbons().get(i) );
 			}
 
-			System.err.println( aBackboneChains.indexOf(chain) + ": " + backbone.getSkeletonCode() );
+//			System.err.println( aBackboneChains.indexOf(chain) + ": " + backbone.getSkeletonCode() );
 		}
 
 		// Make Modifications
@@ -182,7 +182,7 @@ public class WURCSGraphImporterMolecule {
 
 			count++;
 		}
-		System.err.println("edge count:"+count);
+//		System.err.println("edge count:"+count);
 		return objWURCSGlycan;
 	}
 
