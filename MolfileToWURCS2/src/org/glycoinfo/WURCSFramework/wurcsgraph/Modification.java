@@ -15,7 +15,14 @@ import org.glycoinfo.WURCSFramework.wurcsgraph.visitor.WURCSVisitorException;
  */
 public class Modification extends WURCSComponent{
 
+	public static final int UNKNOWN_REPEAT = -1;
+	public static final int NO_REPEAT = 0;
+
 	private String m_strMAPCode;
+	/** minima count for this repeat unit ; -1 for unknown, 0 for no repeat */
+	private int m_iRepeatCountMin = Modification.NO_REPEAT;
+	/** maxima count for this repeat unit ; -1 for unknown, 0 for no repeat */
+	private int m_iRepeatCountMax = Modification.NO_REPEAT;
 
 	public Modification( String MAPCode ) {
 		this.m_strMAPCode = MAPCode;
@@ -23,6 +30,22 @@ public class Modification extends WURCSComponent{
 
 	public String getMAPCode() {
 		return this.m_strMAPCode;
+	}
+
+	public void setRepeatCountMin(int a_nRepMin) {
+		this.m_iRepeatCountMin = a_nRepMin;
+	}
+
+	public int getRepeatCountMin() {
+		return this.m_iRepeatCountMin;
+	}
+
+	public void setRepeatCountMax(int a_nRepMax) {
+		this.m_iRepeatCountMax = a_nRepMax;
+	}
+
+	public int getRepeatCountMax() {
+		return this.m_iRepeatCountMax;
 	}
 
 	/**
