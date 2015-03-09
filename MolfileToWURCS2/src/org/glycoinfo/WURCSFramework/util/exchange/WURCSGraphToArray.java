@@ -19,7 +19,6 @@ import org.glycoinfo.WURCSFramework.wurcsgraph.Backbone;
 import org.glycoinfo.WURCSFramework.wurcsgraph.LinkagePosition;
 import org.glycoinfo.WURCSFramework.wurcsgraph.Modification;
 import org.glycoinfo.WURCSFramework.wurcsgraph.ModificationAlternative;
-import org.glycoinfo.WURCSFramework.wurcsgraph.ModificationRepeat;
 import org.glycoinfo.WURCSFramework.wurcsgraph.WURCSEdge;
 import org.glycoinfo.WURCSFramework.wurcsgraph.WURCSGraph;
 import org.glycoinfo.WURCSFramework.wurcsgraph.comparator.WURCSEdgeComparator;
@@ -33,6 +32,7 @@ public class WURCSGraphToArray implements WURCSVisitor {
 	private String m_strVersion = "2.0";
 	private LinkedList<Backbone>     m_aBackbones;
 	private LinkedList<Modification> m_aGlycosidicModifications;
+	private LinkedList<ModificationAlternative> m_aGlycosidicModificationAlternatives;
 
 	private WURCSArray m_oWURCS = null;
 	private LinkedList<String>    m_aURESString;
@@ -57,6 +57,8 @@ public class WURCSGraphToArray implements WURCSVisitor {
 				a_objBackbone.getAnomericSymbol()
 			);
 
+		//XXX
+		System.out.println( this.m_oExporter.getUniqueRESString( t_oURESCandidate ) );
 		// Searce edges for MOD
 		LinkedList<WURCSEdge> edges = a_objBackbone.getEdges();
 		Collections.sort( edges, this.m_oEdgeComp );
@@ -99,14 +101,13 @@ public class WURCSGraphToArray implements WURCSVisitor {
 	}
 
 	@Override
-	public void visit(ModificationRepeat a_objModificationRepeat) throws WURCSVisitorException {
-		// TODO 自動生成されたメソッド・スタブ
-
-	}
-
-	@Override
 	public void visit(ModificationAlternative a_objModificationAlternative) throws WURCSVisitorException {
 		// TODO 自動生成されたメソッド・スタブ
+		if ( !a_objModificationAlternative.isGlycosidic() )
+			throw new WURCSVisitorException("ModificationAlternative must be Glycosidic linkage.");
+		// Add modifiation at glycosidic linkage
+		if ( this.m_aGlycosidicModificationAlternatives.contains(a_objModificationAlternative) ) return;
+		this.m_aGlycosidicModificationAlternatives.addLast(a_objModificationAlternative);
 
 	}
 
@@ -123,7 +124,7 @@ public class WURCSGraphToArray implements WURCSVisitor {
 			System.err.println( "M to B: "+a_objWURCSEdge.getLinkages().getFirst().getBackbonePosition() );
 		}
 */
-		// Nothing to do
+		// Do nothing
 	}
 
 	@Override
@@ -145,6 +146,7 @@ public class WURCSGraphToArray implements WURCSVisitor {
 	public void clear() {
 		this.m_aBackbones = new LinkedList<Backbone>();
 		this.m_aGlycosidicModifications = new LinkedList<Modification>();
+		this.m_aGlycosidicModificationAlternatives = new LinkedList<ModificationAlternative>();
 
 		this.m_strVersion = "2.0";
 		this.m_aURESString = new LinkedList<String>();
@@ -161,6 +163,9 @@ public class WURCSGraphToArray implements WURCSVisitor {
 	private void makeWURCSArray() {
 		// Make LIN list
 		for ( Modification mod : this.m_aGlycosidicModifications ) {
+			this.m_aLIN.addLast( this.makeLIN(mod) );
+		}
+		for ( ModificationAlternative mod : this.m_aGlycosidicModificationAlternatives ) {
 			this.m_aLIN.addLast( this.makeLIN(mod) );
 		}
 
@@ -221,6 +226,30 @@ public class WURCSGraphToArray implements WURCSVisitor {
 		return new LIPs(t_aLIPs);
 	}
 
+	private LIN makeLIN(ModificationAlternative a_oMod) {
+		String t_strMAP = a_oMod.getMAPCode();
+		if ( t_strMAP.equals("*O*") ) t_strMAP = "";
+		LIN t_oLIN = new LIN(t_strMAP);
+
+		LinkedList<WURCSEdge> edges = a_oMod.getLeadInEdges();
+		Collections.sort( edges, this.m_oEdgeComp );
+		for ( WURCSEdge t_oEdge : edges ) {
+			Backbone backbone = t_oEdge.getBackbone();
+			int t_iRES = this.m_aBackbones.indexOf(backbone)+1;
+			String t_strRESIndex = WURCSDataConverter.convertRESIDToIndex(t_iRES);
+			t_oLIN.addGLIPs( this.makeGLIPs(t_oEdge, t_strRESIndex) );
+		}
+
+		// Set Repeating
+		if ( a_oMod.getMinRepeatCount() != Modification.NO_REPEAT || a_oMod.getMinRepeatCount() != Modification.NO_REPEAT ) {
+			t_oLIN.setRepeatingUnit(true);
+			t_oLIN.setMinRepeatCount( a_oMod.getMinRepeatCount() );
+			t_oLIN.setMaxRepeatCount( a_oMod.getMaxRepeatCount() );
+		}
+
+		return t_oLIN;
+	}
+
 	private LIN makeLIN(Modification a_oMod) {
 
 		String t_strMAP = a_oMod.getMAPCode();
@@ -234,6 +263,12 @@ public class WURCSGraphToArray implements WURCSVisitor {
 			int t_iRES = this.m_aBackbones.indexOf(backbone)+1;
 			String t_strRESIndex = WURCSDataConverter.convertRESIDToIndex(t_iRES);
 			t_oLIN.addGLIPs( this.makeGLIPs(t_oEdge, t_strRESIndex) );
+		}
+		// Set Repeating
+		if ( a_oMod.getMinRepeatCount() != Modification.NO_REPEAT || a_oMod.getMinRepeatCount() != Modification.NO_REPEAT ) {
+			t_oLIN.setRepeatingUnit(true);
+			t_oLIN.setMinRepeatCount( a_oMod.getMinRepeatCount() );
+			t_oLIN.setMaxRepeatCount( a_oMod.getMaxRepeatCount() );
 		}
 
 		return t_oLIN;

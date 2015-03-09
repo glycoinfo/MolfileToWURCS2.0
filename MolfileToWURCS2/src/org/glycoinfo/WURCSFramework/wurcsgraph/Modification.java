@@ -20,9 +20,9 @@ public class Modification extends WURCSComponent{
 
 	private String m_strMAPCode;
 	/** minima count for this repeat unit ; -1 for unknown, 0 for no repeat */
-	private int m_iRepeatCountMin = Modification.NO_REPEAT;
+	private int m_iMinRepeatCount = Modification.NO_REPEAT;
 	/** maxima count for this repeat unit ; -1 for unknown, 0 for no repeat */
-	private int m_iRepeatCountMax = Modification.NO_REPEAT;
+	private int m_iMaxRepeatCount = Modification.NO_REPEAT;
 
 	public Modification( String MAPCode ) {
 		this.m_strMAPCode = MAPCode;
@@ -32,20 +32,20 @@ public class Modification extends WURCSComponent{
 		return this.m_strMAPCode;
 	}
 
-	public void setRepeatCountMin(int a_nRepMin) {
-		this.m_iRepeatCountMin = a_nRepMin;
+	public void setMinRepeatCount(int a_nRepMin) {
+		this.m_iMinRepeatCount = a_nRepMin;
 	}
 
-	public int getRepeatCountMin() {
-		return this.m_iRepeatCountMin;
+	public int getMinRepeatCount() {
+		return this.m_iMinRepeatCount;
 	}
 
-	public void setRepeatCountMax(int a_nRepMax) {
-		this.m_iRepeatCountMax = a_nRepMax;
+	public void setMaxRepeatCount(int a_nRepMax) {
+		this.m_iMaxRepeatCount = a_nRepMax;
 	}
 
-	public int getRepeatCountMax() {
-		return this.m_iRepeatCountMax;
+	public int getMaxRepeatCount() {
+		return this.m_iMaxRepeatCount;
 	}
 
 	/**

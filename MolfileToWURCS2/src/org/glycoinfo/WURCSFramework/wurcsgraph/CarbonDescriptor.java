@@ -60,7 +60,7 @@ public enum CarbonDescriptor {
 	// Ambiguous
 	SZX_UNDEF_L    ( 'u',  "?" , 1,0, 0, null, null, "-X", "-H", null, 15 ), // -C(X)(Y)(H) or -C(=O)(H) ver 2.0 new ('x' and 'O')
 	SZX_UNDEF_U    ( 'U',  "?" , 1,0, 0, null, null, "-X", "-X", null, 16 ), // -C(X)(Y)(Z) or -C(=X)(X) ver 2.0 new ('X' and 'A')
-
+	SZX_UNDEF_ALL  ( '0',  "?" , 1,0, 0, null, null, null, null, null,  0 ), // terminal carbon type undefined at all
 	// Non-terminal
 	SS3_METHYNE    ( 'd', "sp3", 1,1, 1, null, null, "-H", "-H", null,  4 ), // -C(H)(H)-
 	SS3_ACETAL     ( 'c', "sp3", 1,1, 1, null, null, "-O", "-O", null,  6 ), // -C(O)(O)- ver 2.0 change (from 'b')
@@ -94,6 +94,7 @@ public enum CarbonDescriptor {
 	TS1_ETHYNE     ( 'T',  "sp", 3,1, 0, null, null, null, null, null,  4 ), // #C- ver 2.0 change (from 'y')
 	// Ambiguous
 	SSX_UNDEF_U    ( 'U',  "?" , 1,1, 0, null, null, "-X", null, null, 15 ), // -C(X)(Y)- or -C(=X)- ver 2.0 new ('X' and 'O')
+	SSX_UNDEF_ALL  ( '0',  "?" , 1,1, 0, null, null, null, null, null,  0 ), // non terminal carbon type undefined at all
 
 	XXX_UNKNOWN    ( '?',  null, 0,0, 0, null, null, null, null, null,  0 ); // C???
 

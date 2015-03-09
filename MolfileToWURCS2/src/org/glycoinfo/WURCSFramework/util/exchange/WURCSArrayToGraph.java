@@ -23,6 +23,7 @@ import org.glycoinfo.WURCSFramework.wurcsgraph.Modification;
 import org.glycoinfo.WURCSFramework.wurcsgraph.WURCSEdge;
 import org.glycoinfo.WURCSFramework.wurcsgraph.WURCSException;
 import org.glycoinfo.WURCSFramework.wurcsgraph.WURCSGraph;
+import org.glycoinfo.WURCSFramework.wurcsgraph.WURCSGraphNormalizer;
 
 public class WURCSArrayToGraph {
 
@@ -36,7 +37,7 @@ public class WURCSArrayToGraph {
 			UniqueRES t_oURES = a_oArray.getUniqueRESs().get(t_iURESID-1);
 
 			Backbone t_oBackbone = this.convertToBackbone( t_oURES );
-			// For each modification in RES
+			// For each MOD in UniqueRES
 			for ( MOD t_oMOD : t_oURES.getMODs() ) {
 				Modification t_oModif = new Modification( t_oMOD.getMAPCode() );
 				for ( LIPs t_oLIPs : t_oMOD.getListOfLIPs() ) {
@@ -67,6 +68,9 @@ public class WURCSArrayToGraph {
 				}
 			}
 		}
+
+		WURCSGraphNormalizer t_oNormal = new WURCSGraphNormalizer();
+		t_oNormal.start( this.m_oGraph );
 	}
 
 	public WURCSGraph getGraph() {
@@ -94,14 +98,14 @@ public class WURCSArrayToGraph {
 	private Backbone convertToBackbone(UniqueRES a_oURES) throws WURCSFormatException {
 		Backbone t_oBackbone = new Backbone();
 		LinkedList<String> t_aCDString = this.parseSkeletonCode( a_oURES.getSkeletonCode() );
-		for ( String t_strCD : t_aCDString ) {
-			int t_iPos = t_aCDString.indexOf(t_strCD)+1;
-			boolean t_bIsTerminal = ( t_aCDString.getFirst().equals(t_strCD) || t_aCDString.getFirst().equals(t_strCD) );
-			boolean t_bIsAnomeric = ( t_iPos == a_oURES.getAnomericPosition() );
+		for ( int i=0; i< t_aCDString.size(); i++ ) {
+			String t_strCD = t_aCDString.get(i);
+			boolean t_bIsTerminal = ( i == 0 || i == t_aCDString.size()-1 );
+			boolean t_bIsAnomeric = ( i == a_oURES.getAnomericPosition()-1 );
 
 			BackboneCarbon t_oBC;
-			// For unknown length carbon
-			if ( t_strCD.equals("<nx>") ) {
+			// For unknown carbon length
+			if ( t_strCD.equals("<0>") ) {
 				if ( t_bIsAnomeric )
 					throw new WURCSFormatException("SkeletonCode with unknown length must not be anomeric position : "+a_oURES.getSkeletonCode());
 				if ( t_bIsTerminal )
@@ -122,7 +126,7 @@ public class WURCSArrayToGraph {
 		int length = a_strSkeletonCode.length();
 		for ( int i=0; i<length; i++ ) {
 			char t_cName = a_strSkeletonCode.charAt(i);
-			if ( Character.isAlphabetic(t_cName) ) {
+			if ( Character.isAlphabetic(t_cName) || Character.isDigit(t_cName) ) {
 				t_aCDString.add(""+t_cName);
 				continue;
 			}

@@ -11,6 +11,11 @@ public class ModificationAlternative extends Modification {
 		super(MAPCode);
 	}
 
+	@Override
+	public LinkedList<WURCSEdge> getEdges() {
+		return this.m_aLeadOutEdges;
+	}
+
 	public void addLeadInEdge(WURCSEdge a_oInEdge) {
 		this.m_aLeadInEdges.addLast(a_oInEdge);
 	}
