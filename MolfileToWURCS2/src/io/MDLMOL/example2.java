@@ -1,9 +1,11 @@
 package io.MDLMOL;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
+import org.glycoinfo.WURCSFramework.exec.WURCSFileWriter;
 import org.glycoinfo.WURCSFramework.util.WURCSExporter;
 import org.glycoinfo.WURCSFramework.util.exchange.WURCSGraphToArray;
 import org.glycoinfo.WURCSFramework.wurcs.WURCSArray;
@@ -36,6 +38,8 @@ public class example2 {
 				Molecule mol = t_objCTReader.getMolecule();
 				if(mol==null) break;
 				String ID = t_objCTReader.getFieldData(t_objParam.m_ID);
+
+				ID = String.format("%1$05d", Integer.parseInt(ID) );
 //				if ( !ID.equals("23373") ) continue;
 //				if(!t_objParam.m_sdfileOutput){
 //					System.err.print( ID+":" );
@@ -44,7 +48,7 @@ public class example2 {
 
 				try {
 					WURCSGraph t_objGlycan = t_objImporterMol.start(mol);
-					t_objGraphNormalizer.start(t_objGlycan);
+//					t_objGraphNormalizer.start(t_objGlycan);
 					t_objGraphToArray.start(t_objGlycan);
 					System.err.println(t_objCTReader.getFieldData(t_objParam.m_ID));
 					WURCSArray t_oArray = t_objGraphToArray.getWURCSArray();
@@ -60,10 +64,9 @@ public class example2 {
 //				if(mols!=null) mols.add(mol);
 //				break;
 			}
-			for ( String id : t_mapIDtoWURCS.keySet() ) {
-				System.out.println(id+"\t"+t_mapIDtoWURCS.get(id));
-			}
-			System.out.println("Total: "+t_mapIDtoWURCS.size());
+			PrintWriter pw = WURCSFileWriter.printWURCS(t_mapIDtoWURCS, "C:\\GlycoCTToMOL\\", "result.txt");
+			pw.println("Total: "+t_mapIDtoWURCS.size());
+			pw.close();
 
 			// close CTfile
 			try {

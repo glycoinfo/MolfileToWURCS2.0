@@ -101,6 +101,7 @@ public class ParameterReader {
 							if(!fields.contains(DataHeader)) fields.add(DataHeader);
 						}
 					}
+					br.close();
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();
 				} catch (IOException e) {
@@ -124,6 +125,7 @@ public class ParameterReader {
 					inputdata = br.readLine();
 					No = Integer.parseInt(inputdata);
 					this.m_ID = (No < fields.size()) ? fields.get(No) : null;
+					br.close();
 				} catch (IOException e) {
 					e.printStackTrace();
 				} catch (NumberFormatException e){
