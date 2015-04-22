@@ -25,7 +25,6 @@ public class example2 {
 		// Set parameters for backbone creation
 		t_objImporterMol.getCarbonChainCreator().setParameters(t_objParam.m_minNOS, t_objParam.m_minO, t_objParam.m_minBackboneLength, t_objParam.m_maxBackboneLength, t_objParam.m_ratioBackboneNOS);
 
-		WURCSGraphNormalizer t_objGraphNormalizer = new WURCSGraphNormalizer();
 		WURCSGraphToArray    t_objGraphToArray    = new WURCSGraphToArray();
 
 		ArrayList<Molecule> mols = new ArrayList<Molecule>();
@@ -48,7 +47,8 @@ public class example2 {
 
 				try {
 					WURCSGraph t_objGlycan = t_objImporterMol.start(mol);
-//					t_objGraphNormalizer.start(t_objGlycan);
+					WURCSGraphNormalizer t_objGraphNormalizer = new WURCSGraphNormalizer();
+					t_objGraphNormalizer.start(t_objGlycan);
 					t_objGraphToArray.start(t_objGlycan);
 					System.err.println(t_objCTReader.getFieldData(t_objParam.m_ID));
 					WURCSArray t_oArray = t_objGraphToArray.getWURCSArray();
