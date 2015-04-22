@@ -6,9 +6,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 
-import org.glycoinfo.WURCSFramework.wurcsgraph.Backbone;
-import org.glycoinfo.WURCSFramework.wurcsgraph.BackboneCarbon;
-import org.glycoinfo.WURCSFramework.wurcsgraph.CarbonDescriptor;
+import org.glycoinfo.WURCSFramework.wurcs.graph.Backbone;
+import org.glycoinfo.WURCSFramework.wurcs.graph.BackboneCarbon;
+import org.glycoinfo.WURCSFramework.wurcs.graph.CarbonDescriptor;
 
 import chemicalgraph.Atom;
 import chemicalgraph.Connection;

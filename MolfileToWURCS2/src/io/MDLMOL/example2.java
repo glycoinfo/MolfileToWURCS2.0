@@ -2,11 +2,14 @@ package io.MDLMOL;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.TreeMap;
 
+import org.glycoinfo.WURCSFramework.util.WURCSExporter;
 import org.glycoinfo.WURCSFramework.util.exchange.WURCSGraphToArray;
-import org.glycoinfo.WURCSFramework.wurcsgraph.WURCSException;
-import org.glycoinfo.WURCSFramework.wurcsgraph.WURCSGraph;
-import org.glycoinfo.WURCSFramework.wurcsgraph.WURCSGraphNormalizer;
+import org.glycoinfo.WURCSFramework.wurcs.WURCSArray;
+import org.glycoinfo.WURCSFramework.wurcs.graph.WURCSException;
+import org.glycoinfo.WURCSFramework.wurcs.graph.WURCSGraph;
+import org.glycoinfo.WURCSFramework.wurcs.graph.WURCSGraphNormalizer;
 
 import chemicalgraph.Molecule;
 
@@ -24,6 +27,7 @@ public class example2 {
 		WURCSGraphToArray    t_objGraphToArray    = new WURCSGraphToArray();
 
 		ArrayList<Molecule> mols = new ArrayList<Molecule>();
+		TreeMap<String, String> t_mapIDtoWURCS = new TreeMap<String, String>();
 		for ( String t_strFilepath : t_objParam.getCTfileList() ){
 			// read CTFiles
 			CTFileReader t_objCTReader = new CTFileReader(t_strFilepath, t_objParam.m_sdfileOutput);
@@ -42,8 +46,10 @@ public class example2 {
 					WURCSGraph t_objGlycan = t_objImporterMol.start(mol);
 					t_objGraphNormalizer.start(t_objGlycan);
 					t_objGraphToArray.start(t_objGlycan);
-					System.out.print(t_objCTReader.getFieldData(t_objParam.m_ID)+"\t");
-					t_objGraphToArray.getWURCSArray();
+					System.err.println(t_objCTReader.getFieldData(t_objParam.m_ID));
+					WURCSArray t_oArray = t_objGraphToArray.getWURCSArray();
+					String t_strWURCS = (new WURCSExporter()).getWURCSString(t_oArray);
+					t_mapIDtoWURCS.put(ID, t_strWURCS);
 //					System.exit(0);
 				} catch (WURCSException e) {
 					// TODO 自動生成された catch ブロック
@@ -54,6 +60,10 @@ public class example2 {
 //				if(mols!=null) mols.add(mol);
 //				break;
 			}
+			for ( String id : t_mapIDtoWURCS.keySet() ) {
+				System.out.println(id+"\t"+t_mapIDtoWURCS.get(id));
+			}
+			System.out.println("Total: "+t_mapIDtoWURCS.size());
 
 			// close CTfile
 			try {

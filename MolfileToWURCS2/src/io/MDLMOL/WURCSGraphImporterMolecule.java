@@ -5,13 +5,13 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 
-import org.glycoinfo.WURCSFramework.wurcsgraph.Backbone;
-import org.glycoinfo.WURCSFramework.wurcsgraph.BackboneCarbon;
-import org.glycoinfo.WURCSFramework.wurcsgraph.LinkagePosition;
-import org.glycoinfo.WURCSFramework.wurcsgraph.Modification;
-import org.glycoinfo.WURCSFramework.wurcsgraph.WURCSEdge;
-import org.glycoinfo.WURCSFramework.wurcsgraph.WURCSException;
-import org.glycoinfo.WURCSFramework.wurcsgraph.WURCSGraph;
+import org.glycoinfo.WURCSFramework.wurcs.graph.Backbone;
+import org.glycoinfo.WURCSFramework.wurcs.graph.BackboneCarbon;
+import org.glycoinfo.WURCSFramework.wurcs.graph.LinkagePosition;
+import org.glycoinfo.WURCSFramework.wurcs.graph.Modification;
+import org.glycoinfo.WURCSFramework.wurcs.graph.WURCSEdge;
+import org.glycoinfo.WURCSFramework.wurcs.graph.WURCSException;
+import org.glycoinfo.WURCSFramework.wurcs.graph.WURCSGraph;
 
 import chemicalgraph.Atom;
 import chemicalgraph.Connection;
