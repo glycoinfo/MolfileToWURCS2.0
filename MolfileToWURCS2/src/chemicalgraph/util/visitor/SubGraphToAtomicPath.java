@@ -1,19 +1,18 @@
-package chemicalgraph;
+package chemicalgraph.util.visitor;
 
 import java.util.HashSet;
 import java.util.LinkedList;
 
-import chemicalgraph.util.visitor.AtomicTraverser;
-import chemicalgraph.util.visitor.AtomicTraverserConnection;
-import chemicalgraph.util.visitor.AtomicVisitor;
-import chemicalgraph.util.visitor.AtomicVisitorException;
+import chemicalgraph.Atom;
+import chemicalgraph.Connection;
+import chemicalgraph.SubGraph;
 
 /**
  * Class for ALIN code generator from SubGraph using visitor pattern
  * @author MasaakiMatsubara
  *
  */
-public class ALINGenerator implements AtomicVisitor {
+public class SubGraphToAtomicPath implements AtomicVisitor {
 	private SubGraph m_objGraph;
 	private LinkedList<Connection> m_aConnections = new LinkedList<Connection>();
 
@@ -25,7 +24,7 @@ public class ALINGenerator implements AtomicVisitor {
 	 * @param carbons Backbone carbons
 	 * @param aromatics Aromatic atoms
 	 */
-	public ALINGenerator(final HashSet<Atom> carbons, final HashSet<Atom> aromatics) {
+	public SubGraphToAtomicPath(final HashSet<Atom> carbons, final HashSet<Atom> aromatics) {
 		this.m_aBackboneCarbons = carbons;
 		this.m_aAromaticAtoms = aromatics;
 	}

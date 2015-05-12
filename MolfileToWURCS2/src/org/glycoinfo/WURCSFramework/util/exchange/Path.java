@@ -1,4 +1,4 @@
-package chemicalgraph.util.forwurcsglycan;
+package org.glycoinfo.WURCSFramework.util.exchange;
 
 import java.util.LinkedList;
 

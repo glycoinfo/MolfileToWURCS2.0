@@ -1,4 +1,4 @@
-package io.MDLMOL;
+package org.glycoinfo.WURCSFramework.util.exchange;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -20,12 +20,6 @@ import chemicalgraph.SubGraph;
 import chemicalgraph.util.analytical.CarbonChainAnalyzer;
 import chemicalgraph.util.analytical.MoleculeNormalizer;
 import chemicalgraph.util.analytical.StructureAnalyzer;
-import chemicalgraph.util.forwurcsglycan.CarbonChainComparator;
-import chemicalgraph.util.forwurcsglycan.CarbonChainFinder;
-import chemicalgraph.util.forwurcsglycan.CarbonChainToBackbone;
-import chemicalgraph.util.forwurcsglycan.ConnectionToLinkagePosition;
-import chemicalgraph.util.forwurcsglycan.SubGraphCreator;
-import chemicalgraph.util.forwurcsglycan.SubGraphToModification;
 
 /**
  * Class of importer for Carbohydrate

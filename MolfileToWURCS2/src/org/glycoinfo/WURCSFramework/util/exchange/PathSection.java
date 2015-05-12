@@ -1,4 +1,4 @@
-package chemicalgraph.util.forwurcsglycan;
+package org.glycoinfo.WURCSFramework.util.exchange;
 
 import chemicalgraph.Atom;
 import chemicalgraph.Bond;

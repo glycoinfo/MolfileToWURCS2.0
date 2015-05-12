@@ -7,6 +7,7 @@ import java.util.TreeMap;
 
 import org.glycoinfo.WURCSFramework.exec.WURCSFileWriter;
 import org.glycoinfo.WURCSFramework.util.WURCSExporter;
+import org.glycoinfo.WURCSFramework.util.exchange.WURCSGraphImporterMolecule;
 import org.glycoinfo.WURCSFramework.util.exchange.WURCSGraphToArray;
 import org.glycoinfo.WURCSFramework.wurcs.WURCSArray;
 import org.glycoinfo.WURCSFramework.wurcs.WURCSException;
