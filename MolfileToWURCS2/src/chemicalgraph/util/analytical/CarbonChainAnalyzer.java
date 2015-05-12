@@ -16,6 +16,13 @@ public class CarbonChainAnalyzer {
 		return this;
 	}
 
+	public LinkedList<Integer> getOxygenCountSequence() {
+		LinkedList<Integer> t_aOxygenCount = new LinkedList<Integer>();
+		for ( Atom atom : this.m_aCarbonChain )
+			t_aOxygenCount.add( this.m_objIdentC.setAtom(atom).countConnectedO() );
+		return t_aOxygenCount;
+	}
+
 	/**
 	 * Get string of oxidation sequence of this backbone carbons.
 	 * Set number of oxidation to each carbon.

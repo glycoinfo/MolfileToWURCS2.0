@@ -17,6 +17,22 @@ public class CarbonIdentifier extends AtomIdentifier {
 	}
 
 	/**
+	 * Count connected oxygens
+	 * @return Number of connected oxygens.
+	 */
+	public int countConnectedO() {
+		int numO = 0;
+		for ( Connection connection : this.m_objAtom.getConnections() ) {
+			String symbol = connection.endAtom().getSymbol();
+			if ( !symbol.equals("O") ) continue;
+			int type = connection.getBond().getType();
+			if ( type != 1 && type != 2 && type != 3 ) continue;
+			numO += type;
+		}
+		return numO;
+	}
+
+	/**
 	 * Count connected N, O, and S atoms
 	 * @return Number of N, O, and S atom.
 	 */

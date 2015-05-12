@@ -3,6 +3,9 @@ package chemicalgraph.util.forwurcsglycan;
 import java.util.Comparator;
 import java.util.LinkedList;
 
+import org.glycoinfo.WURCSFramework.util.comparator.graph.BackboneComparator;
+import org.glycoinfo.WURCSFramework.wurcs.graph.Backbone;
+
 import chemicalgraph.Atom;
 import chemicalgraph.Connection;
 import chemicalgraph.util.Chemical;
@@ -37,17 +40,20 @@ public class CarbonChainComparator implements Comparator<LinkedList<Atom>> {
 		if(checkOxidationSequence != 0) return checkOxidationSequence;
 
 		// これ以降、Backboneの長さは等しくなる。
-		int checkAtomNumber = ConnectedAtomKindCount(chain1, chain2);
+		int checkAtomNumber = countConnectedAtomKind(chain1, chain2);
 		if ( checkAtomNumber != 0 ) return checkAtomNumber;
 
-//		int result = SkeltonCode(chain1, chain2);
+		int result = this.compareBackbone(chain1, chain2);
+		if( result != 0 ) return result;
+
+//		result = SkeltonCode(chain1, chain2);
 //		if( result != 0 ) return result;
 
 		return 0;
 	}
 
 	/** Compare number of atoms which connected with chain for every kind */
-	private int ConnectedAtomKindCount( LinkedList<Atom> chain1, LinkedList<Atom> chain2 ) {
+	private int countConnectedAtomKind( LinkedList<Atom> chain1, LinkedList<Atom> chain2 ) {
 		int chainLen = chain1.size();
 
 		for(int ii=0; ii<chainLen; ii++){
@@ -80,8 +86,17 @@ public class CarbonChainComparator implements Comparator<LinkedList<Atom>> {
 		return 0;
 	}
 
-	/** Compare skelton code */
-/*	private int SkeltonCode( LinkedList<Atom> chain1, LinkedList<Atom> chain2 ) {
+	/** Compare backbone */
+	private int compareBackbone( LinkedList<Atom> chain1, LinkedList<Atom> chain2 ) {
+		CarbonChainToBackbone t_oCC2B = new CarbonChainToBackbone();
+		Backbone backbone1 = t_oCC2B.convert(chain1);
+		Backbone backbone2 = t_oCC2B.convert(chain2);
+
+		return (new BackboneComparator()).compare(backbone1, backbone2);
+	}
+
+/*
+	private int compateSkeletonCode() {
 		String skeltonCode1 = this.m_objCodeGen.makeSkeletonCode(chain1);
 		String skeltonCode2 = this.m_objCodeGen.makeSkeletonCode(chain2);
 

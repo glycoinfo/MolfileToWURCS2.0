@@ -74,7 +74,15 @@ public class CarbonChainFinder {
 		LinkedList<LinkedList<Atom>> candidates = new LinkedList<LinkedList<Atom>>();
 		for(LinkedList<Atom> candidateChain : this.m_aCarbonChainList){
 			this.convertCandidateBackbone(candidateChain);
-
+/*
+			// Screen by neighboring oxygen counting
+			NeighboringOxygenCounting t_oNOCCount = new NeighboringOxygenCounting();
+			t_oNOCCount.setCarbonChain(candidateChain);
+			String t_strNOCPass1 = t_oNOCCount.getNOCPass1();
+			String t_strNOCPass2 = t_oNOCCount.getNOCPass2();
+			String t_strNOCPass2Ex = t_oNOCCount.getNOCPass2Ex();
+			System.err.println( t_strNOCPass1+"\n"+t_strNOCPass2+"\n"+t_strNOCPass2Ex );
+*/
 			// Screen by number of connected N, O, or S
 			int numNOS = this.countCarbonsConnectedNOS(candidateChain);
 			if ( numNOS < this.m_iMinNOS ) continue;

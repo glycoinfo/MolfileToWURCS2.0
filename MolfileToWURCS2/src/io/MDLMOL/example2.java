@@ -9,7 +9,7 @@ import org.glycoinfo.WURCSFramework.exec.WURCSFileWriter;
 import org.glycoinfo.WURCSFramework.util.WURCSExporter;
 import org.glycoinfo.WURCSFramework.util.exchange.WURCSGraphToArray;
 import org.glycoinfo.WURCSFramework.wurcs.WURCSArray;
-import org.glycoinfo.WURCSFramework.wurcs.graph.WURCSException;
+import org.glycoinfo.WURCSFramework.wurcs.WURCSException;
 import org.glycoinfo.WURCSFramework.wurcs.graph.WURCSGraph;
 import org.glycoinfo.WURCSFramework.wurcs.graph.WURCSGraphNormalizer;
 
@@ -38,7 +38,10 @@ public class example2 {
 				if(mol==null) break;
 				String ID = t_objCTReader.getFieldData(t_objParam.m_ID);
 
-				ID = String.format("%1$05d", Integer.parseInt(ID) );
+				try {
+					ID = String.format("%1$05d", Integer.parseInt(ID) );
+				} catch (NumberFormatException e) {
+				}
 //				if ( !ID.equals("23373") ) continue;
 //				if(!t_objParam.m_sdfileOutput){
 //					System.err.print( ID+":" );
@@ -56,7 +59,6 @@ public class example2 {
 					t_mapIDtoWURCS.put(ID, t_strWURCS);
 //					System.exit(0);
 				} catch (WURCSException e) {
-					// TODO 自動生成された catch ブロック
 					System.err.println(e.getErrorMessage());
 					e.printStackTrace();
 				}
@@ -64,8 +66,9 @@ public class example2 {
 //				if(mols!=null) mols.add(mol);
 //				break;
 			}
-			PrintWriter pw = WURCSFileWriter.printWURCS(t_mapIDtoWURCS, "C:\\GlycoCTToMOL\\", "result.txt");
-			pw.println("Total: "+t_mapIDtoWURCS.size());
+			PrintWriter pw = WURCSFileWriter.printWURCS(t_mapIDtoWURCS, "C:\\SDFToMOL\\", "result.txt");
+			if ( !t_mapIDtoWURCS.isEmpty() )
+				pw.println("Total: "+t_mapIDtoWURCS.size());
 			pw.close();
 
 			// close CTfile

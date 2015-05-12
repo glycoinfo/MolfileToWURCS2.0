@@ -5,39 +5,44 @@ public class Bond {
 	// Member variable
 	//----------------------------
 	/** Connect atoms */
-	private Atom[] m_aAtoms = new Atom[2];
+	private Atom m_oAtom1;
+	private Atom m_oAtom2;
 	/** Bond type */
 	private int m_iType = 0;
+	private BondType m_oBondType;
 	/** Stereo information for drawing */
 	private int m_iStereo = 0;
+	private BondStereo m_oBondStereo;
 	/** Geometrical isomer */
 	private String m_strGeometric = null;
 
 	//----------------------------
 	// Constructor
 	//----------------------------
-	public Bond(final Atom atom0, final Atom atom1, final int type, final int stereo) {
-		this.m_aAtoms[0] = atom0;
-		this.m_aAtoms[1] = atom1;
-		this.m_iType = type;
-		this.m_iStereo = stereo;
+	public Bond(final Atom a_oAtom1, final Atom a_oAtom2, final int a_iType, final int a_iStereo) {
+		this.m_oAtom1 = a_oAtom1;
+		this.m_oAtom2 = a_oAtom2;
+		this.m_iType = a_iType;
+		this.m_oBondType = BondType.forType(a_iType);
+		this.m_iStereo = a_iStereo;
+		this.m_oBondStereo = BondStereo.forStereoValue( a_iStereo, this.m_oBondType.getMultiplicity() );
 
-		Connection connection0 = new Connection(atom1, this, stereo);
-		Connection connection1 = new Connection(atom0, this, (stereo != 1 && stereo != 6) ? stereo : 0);
+		Connection t_oConnection1 = new Connection(a_oAtom2, this, a_iStereo);
+		Connection t_oConnection2 = new Connection(a_oAtom1, this, (a_iStereo != 1 && a_iStereo != 6) ? a_iStereo : 0);
 
-		atom0.addConnection(connection0);
-		atom1.addConnection(connection1);
+		a_oAtom1.addConnection(t_oConnection1);
+		a_oAtom2.addConnection(t_oConnection2);
 	}
 
 	//----------------------------
 	// Accessor
 	//----------------------------
 	public Atom getAtom1() {
-		return this.m_aAtoms[0];
+		return this.m_oAtom1;
 	}
 
 	public Atom getAtom2() {
-		return this.m_aAtoms[1];
+		return this.m_oAtom2;
 	}
 
 	public int getType() {
@@ -64,8 +69,8 @@ public class Bond {
 	 * @return the length of this bond.
 	 */
 	public double length(){
-		double[] crd0 = this.m_aAtoms[0].getCoordinate();
-		double[] crd1 = this.m_aAtoms[1].getCoordinate();
+		double[] crd0 = this.m_oAtom1.getCoordinate();
+		double[] crd1 = this.m_oAtom2.getCoordinate();
 		double[] v = new double[3];
 		v[0] = crd1[0] - crd0[0];
 		v[1] = crd1[1] - crd0[1];

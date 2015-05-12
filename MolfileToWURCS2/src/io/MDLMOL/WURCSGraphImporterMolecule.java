@@ -5,12 +5,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 
+import org.glycoinfo.WURCSFramework.wurcs.WURCSException;
 import org.glycoinfo.WURCSFramework.wurcs.graph.Backbone;
 import org.glycoinfo.WURCSFramework.wurcs.graph.BackboneCarbon;
 import org.glycoinfo.WURCSFramework.wurcs.graph.LinkagePosition;
 import org.glycoinfo.WURCSFramework.wurcs.graph.Modification;
 import org.glycoinfo.WURCSFramework.wurcs.graph.WURCSEdge;
-import org.glycoinfo.WURCSFramework.wurcs.graph.WURCSException;
 import org.glycoinfo.WURCSFramework.wurcs.graph.WURCSGraph;
 
 import chemicalgraph.Atom;
@@ -333,6 +333,16 @@ public class WURCSGraphImporterMolecule {
 			if ( isAglycon ) this.m_aAglyconGraphs.addLast( graph );
 		}
 
+		// Add backbone atoms to candidate modifications
+		for ( SubGraph graph : candidateModifications ) {
+			for ( Connection con : graph.getExternalConnections() ) {
+				Atom conatom = con.endAtom();
+				if ( !aBackboneCarbons.contains( conatom ) ) continue;
+				graph.add( conatom );
+				graph.add( con.getBond() );
+			}
+		}
+
 		// Remove aglycons from candidate modifications
 		// and add modifications which remade from removed aglycons
 		for ( SubGraph aglycon : this.m_aAglyconGraphs ) {
@@ -343,17 +353,9 @@ public class WURCSGraphImporterMolecule {
 				if ( !aBackboneCarbons.contains( conatom ) ) continue;
 				SubGraph newMod = new SubGraph();
 				newMod.add(con.startAtom());
+				newMod.add(conatom);
+				newMod.add( con.getBond() );
 				candidateModifications.add(newMod);
-			}
-		}
-
-		// Add backbone atoms to candidate modifications
-		for ( SubGraph graph : candidateModifications ) {
-			for ( Connection con : graph.getExternalConnections() ) {
-				Atom conatom = con.endAtom();
-				if ( !aBackboneCarbons.contains( conatom ) ) continue;
-				graph.add( conatom );
-				graph.add( con.getBond() );
 			}
 		}
 
