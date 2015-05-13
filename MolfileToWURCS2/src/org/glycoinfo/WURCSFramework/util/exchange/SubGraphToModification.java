@@ -151,6 +151,8 @@ public class SubGraphToModification {
 			graph.updateECnumber(path.bonds(), path.atoms());
 			final HashMap<Atom, Integer> subgraphECNumber = graph.getAtomToECNumber();
 
+			System.err.println(  tailAtom.getSymbol()+":"+subgraphECNumber.get(tailAtom)+":"+initialECNumber.get(tailAtom)  );
+
 			// 隣接Connectをソート
 			// Sort vicinal connections
 			final LinkedList<Atom> tmpPathAtom = path.atoms();

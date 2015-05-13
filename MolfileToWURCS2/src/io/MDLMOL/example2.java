@@ -44,6 +44,7 @@ public class example2 {
 				} catch (NumberFormatException e) {
 				}
 //				if ( !ID.equals("23373") ) continue;
+				if ( !ID.equals("CHEBI:10502") ) continue;
 //				if(!t_objParam.m_sdfileOutput){
 //					System.err.print( ID+":" );
 //				}
@@ -58,6 +59,7 @@ public class example2 {
 					WURCSArray t_oArray = t_objGraphToArray.getWURCSArray();
 					String t_strWURCS = (new WURCSExporter()).getWURCSString(t_oArray);
 					t_mapIDtoWURCS.put(ID, t_strWURCS);
+					System.err.println(t_strWURCS);
 //					System.exit(0);
 				} catch (WURCSException e) {
 					System.err.println(e.getErrorMessage());
@@ -65,7 +67,7 @@ public class example2 {
 				}
 
 //				if(mols!=null) mols.add(mol);
-//				break;
+				break;
 			}
 			PrintWriter pw = WURCSFileWriter.printWURCS(t_mapIDtoWURCS, "C:\\SDFToMOL\\", "result.txt");
 			if ( !t_mapIDtoWURCS.isEmpty() )
