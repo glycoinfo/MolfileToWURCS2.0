@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 
-import org.glycoinfo.WURCSFramework.wurcs.WURCSException;
+import org.glycoinfo.WURCSFramework.util.WURCSException;
 import org.glycoinfo.WURCSFramework.wurcs.graph.Backbone;
 import org.glycoinfo.WURCSFramework.wurcs.graph.BackboneCarbon;
 import org.glycoinfo.WURCSFramework.wurcs.graph.LinkagePosition;
@@ -52,7 +52,7 @@ public class WURCSGraphImporterMolecule {
 	 * Get Backbone creator
 	 * @return BackboneCreator
 	 */
-	public CarbonChainFinder getCarbonChainCreator() {
+	public CarbonChainFinder getCarbonChainFinder() {
 		return this.m_objCCFinder;
 	}
 
@@ -76,21 +76,21 @@ public class WURCSGraphImporterMolecule {
 		this.m_objMolecule = a_objMolecule;
 
 		// Normalize molecule
-		MoleculeNormalizer normalyzer = new MoleculeNormalizer();
-		normalyzer.normalize(this.m_objMolecule);
+		MoleculeNormalizer t_oMolNorm = new MoleculeNormalizer();
+		t_oMolNorm.normalize(this.m_objMolecule);
 
 		// Structureral analyze molecule
 		// Collect atoms which membered aromatic, pi cyclic and carbon cyclic rings
-		StructureAnalyzer analSt = new StructureAnalyzer();
-		analSt.analyze(this.m_objMolecule);
+		StructureAnalyzer t_oStAnal = new StructureAnalyzer();
+		t_oStAnal.analyze(this.m_objMolecule);
 
 		// Set start atoms for carbon chain finder
-		HashSet<Atom> terminalCarbons = analSt.getTerminalCarbons();
+		HashSet<Atom> t_setTerminalCarbons = t_oStAnal.getTerminalCarbons();
 		// Set Ignore atoms for carbon chain finder
-		HashSet<Atom> ignoreAtoms = new HashSet<Atom>();
-		ignoreAtoms.addAll( analSt.getAromaticAtoms() );
-		ignoreAtoms.addAll( analSt.getPiCyclicAtoms() );
-		ignoreAtoms.addAll( analSt.getCarbonCyclicAtoms() );
+		HashSet<Atom> t_setIgnoreAtoms = new HashSet<Atom>();
+		t_setIgnoreAtoms.addAll( t_oStAnal.getAromaticAtoms() );
+		t_setIgnoreAtoms.addAll( t_oStAnal.getPiCyclicAtoms() );
+		t_setIgnoreAtoms.addAll( t_oStAnal.getCarbonCyclicAtoms() );
 
 		// Stereochemical analyze
 		this.m_objMolecule.setStereo();
@@ -106,29 +106,31 @@ public class WURCSGraphImporterMolecule {
 		}
 */
 		// Find and get carbon chains, which was reduced length by C1 check
-		this.m_objCCFinder.find( terminalCarbons, ignoreAtoms );
-		LinkedList<LinkedList<Atom>> candidateBackbones = this.m_objCCFinder.getCandidateCarbonChains();
+		this.m_objCCFinder.find( t_setTerminalCarbons, t_setIgnoreAtoms );
+		LinkedList<LinkedList<Atom>> t_aCandidateBackbones = this.m_objCCFinder.getCandidateCarbonChains();
+		if ( t_aCandidateBackbones.isEmpty() )
+			throw new WURCSException("Cannot find a Backbone in the molecule.");
 //		this.printCarbonChains(candidateBackbones);
 
 		// Find components for carbohydrate
-		LinkedList<LinkedList<Atom>> aBackboneChains     = this.findCarbonChainsForBackbones(candidateBackbones);
-		LinkedList<SubGraph>         aModificationGraphs = this.findModificationGraphs(aBackboneChains);
-		HashSet<Connection>       aLinkageConnections = this.findLinkageConnections(aBackboneChains, aModificationGraphs);
+		LinkedList<LinkedList<Atom>> t_aBackboneChains     = this.findCarbonChainsForBackbones(t_aCandidateBackbones);
+		LinkedList<SubGraph>         t_aModificationGraphs = this.findModificationGraphs(t_aBackboneChains);
+		HashSet<Connection>       t_aLinkageConnections = this.findLinkageConnections(t_aBackboneChains, t_aModificationGraphs);
 
 //		this.printCarbonChains(aBackboneChains);
 
 		// Make Backbones
-		LinkedList<Backbone> backbones = new LinkedList<Backbone>();
-		HashMap<Atom, BackboneCarbon> hashAtomToBackboneCarbon = new HashMap<Atom, BackboneCarbon>();
-		HashMap<LinkedList<Atom>, Backbone> hashChainToBackbone = new HashMap<LinkedList<Atom>, Backbone>();
+		LinkedList<Backbone> t_aBackbones = new LinkedList<Backbone>();
+		HashMap<Atom, BackboneCarbon> t_mapAtomToBackboneCarbon = new HashMap<Atom, BackboneCarbon>();
+		HashMap<LinkedList<Atom>, Backbone> t_mapChainToBackbone = new HashMap<LinkedList<Atom>, Backbone>();
 		CarbonChainToBackbone CC2B = new CarbonChainToBackbone();
-		for ( LinkedList<Atom> chain : aBackboneChains ) {
+		for ( LinkedList<Atom> chain : t_aBackboneChains ) {
 			Backbone backbone = CC2B.convert(chain);
-			hashChainToBackbone.put(chain, backbone);
+			t_mapChainToBackbone.put(chain, backbone);
 
-			backbones.add(backbone);
+			t_aBackbones.add(backbone);
 			for ( int i=0; i<chain.size(); i++ ) {
-				hashAtomToBackboneCarbon.put( chain.get(i), backbone.getBackboneCarbons().get(i) );
+				t_mapAtomToBackboneCarbon.put( chain.get(i), backbone.getBackboneCarbons().get(i) );
 			}
 
 //			System.err.println( aBackboneChains.indexOf(chain) + ": " + backbone.getSkeletonCode() );
@@ -138,13 +140,17 @@ public class WURCSGraphImporterMolecule {
 		LinkedList<Modification> modifications = new LinkedList<Modification>();
 		HashMap<SubGraph, Modification> hashGraphToModification = new HashMap<SubGraph, Modification>();
 		HashMap<SubGraph, LinkedList<Atom>> hashGraphToModificationCarbons = new HashMap<SubGraph, LinkedList<Atom>>();
-		SubGraphToModification SG2M = new SubGraphToModification(analSt.getAromaticAtoms(), aBackboneChains);
-		for ( SubGraph graph : aModificationGraphs ) {
+		HashMap<SubGraph, HashMap<Atom, Integer>> t_mapGraphToModificationCarbonsMap = new HashMap<SubGraph, HashMap<Atom, Integer>>();
+		SubGraphToModification SG2M = new SubGraphToModification(t_oStAnal.getAromaticAtoms(), t_aBackboneChains);
+		for ( SubGraph graph : t_aModificationGraphs ) {
 			Modification modification = SG2M.convert(graph);
+			System.err.println(modification.getMAPCode());
 			hashGraphToModification.put(graph, modification);
 			hashGraphToModificationCarbons.put(graph, SG2M.getBackboneAtoms());
+			// Set backbone carbon id in MAP
+			t_mapGraphToModificationCarbonsMap.put( graph, SG2M.getBacboneCarbonToMAPPos() );
 			for ( Atom atom : SG2M.getBackboneAtoms() ) {
-				BackboneCarbon bc = hashAtomToBackboneCarbon.get(atom);
+				BackboneCarbon bc = t_mapAtomToBackboneCarbon.get(atom);
 //				modification.addBackboneCarbon(bc);
 			}
 			modifications.add(modification);
@@ -153,10 +159,11 @@ public class WURCSGraphImporterMolecule {
 		WURCSGraph objWURCSGlycan = new WURCSGraph();
 
 		// Make Linkages and Edges
-		ConnectionToLinkagePosition C2L = new ConnectionToLinkagePosition(hashGraphToModificationCarbons);
+//		ConnectionToLinkagePosition C2L = new ConnectionToLinkagePosition(hashGraphToModificationCarbons);
+		ConnectionToLinkagePosition C2L = new ConnectionToLinkagePosition( t_mapGraphToModificationCarbonsMap );
 		LinkedList<WURCSEdge> edges = new LinkedList<WURCSEdge>();
 		int count = 0;
-		for ( Connection con : aLinkageConnections ) {
+		for ( Connection con : t_aLinkageConnections ) {
 			// Make linkage
 			LinkedList<Atom> chain = this.m_hashConnectionToBackboneChain.get(con);
 			SubGraph graph         = this.m_hashConnectionToModificationGraph.get(con);
@@ -168,7 +175,7 @@ public class WURCSGraphImporterMolecule {
 			edge.addLinkage(link);
 
 			// Connect backbone and modification in graph
-			Backbone backbone         = hashChainToBackbone.get(chain);
+			Backbone backbone         = t_mapChainToBackbone.get(chain);
 			Modification modification = hashGraphToModification.get(graph);
 
 			objWURCSGlycan.addResidues(backbone, edge, modification);

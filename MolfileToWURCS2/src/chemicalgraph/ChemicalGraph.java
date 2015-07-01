@@ -21,7 +21,7 @@ public abstract class ChemicalGraph {
 	/** Analyzer for stereochemistry */
 	protected StereochemicalAnalyzer m_objAnalyzer = new StereochemicalAnalyzer();
 
-	private HashMap<Atom, Integer>       m_hashAtomToTmp                = new HashMap<Atom, Integer>();
+//	private HashMap<Atom, Integer>       m_hashAtomToTmp                = new HashMap<Atom, Integer>();
 	private HashMap<Atom, Integer>       m_hashAtomToSubgraphECNumber   = new HashMap<Atom, Integer>();
 
 	//----------------------------
@@ -92,7 +92,10 @@ public abstract class ChemicalGraph {
 
 	/** Get updated EC numbers */
 	public HashMap<Atom, Integer> getAtomToECNumber() {
-		return this.m_hashAtomToSubgraphECNumber;
+		HashMap<Atom, Integer> t_mapAtomToECNumberCopy = new HashMap<Atom, Integer>();
+		for ( Atom t_oAtom : this.m_hashAtomToSubgraphECNumber.keySet() )
+			t_mapAtomToECNumberCopy.put(t_oAtom, this.m_hashAtomToSubgraphECNumber.get(t_oAtom));
+		return t_mapAtomToECNumberCopy;
 	}
 
 	/**
@@ -102,37 +105,37 @@ public abstract class ChemicalGraph {
 	 */
 	public void updateECnumber(final LinkedList<Bond> ignoreBonds, final LinkedList<Atom> ignoreAtoms){
 //		this.atoms.setTmp(1);
+		HashMap<Atom, Integer> t_mapAtomToTempECNum = new HashMap<Atom, Integer>();
 		for ( Atom atom : this.m_aAtoms ) {
-			this.m_hashAtomToTmp.put(atom, 1);
+			t_mapAtomToTempECNum.put(atom, 1);
 		}
-		int uniqUpdateECnumber = this.countUniqTmp();
+		int uniqUpdateECnumber = this.countUniqTmp(t_mapAtomToTempECNum);
 
 		int uniqECnumber;
 		do{
 //			this.m_aAtoms.copyTmpToECNumber();
 			for ( Atom atom : this.m_aAtoms ) {
-				this.m_hashAtomToSubgraphECNumber.put( atom, this.m_hashAtomToTmp.get(atom) );
+				this.m_hashAtomToSubgraphECNumber.put( atom, t_mapAtomToTempECNum.get(atom) );
 			}
 			uniqECnumber = uniqUpdateECnumber;
 
 //			this.atoms.setTmp(0);
 			for ( Atom atom : this.m_aAtoms ) {
-				this.m_hashAtomToTmp.put(atom, 0);
+				t_mapAtomToTempECNum.put(atom, 0);
 			}
 			for ( Atom atom : this.m_aAtoms ) {
 				if( ignoreAtoms != null && ignoreAtoms.contains(atom)) continue;
+				int t_iTmpEC = t_mapAtomToTempECNum.get(atom);
 				for ( Connection con : atom.getConnections() ) {
 					if ( !this.m_aBonds.contains(con.getBond()) ) continue;
 					if (  ignoreBonds != null && ignoreBonds.contains(con.getBond()) ) continue;
 					if (  ignoreAtoms != null && ignoreAtoms.contains(con.endAtom()) ) continue;
 //					atom.tmp += con.atom.subgraphECnumber;
-					int tmp = this.m_hashAtomToTmp.get(atom);
-					tmp += this.m_hashAtomToTmp.get(con.endAtom());
-					this.m_hashAtomToTmp.put(atom, tmp);
-
+					t_iTmpEC += this.m_hashAtomToSubgraphECNumber.get(con.endAtom());
 				}
+				t_mapAtomToTempECNum.put(atom, t_iTmpEC);
 			}
-			uniqUpdateECnumber = this.countUniqTmp();
+			uniqUpdateECnumber = this.countUniqTmp(t_mapAtomToTempECNum);
 		}while(uniqECnumber < uniqUpdateECnumber);
 	}
 
@@ -141,7 +144,7 @@ public abstract class ChemicalGraph {
 	 * (Use when generate EC number)
 	 * @return the number of unique tmp in list
 	 */
-	private int countUniqTmp(){
+	private int countUniqTmp(HashMap<Atom, Integer> a_mapAtomToTempECNum){
 		int uniqNum = 0;
 		int ii, jj;
 		int num = this.m_aAtoms.size();
@@ -149,7 +152,7 @@ public abstract class ChemicalGraph {
 			for(jj=ii+1; jj<num; jj++){
 //				if(atoms.get(ii).tmp == atoms.get(jj).tmp) break;
 
-				if ( this.m_hashAtomToTmp.get(this.m_aAtoms.get(ii)) == this.m_hashAtomToTmp.get(this.m_aAtoms.get(jj)) ) break;
+				if ( a_mapAtomToTempECNum.get(this.m_aAtoms.get(ii)) == a_mapAtomToTempECNum.get(this.m_aAtoms.get(jj)) ) break;
 			}
 			if(jj==num) uniqNum++;
 		}

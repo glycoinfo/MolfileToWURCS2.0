@@ -22,10 +22,15 @@ public class ConnectionToLinkagePosition {
 
 	private HashMap<Connection, LinkedList<Atom>> m_hashConnectionToBackboneChain;
 	private HashMap<SubGraph, LinkedList<Atom>> m_hashGraphToModificationCarbons = new HashMap<SubGraph, LinkedList<Atom>>();
+	private HashMap<SubGraph, HashMap<Atom, Integer>> m_hashGraphToModificationCarbonsMap;
 	private AtomIdentifier m_objIdent = new AtomIdentifier();
-
+/*
 	public ConnectionToLinkagePosition( HashMap<SubGraph, LinkedList<Atom>> hashGraphToModificationCarbons ) {
 		this.m_hashGraphToModificationCarbons = hashGraphToModificationCarbons;
+	}
+*/
+	public ConnectionToLinkagePosition( HashMap<SubGraph, HashMap<Atom, Integer>> a_mapGraphToModificationCarbonsMap ) {
+		this.m_hashGraphToModificationCarbonsMap = a_mapGraphToModificationCarbonsMap;
 	}
 
 	/**
@@ -50,11 +55,21 @@ public class ConnectionToLinkagePosition {
 		boolean ellipsisDMB = ( this.countModificationNumberOnCarbon(con, chain) == 0 );
 
 		// PCA: Get carbon poistion in the modification
-		LinkedList<Atom> modCarbons = this.m_hashGraphToModificationCarbons.get(graph);
-		int PCA = modCarbons.indexOf( con.startAtom() )+1;
+//		LinkedList<Atom> modCarbons = this.m_hashGraphToModificationCarbons.get(graph);
+//		int PCA = modCarbons.indexOf( con.startAtom() )+1;
+		HashMap<Atom, Integer> t_mapModCarbonToID = this.m_hashGraphToModificationCarbonsMap.get(graph);
+		// TODO: remove print
+		System.err.println(graph);
+		int i=1;
+		for ( Atom t_oA : t_mapModCarbonToID.keySet() ) {
+			System.err.println(i++ +" : "+t_oA+" : "+t_mapModCarbonToID.get(t_oA));
+		}
+		System.err.println(con.startAtom());
+		int PCA = t_mapModCarbonToID.get( con.startAtom() );
 
 		// Check PCA can ellipsis
-		boolean ellipsisPCA = !( !(modCarbons.size()==2 && graph.getAtoms().size()==3) && modCarbons.size() > 1 );
+//		boolean ellipsisPCA = !( !(modCarbons.size()==2 && graph.getAtoms().size()==3) && modCarbons.size() > 1 );
+		boolean ellipsisPCA = ( PCA == 0 );
 
 		LinkagePosition link = new LinkagePosition(PCB, DMB, ellipsisDMB, PCA, ellipsisPCA);
 		return link;

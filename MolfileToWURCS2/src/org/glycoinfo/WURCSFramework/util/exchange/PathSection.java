@@ -6,7 +6,7 @@ import chemicalgraph.Connection;
 
 /**
  * 修飾に含まれる部分構造を探索し、修飾文字列を生成する際、探索した原子の情報を格納するクラス
- * Class for storing of atomic information to generate ALIN code
+ * Class for storing atomic information to generate MAP(ALIN) code
  * @author KenichiTanaka
  * @author MasaakiMatsubara
  */

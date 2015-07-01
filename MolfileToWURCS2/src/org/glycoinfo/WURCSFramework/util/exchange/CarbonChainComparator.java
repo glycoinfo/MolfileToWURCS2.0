@@ -3,7 +3,7 @@ package org.glycoinfo.WURCSFramework.util.exchange;
 import java.util.Comparator;
 import java.util.LinkedList;
 
-import org.glycoinfo.WURCSFramework.util.comparator.graph.BackboneComparator;
+import org.glycoinfo.WURCSFramework.util.graph.comparator.BackboneComparator;
 import org.glycoinfo.WURCSFramework.wurcs.graph.Backbone;
 
 import chemicalgraph.Atom;

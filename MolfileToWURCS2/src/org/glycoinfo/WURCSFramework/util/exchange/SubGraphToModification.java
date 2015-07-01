@@ -27,6 +27,7 @@ public class SubGraphToModification {
 	private HashSet<Atom> m_aAromaticAtoms = new HashSet<Atom>();
 	private HashSet<Atom> m_aBackboneAtoms = new HashSet<Atom>();
 	private HashMap<Atom, LinkedList<Atom>> m_hashAtomToCarbonChain = new HashMap<Atom, LinkedList<Atom>>();
+	private HashMap<Atom, Integer> m_mapBacboneCarbonToMAPPos = new HashMap<Atom, Integer>();
 
 	private SubGraph m_objModificationGraph;
 	private LinkedList<Atom> m_aBackboneAtomsInModification = new LinkedList<Atom>();
@@ -57,10 +58,11 @@ public class SubGraphToModification {
 	}
 
 	public Modification convert(SubGraph graph) {
+		this.m_mapBacboneCarbonToMAPPos = new HashMap<Atom, Integer>();
 		if(this.path != null) this.path.clear();
 
 		this.path = this.findCanonicalPaths(graph);
-		String ALIN = this.makeALINCode(graph, this.path);
+		String ALIN = this.makeMAPCode(graph, this.path);
 //		System.err.println( ALIN );
 
 		Modification modification = new Modification(ALIN);
@@ -76,27 +78,34 @@ public class SubGraphToModification {
 		graph.updateECnumber(null, null);
 		// 初期EC番号を保存
 		// Store initial EC numbers
-		final HashMap<Atom, Integer> initialECNumber = graph.getAtomToECNumber();
+		final HashMap<Atom, Integer> t_mapAtomToInitECNum = graph.getAtomToECNumber();
 //		for ( Atom atom : graph.getAtoms() ) {
 //			atom.initialECnumber = atom.subgraphECnumber;
 //		}
 
 		// 探索開始ノードのソート
 		// Sort atoms to get start node
+		LinkedList<Atom> t_aBackboneCarbonsInMAP = new LinkedList<Atom>();
+		for ( Atom t_oAtom : graph.getAtoms() ) {
+			if ( !this.m_aBackboneAtoms.contains(t_oAtom) ) continue;
+			t_aBackboneCarbonsInMAP.add(t_oAtom);
+		}
+
 		final HashSet<Atom> backboneAtoms = this.m_aBackboneAtoms;
-		graph.sortAtoms( new Comparator<Atom>() {
+		Collections.sort(t_aBackboneCarbonsInMAP,  new Comparator<Atom>() {
+//		graph.sortAtoms( new Comparator<Atom>() {
 			public int compare(Atom atom1, Atom atom2) {
 				// １．主鎖炭素を優先
 				// 1. Prioritize backbone carbons
 //				if( atom1.isBackbone() && !atom2.isBackbone()) return -1;
 //				if(!atom1.isBackbone() &&  atom2.isBackbone()) return 1;
-				if (  backboneAtoms.contains(atom1) && !backboneAtoms.contains(atom2) ) return -1;
-				if ( !backboneAtoms.contains(atom1) &&  backboneAtoms.contains(atom2) ) return 1;
+//				if (  backboneAtoms.contains(atom1) && !backboneAtoms.contains(atom2) ) return -1;
+//				if ( !backboneAtoms.contains(atom1) &&  backboneAtoms.contains(atom2) ) return 1;
 				// ２．EC番号が小さい修飾原子を優先
 				// 2. Prioritize modification atoms with smaller EC number
 //				if( atom1.subgraphECnumber != atom2.subgraphECnumber ) return atom1.subgraphECnumber - atom2.subgraphECnumber;
-				if ( initialECNumber.get(atom1) != initialECNumber.get(atom2) )
-					return initialECNumber.get(atom1) - initialECNumber.get(atom2);
+				if ( t_mapAtomToInitECNum.get(atom1) != t_mapAtomToInitECNum.get(atom2) )
+					return t_mapAtomToInitECNum.get(atom1) - t_mapAtomToInitECNum.get(atom2);
 				// ３．原子番号が小さい修飾原子を優先
 				// 3. Prioritize smaller atomic number
 //				if( atom1.atomicNumber()   != atom2.atomicNumber()   ) return atom1.atomicNumber()   - atom2.atomicNumber();
@@ -107,65 +116,86 @@ public class SubGraphToModification {
 				return 0;
 			}
 		});
-		Atom startAtom = graph.getAtoms().getFirst();
+		// Set MAPID
+		int t_iMAPID = 1;
+		for ( int i=0 ; i<t_aBackboneCarbonsInMAP.size()-1; i++ ) {
+			Atom t_oCi = t_aBackboneCarbonsInMAP.get(i);
+			Atom t_oCj = t_aBackboneCarbonsInMAP.get(i+1);
+			int t_iComp = 0;
+
+			this.m_mapBacboneCarbonToMAPPos.put(t_oCi, t_iMAPID);
+			t_iComp = t_mapAtomToInitECNum.get(t_oCi) - t_mapAtomToInitECNum.get(t_oCj);
+			// TODO: remove print
+			System.err.println(t_oCi+" vs "+t_oCj+" : "+t_iComp);
+			if ( t_iComp != 0 ) t_iMAPID++;
+			this.m_mapBacboneCarbonToMAPPos.put(t_oCj, t_iMAPID);
+		}
+		// For same carbons
+		if ( t_iMAPID == 1 )
+			for ( Atom t_oC : t_aBackboneCarbonsInMAP )
+				this.m_mapBacboneCarbonToMAPPos.put(t_oC, 0);
+
+		Atom t_oStartAtom = t_aBackboneCarbonsInMAP.getFirst();
+//		Atom t_oStartAtom = graph.getAtoms().getFirst();
 
 		final HashSet<Atom> aromaticAtoms = this.m_aAromaticAtoms;
 
 		// Pathの構築
 		// Constract paths
-		LinkedList<Connection> connects = new LinkedList<Connection>();
-		Path path = new Path();
-		path.add(new PathSection( startAtom ));
+		LinkedList<Connection> t_aSelectedConnects = new LinkedList<Connection>();
+		Path t_oPath = new Path();
+		t_oPath.add(new PathSection( t_oStartAtom ));
 		while(true){
-			final Atom tailAtom = path.getLast().getNext().getAtom();
+			final Atom t_oTailAtom = t_oPath.getLast().getNext().getAtom();
 
 			// 隣接Connectを抽出
 			// Select connections
-			for ( Connection con : tailAtom.getConnections() ) {
+			for ( Connection con : t_oTailAtom.getConnections() ) {
 				Bond bond = con.getBond();
 				if ( !graph.contains(bond) ) continue;    // not consider
-				if (  path.contains(bond) ) continue;    // has searched
-				if (  connects.contains(con) ) continue;  // has stored
-				connects.add(con);
+				if (  t_oPath.contains(bond) ) continue;    // has searched
+				if (  t_aSelectedConnects.contains(con) ) continue;  // has stored
+				if (  t_aSelectedConnects.contains(con.getReverse()) ) continue; // has stored reverse
+				t_aSelectedConnects.add(con);
 			}
 
 			// 隣接要素がなくなったら終了
 			// Finish search for no connects
-			if(connects.size()==0) break;
+			if(t_aSelectedConnects.size()==0) break;
 
 			// 接続要素の2原子が共に探索済みの場合、start()が末端に近いConnectを採用する。
 			// Take connection near by terminal if connecting two atoms has searched
-			for ( Connection con : connects ) {
+			for ( Connection con : t_aSelectedConnects ) {
 				if ( !graph.contains( con.endAtom() ) ) continue;
-				if ( path.indexOf( con.startAtom() ) >= path.indexOf( con.endAtom() ) ) continue;
-				int index = connects.indexOf(con);
-				for ( Connection connect2 : con.endAtom().getConnections() ){
-					if ( !connect2.getBond().equals( con.getBond() ) ) continue;
-					connects.set(index, connect2);
-					break;
-				}
+				if ( t_oPath.indexOf( con.startAtom() ) >= t_oPath.indexOf( con.endAtom() ) ) continue;
+				// Reverse connection
+				Connection rev = con.getReverse();
+				int index = t_aSelectedConnects.indexOf(con);
+				t_aSelectedConnects.set(index, rev);
 			}
 
 			// EC番号再計算
 			// Recalculation EC numbers
-			graph.updateECnumber(path.bonds(), path.atoms());
+			graph.updateECnumber(t_oPath.bonds(), t_oPath.atoms());
 			final HashMap<Atom, Integer> subgraphECNumber = graph.getAtomToECNumber();
 
-			System.err.println(  tailAtom.getSymbol()+":"+subgraphECNumber.get(tailAtom)+":"+initialECNumber.get(tailAtom)  );
+			// TODO: remove print
+			System.err.println("Print EC number : "+graph);
+			System.err.println( t_oTailAtom+"-"+t_oTailAtom.getSymbol()+"("+graph.getAtoms().indexOf(t_oTailAtom)+"):"+subgraphECNumber.get(t_oTailAtom)+":"+t_mapAtomToInitECNum.get(t_oTailAtom)  );
 
 			// 隣接Connectをソート
 			// Sort vicinal connections
-			final LinkedList<Atom> tmpPathAtom = path.atoms();
-			Collections.sort(connects, new Comparator<Connection>() {
+			final LinkedList<Atom> tmpPathAtom = t_oPath.atoms();
+			Collections.sort(t_aSelectedConnects, new Comparator<Connection>() {
 				public int compare(Connection con1, Connection con2) {
 					Atom end1 = con1.endAtom();
 					Atom end2 = con2.endAtom();
 					Atom start1 = con1.startAtom();
-					Atom start2 = con1.startAtom();
+					Atom start2 = con2.startAtom();
 
 					// １．繋がっている芳香環はまとめて出したい
 					// 1. Get together connecting aromatic atoms
-					if ( aromaticAtoms.contains(tailAtom) ){
+					if ( aromaticAtoms.contains(t_oTailAtom) ){
 						if(  aromaticAtoms.contains(end1)   && !aromaticAtoms.contains(end2)   ) return -1;
 						if( !aromaticAtoms.contains(end1)   &&  aromaticAtoms.contains(end2)   ) return 1;
 						if(  aromaticAtoms.contains(start1) && !aromaticAtoms.contains(start2) ) return -1;
@@ -199,8 +229,8 @@ public class SubGraphToModification {
 
 					// ５．初期EC番号が大きい修飾原子を優先(初期構造の中心に向かっていく)
 					// 5. Prioritize large initial EC number (toword center of all region)
-					if( initialECNumber.get(end1) != initialECNumber.get(end2) )
-						return initialECNumber.get(end2) - initialECNumber.get(end1);
+					if( t_mapAtomToInitECNum.get(end1) != t_mapAtomToInitECNum.get(end2) )
+						return t_mapAtomToInitECNum.get(end2) - t_mapAtomToInitECNum.get(end1);
 
 					// ６．原子番号が小さい修飾原子を優先
 					// 6. Prioritize smaller atomic number
@@ -225,58 +255,68 @@ public class SubGraphToModification {
 
 			// もっともスコアの高い隣接要素を追加
 			// Make path section of the most high score connection and add to path
-			Connection newConnect = connects.removeFirst();
-			PathSection start = path.get(newConnect.startAtom());
-			PathSection end   = path.get(newConnect.endAtom());
-			path.add( new PathSection( start, end, newConnect ) );
+			Connection newConnect = t_aSelectedConnects.removeFirst();
+			PathSection start = t_oPath.get(newConnect.startAtom());
+			PathSection end   = t_oPath.get(newConnect.endAtom());
+			t_oPath.add( new PathSection( start, end, newConnect ) );
 		}
-		return path;
+		return t_oPath;
 	}
 
-	public String makeALINCode(final SubGraph graph, final Path path) {
-		String ALIN = "";
+	public String makeMAPCode(final SubGraph graph, final Path path) {
+		String t_strMAP = "";
 		boolean inAromatic = false;
-		for(PathSection section : path){
+		for(PathSection t_oSection : path){
 			// For aromatic
-			boolean isAromatic = this.m_aAromaticAtoms.contains(section.getAtom());
+			boolean isAromatic = this.m_aAromaticAtoms.contains(t_oSection.getAtom());
 //			if(aromatic==false &&  section.pathEnd.atom.isAromatic) ALIN += "(";
 //			if(aromatic==true  && !path.pathEnd.atom.isAromatic) ALIN += ")";
-			if( !inAromatic &&  isAromatic ) ALIN += "(";
-			if(  inAromatic && !isAromatic ) ALIN += ")";
+			if( !inAromatic &&  isAromatic ) t_strMAP += "(";
+			if(  inAromatic && !isAromatic ) t_strMAP += ")";
 			inAromatic = isAromatic;
 
 			// 分岐開始
 			// For starting brach
-			if ( section.getLast()!=null && path.indexOf(section.getLast())!=path.indexOf(section)-1 ) {
-				ALIN += "/" + (path.indexOf(section.getLast()) + 1);
+			if ( t_oSection.getLast()!=null && path.indexOf(t_oSection.getLast())!=path.indexOf(t_oSection)-1 ) {
+				t_strMAP += "/" + (path.indexOf(t_oSection.getLast()) + 1);
 			}
 
 			// 結合表示
 			// For bond
-			Bond bond = section.getBond();
+			Bond bond = t_oSection.getBond();
 			if ( bond != null ) {
-				Boolean lastIsAromatic = this.m_aAromaticAtoms.contains( section.getLast().getAtom() );
-				Boolean nextIsAromatic = this.m_aAromaticAtoms.contains( section.getNext().getAtom() );
+				Boolean lastIsAromatic = this.m_aAromaticAtoms.contains( t_oSection.getLast().getAtom() );
+				Boolean nextIsAromatic = this.m_aAromaticAtoms.contains( t_oSection.getNext().getAtom() );
 				if ( !(lastIsAromatic&&nextIsAromatic) ) {
-					if ( bond.getType() == 2) ALIN += "=";
-					if ( bond.getType() == 3) ALIN += "#";
+					if ( bond.getType() == 2) t_strMAP += "=";
+					if ( bond.getType() == 3) t_strMAP += "#";
 				}
-				if ( graph.getStereo(bond)!=null ) ALIN += "^" + graph.getStereo(bond);
+				if ( graph.getStereo(bond)!=null ) t_strMAP += "^" + graph.getStereo(bond);
 			}
 
 			// For atom
-			Atom atom = section.getAtom();
+			Atom atom = t_oSection.getAtom();
 			if ( atom==null ) {
-				ALIN += "$" + (path.indexOf(section.getNext()) + 1);
+				t_strMAP += "$" + (path.indexOf(t_oSection.getNext()) + 1);
 				continue;
 			}
-			ALIN += ( this.m_aBackboneAtoms.contains( section.getAtom() ) )? "*" : atom.getSymbol();
-			if ( graph.getStereo(atom)!=null ) ALIN += "^" + graph.getStereo(atom);
+			String t_oSymbol = atom.getSymbol();
+			if ( this.m_aBackboneAtoms.contains( t_oSection.getAtom() ) ) {
+				t_oSymbol = "*";
+				if ( this.m_mapBacboneCarbonToMAPPos.get(t_oSection.getAtom()) != 0 )
+					t_oSymbol += "["+this.m_mapBacboneCarbonToMAPPos.get(t_oSection.getAtom())+"]";
+			}
+			t_strMAP += t_oSymbol;
+			if ( graph.getStereo(atom)!=null ) t_strMAP += "^" + graph.getStereo(atom);
 		}
 		// For last aromatic atom
-		if ( this.m_aAromaticAtoms.contains( path.getLast().getNext().getAtom() ) ) ALIN += ")";
+		if ( this.m_aAromaticAtoms.contains( path.getLast().getNext().getAtom() ) ) t_strMAP += ")";
 
-		return ALIN;
+		return t_strMAP;
+	}
+
+	public HashMap<Atom, Integer> getBacboneCarbonToMAPPos() {
+		return this.m_mapBacboneCarbonToMAPPos;
 	}
 
 	public LinkedList<Atom> getBackboneAtoms(){
