@@ -102,6 +102,7 @@ public class ParameterReader {
 						}
 					}
 					br.close();
+					fr.close();
 				} catch (FileNotFoundException e) {
 					e.printStackTrace();
 				} catch (IOException e) {
