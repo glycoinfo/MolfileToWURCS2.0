@@ -11,7 +11,7 @@ import org.glycoinfo.WURCSFramework.chemicalgraph.Atom;
  */
 public class CarbonChain {
 
-	private LinkedList<Atom> m_aCarbons = new LinkedList<Atom>();
+	private LinkedList<Carbon> m_aCarbons = new LinkedList<Carbon>();
 
 	public LinkedList<Atom> getCarbons() {
 		return this.m_aCarbons;
