@@ -6,12 +6,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 
+import org.glycoinfo.WURCSFramework.chemicalgraph.Atom;
+import org.glycoinfo.WURCSFramework.chemicalgraph.Connection;
+import org.glycoinfo.WURCSFramework.util.chemicalgraph.Chemical;
+import org.glycoinfo.WURCSFramework.util.chemicalgraph.analytical.CarbonIdentifier;
 import org.glycoinfo.WURCSFramework.wurcs.graph.CarbonDescriptor;
-
-import chemicalgraph.Atom;
-import chemicalgraph.Connection;
-import chemicalgraph.util.Chemical;
-import chemicalgraph.util.analytical.CarbonIdentifier;
 
 public class CarbonToDescriptor_TBD {
 

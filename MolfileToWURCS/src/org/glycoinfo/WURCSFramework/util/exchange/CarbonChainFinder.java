@@ -3,10 +3,10 @@ package org.glycoinfo.WURCSFramework.util.exchange;
 import java.util.HashSet;
 import java.util.LinkedList;
 
-import chemicalgraph.Atom;
-import chemicalgraph.Connection;
-import chemicalgraph.util.analytical.CarbonChainAnalyzer;
-import chemicalgraph.util.analytical.CarbonIdentifier;
+import org.glycoinfo.WURCSFramework.chemicalgraph.Atom;
+import org.glycoinfo.WURCSFramework.chemicalgraph.Connection;
+import org.glycoinfo.WURCSFramework.util.chemicalgraph.analytical.CarbonChainAnalyzer;
+import org.glycoinfo.WURCSFramework.util.chemicalgraph.analytical.CarbonIdentifier;
 
 /**
  * Class for finding carbon chain which candidate for backbone

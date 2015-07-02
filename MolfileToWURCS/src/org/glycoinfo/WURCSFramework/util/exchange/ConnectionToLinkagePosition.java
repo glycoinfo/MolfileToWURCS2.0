@@ -3,15 +3,14 @@ package org.glycoinfo.WURCSFramework.util.exchange;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import org.glycoinfo.WURCSFramework.chemicalgraph.Atom;
+import org.glycoinfo.WURCSFramework.chemicalgraph.Connection;
+import org.glycoinfo.WURCSFramework.chemicalgraph.SubGraph;
+import org.glycoinfo.WURCSFramework.util.chemicalgraph.Chemical;
+import org.glycoinfo.WURCSFramework.util.chemicalgraph.analytical.AtomIdentifier;
+import org.glycoinfo.WURCSFramework.util.chemicalgraph.analytical.CarbonChainAnalyzer;
 import org.glycoinfo.WURCSFramework.wurcs.graph.DirectionDescriptor;
 import org.glycoinfo.WURCSFramework.wurcs.graph.LinkagePosition;
-
-import chemicalgraph.Atom;
-import chemicalgraph.Connection;
-import chemicalgraph.SubGraph;
-import chemicalgraph.util.Chemical;
-import chemicalgraph.util.analytical.AtomIdentifier;
-import chemicalgraph.util.analytical.CarbonChainAnalyzer;
 
 /**
  * Class for

@@ -5,21 +5,20 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 
+import org.glycoinfo.WURCSFramework.chemicalgraph.Atom;
+import org.glycoinfo.WURCSFramework.chemicalgraph.Connection;
+import org.glycoinfo.WURCSFramework.chemicalgraph.Molecule;
+import org.glycoinfo.WURCSFramework.chemicalgraph.SubGraph;
 import org.glycoinfo.WURCSFramework.util.WURCSException;
+import org.glycoinfo.WURCSFramework.util.chemicalgraph.analytical.CarbonChainAnalyzer;
+import org.glycoinfo.WURCSFramework.util.chemicalgraph.analytical.MoleculeNormalizer;
+import org.glycoinfo.WURCSFramework.util.chemicalgraph.analytical.StructureAnalyzer;
 import org.glycoinfo.WURCSFramework.wurcs.graph.Backbone;
 import org.glycoinfo.WURCSFramework.wurcs.graph.BackboneCarbon;
 import org.glycoinfo.WURCSFramework.wurcs.graph.LinkagePosition;
 import org.glycoinfo.WURCSFramework.wurcs.graph.Modification;
 import org.glycoinfo.WURCSFramework.wurcs.graph.WURCSEdge;
 import org.glycoinfo.WURCSFramework.wurcs.graph.WURCSGraph;
-
-import chemicalgraph.Atom;
-import chemicalgraph.Connection;
-import chemicalgraph.Molecule;
-import chemicalgraph.SubGraph;
-import chemicalgraph.util.analytical.CarbonChainAnalyzer;
-import chemicalgraph.util.analytical.MoleculeNormalizer;
-import chemicalgraph.util.analytical.StructureAnalyzer;
 
 /**
  * Class of importer for Carbohydrate

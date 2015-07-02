@@ -6,13 +6,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 
+import org.glycoinfo.WURCSFramework.chemicalgraph.Atom;
+import org.glycoinfo.WURCSFramework.chemicalgraph.Bond;
+import org.glycoinfo.WURCSFramework.chemicalgraph.Connection;
+import org.glycoinfo.WURCSFramework.chemicalgraph.SubGraph;
+import org.glycoinfo.WURCSFramework.util.chemicalgraph.Chemical;
 import org.glycoinfo.WURCSFramework.wurcs.graph.Modification;
-
-import chemicalgraph.Atom;
-import chemicalgraph.Bond;
-import chemicalgraph.Connection;
-import chemicalgraph.SubGraph;
-import chemicalgraph.util.Chemical;
 
 /**
  * Class for the conversion of SubGraph to Modification
