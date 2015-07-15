@@ -1,7 +1,6 @@
 package org.glycoinfo.WURCSFramework.buildingblock;
 
 import org.glycoinfo.WURCSFramework.chemicalgraph.Atom;
-import org.glycoinfo.WURCSFramework.chemicalgraph.Connection;
 import org.glycoinfo.WURCSFramework.util.chemicalgraph.analytical.CarbonIdentifier;
 
 public class Carbon {
@@ -19,11 +18,11 @@ public class Carbon {
 	 * Connection around the carbon<br>
 	 * For SP3 carbon:
 	 * <pre>
-	 *   P        3        P   
-	 *   |        |        |   
-	 * 1-C-2 or 1-C-2 or 1-C-2 
-	 *   |        |        |   
-	 *   N        N        3   
+	 *   P        3        P
+	 *   |        |        |
+	 * 1-C-2 or 1-C-2 or 1-C-2
+	 *   |        |        |
+	 *   N        N        3
 	 * P: Previous carbon
 	 * N: Next carbon
 	 * 1: Left side atom in Fisher projection
@@ -32,33 +31,19 @@ public class Carbon {
 	 *    (Direction is 'd')
 	 * 3: An atom which behave as next or previous carbon if the carbon is start or end of chain
 	 *    (Direction is 't')
-	 *    
+	 *
 	 * For asymmetric carbon, 3 is lower order than 1 and 2.
 	 * For symmetric carbon with two same atom, 1 and 2 is same atom and 3 is remain atom (Direction is needed to 1 and 2).
 	 * For symmetric carbon with three same atom, direction of all atom is 'n' if exactry same.
 	 * and 3 is lowest modification if modification is not same.
 	 * </pre>
-	 * For SP3 symmetric carbon:
-	 * <pre>
-	 *   P        3        P   
-	 *   |        |        |   
-	 * 1-C-1 or 1-C-1 or 1-C-1 
-	 *   |        |        |   
-	 *   N        N        3   
-	 * P: Previous carbon
-	 * N: Next carbon
-	 * 1: Same atom on the carbon
-	 *    (Direction is 'u' for left side and 'd' for right side )
-	 * 3: unique modification, behaving as next or previous carbon if the carbon is start or end of chain
-	 *    (Direction is 't')
-	 * </pre>
 	 * For SP2 carbon:
 	 * <pre>
-	 *   P      1   2      P   
-	 *   |       \ /       |   
-	 *   C-1 or   C   or   C   
-	 *   |        |       / \  
-	 *   N        N      1   2 
+	 *   P      1   2      P
+	 *   |       \ /       |
+	 *   C-1 or   C   or   C
+	 *   |        |       / \
+	 *   N        N      1   2
 	 * P: Previous carbon
 	 * N: Next carbon
 	 * 1: Highest order modification (prioritize higher bond order)
@@ -66,11 +51,6 @@ public class Carbon {
 	 * </pre>
 	 */
 	private Atom m_oCarbonAtom;
-	private Connection m_oPrevCon = null;
-	private Connection m_oNextCon = null;
-	private Connection m_oMod1Con = null; // 'u' first  / upside
-	private Connection m_oMod2Con = null; // 'd' second / downside
-	private Connection m_oMod3Con = null; // 't' third
 
 	public Carbon(Atom a_oCarbon) {
 		CarbonIdentifier t_oCI = new CarbonIdentifier();

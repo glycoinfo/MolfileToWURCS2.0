@@ -58,7 +58,7 @@ public class ConnectionToLinkagePosition {
 //		int PCA = modCarbons.indexOf( con.startAtom() )+1;
 		HashMap<Atom, Integer> t_mapModCarbonToID = this.m_hashGraphToModificationCarbonsMap.get(graph);
 		// TODO: remove print
-		System.err.println(graph);
+		System.err.println("graph+"+graph);
 		int i=1;
 		for ( Atom t_oA : t_mapModCarbonToID.keySet() ) {
 			System.err.println(i++ +" : "+t_oA+" : "+t_mapModCarbonToID.get(t_oA));

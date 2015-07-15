@@ -15,6 +15,7 @@ import org.glycoinfo.WURCSFramework.util.chemicalgraph.analytical.CarbonIdentifi
  */
 public class CarbonChainFinder {
 
+	private boolean m_bShortChain = false;
 	/** Minimam number of N, O, or S connected to carbon chain */
 	private int m_iMinNOS    = 0;
 	/** Minimam number of O connected to carbon chain with single bond */
@@ -73,7 +74,8 @@ public class CarbonChainFinder {
 		// then screening carbon chains by some conditions
 		LinkedList<LinkedList<Atom>> candidates = new LinkedList<LinkedList<Atom>>();
 		for(LinkedList<Atom> candidateChain : this.m_aCarbonChainList){
-			this.convertCandidateBackbone(candidateChain);
+			if ( this.m_bShortChain )
+				this.convertCandidateBackbone(candidateChain);
 /*
 			// Screen by neighboring oxygen counting
 			NeighboringOxygenCounting t_oNOCCount = new NeighboringOxygenCounting();

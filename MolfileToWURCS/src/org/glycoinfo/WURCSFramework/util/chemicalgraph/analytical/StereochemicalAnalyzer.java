@@ -166,7 +166,12 @@ public class StereochemicalAnalyzer {
 				final HashMap<Connection, Integer> t_hashConnectionToCIPOrder = this.m_hashConnectionToCIPOrder;
 				atom.sortConnections( new Comparator<Connection>() {
 					public int compare(Connection connection1, Connection connection2) {
-						return t_hashConnectionToCIPOrder.get(connection1) - t_hashConnectionToCIPOrder.get(connection2);
+						Integer t_iOrder1 = t_hashConnectionToCIPOrder.get(connection1);
+						Integer t_iOrder2 = t_hashConnectionToCIPOrder.get(connection2);
+						if ( t_iOrder1 == t_iOrder2 ) return 0;
+						if ( t_iOrder1 != null && t_iOrder2 == null ) return -1;
+						if ( t_iOrder1 == null && t_iOrder2 != null ) return 1;
+						return t_iOrder1 - t_iOrder2;
 //						return connection1.CIPorder - connection2.CIPorder;
 					}
 				});

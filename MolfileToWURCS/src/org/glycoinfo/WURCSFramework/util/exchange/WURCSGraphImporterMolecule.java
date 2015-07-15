@@ -28,6 +28,7 @@ import org.glycoinfo.WURCSFramework.wurcs.graph.WURCSGraph;
 public class WURCSGraphImporterMolecule {
 	private Molecule m_objMolecule;
 
+	private boolean m_bRemoveAglycone = false;
 //	private SubGraphCreator     m_objSubgraphCreator     = new SubGraphCreator();
 	private CarbonChainFinder  m_objCCFinder  = new CarbonChainFinder();
 
@@ -122,7 +123,8 @@ public class WURCSGraphImporterMolecule {
 		LinkedList<Backbone> t_aBackbones = new LinkedList<Backbone>();
 		HashMap<Atom, BackboneCarbon> t_mapAtomToBackboneCarbon = new HashMap<Atom, BackboneCarbon>();
 		HashMap<LinkedList<Atom>, Backbone> t_mapChainToBackbone = new HashMap<LinkedList<Atom>, Backbone>();
-		CarbonChainToBackbone CC2B = new CarbonChainToBackbone();
+//		CarbonChainToBackbone CC2B = new CarbonChainToBackbone();
+		CarbonChainToBackbone_TBD CC2B = new CarbonChainToBackbone_TBD();
 		for ( LinkedList<Atom> chain : t_aBackboneChains ) {
 			Backbone backbone = CC2B.convert(chain);
 			t_mapChainToBackbone.put(chain, backbone);
@@ -342,6 +344,8 @@ public class WURCSGraphImporterMolecule {
 				graph.add( con.getBond() );
 			}
 		}
+
+		if ( !this.m_bRemoveAglycone ) return candidateModifications;
 
 		// Remove aglycons from candidate modifications
 		// and add modifications which remade from removed aglycons

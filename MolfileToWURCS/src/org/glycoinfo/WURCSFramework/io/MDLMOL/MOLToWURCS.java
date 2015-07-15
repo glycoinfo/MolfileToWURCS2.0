@@ -56,11 +56,11 @@ public class MOLToWURCS {
 			} catch (NumberFormatException e) {
 			}
 //			if ( !ID.equals("23373") ) continue;
-//			if ( !ID.equals("CHEBI:10723") ) continue;
+//			if ( !ID.equals("CHEBI:2790") ) continue;
 //			if(!t_objParam.m_sdfileOutput){
 //				System.err.print( ID+":" );
 //			}
-//			System.err.println(t_objCTReader.getFieldData("ID") );
+			System.err.println(ID);
 
 			try {
 				WURCSGraphImporterMolecule t_objImporterMol = new WURCSGraphImporterMolecule();

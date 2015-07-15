@@ -139,6 +139,9 @@ public class SubGraphToModification {
 
 		final HashSet<Atom> aromaticAtoms = this.m_aAromaticAtoms;
 
+		// TODO: remove print
+		System.err.println("Print EC number : "+graph);
+
 		// Pathの構築
 		// Constract paths
 		LinkedList<Connection> t_aSelectedConnects = new LinkedList<Connection>();
@@ -146,6 +149,8 @@ public class SubGraphToModification {
 		t_oPath.add(new PathSection( t_oStartAtom ));
 		while(true){
 			final Atom t_oTailAtom = t_oPath.getLast().getNext().getAtom();
+			// TODO: remove print
+			System.err.println( t_oTailAtom+"-"+t_oTailAtom.getSymbol()+"("+graph.getAtoms().indexOf(t_oTailAtom)+"):"+t_mapAtomToInitECNum.get(t_oTailAtom)  );
 
 			// 隣接Connectを抽出
 			// Select connections
@@ -177,10 +182,6 @@ public class SubGraphToModification {
 			// Recalculation EC numbers
 			graph.updateECnumber(t_oPath.bonds(), t_oPath.atoms());
 			final HashMap<Atom, Integer> subgraphECNumber = graph.getAtomToECNumber();
-
-			// TODO: remove print
-			System.err.println("Print EC number : "+graph);
-			System.err.println( t_oTailAtom+"-"+t_oTailAtom.getSymbol()+"("+graph.getAtoms().indexOf(t_oTailAtom)+"):"+subgraphECNumber.get(t_oTailAtom)+":"+t_mapAtomToInitECNum.get(t_oTailAtom)  );
 
 			// 隣接Connectをソート
 			// Sort vicinal connections
@@ -258,55 +259,57 @@ public class SubGraphToModification {
 			PathSection start = t_oPath.get(newConnect.startAtom());
 			PathSection end   = t_oPath.get(newConnect.endAtom());
 			t_oPath.add( new PathSection( start, end, newConnect ) );
+
 		}
 		return t_oPath;
 	}
 
 	public String makeMAPCode(final SubGraph graph, final Path path) {
+		// Set stereo for graph
+		graph.setStereo();
 		String t_strMAP = "";
-		boolean inAromatic = false;
+		boolean t_bIsInAromatic = false;
 		for(PathSection t_oSection : path){
+			// For atom
+			Atom t_oAtom = t_oSection.getAtom();
+			if ( t_oAtom==null ) {
+				t_strMAP += "$" + (path.indexOf(t_oSection.getNext()) + 1);
+				continue;
+			}
+
 			// For aromatic
-			boolean isAromatic = this.m_aAromaticAtoms.contains(t_oSection.getAtom());
+			boolean t_bIsAromatic = this.m_aAromaticAtoms.contains(t_oAtom);
 //			if(aromatic==false &&  section.pathEnd.atom.isAromatic) ALIN += "(";
 //			if(aromatic==true  && !path.pathEnd.atom.isAromatic) ALIN += ")";
-			if( !inAromatic &&  isAromatic ) t_strMAP += "(";
-			if(  inAromatic && !isAromatic ) t_strMAP += ")";
-			inAromatic = isAromatic;
+			if( !t_bIsInAromatic &&  t_bIsAromatic ) t_strMAP += "(";
+			if(  t_bIsInAromatic && !t_bIsAromatic ) t_strMAP += ")";
+			t_bIsInAromatic = t_bIsAromatic;
 
-			// 分岐開始
 			// For starting brach
 			if ( t_oSection.getLast()!=null && path.indexOf(t_oSection.getLast())!=path.indexOf(t_oSection)-1 ) {
 				t_strMAP += "/" + (path.indexOf(t_oSection.getLast()) + 1);
 			}
 
-			// 結合表示
 			// For bond
-			Bond bond = t_oSection.getBond();
-			if ( bond != null ) {
+			Bond t_oBond = t_oSection.getBond();
+			if ( t_oBond != null ) {
 				Boolean lastIsAromatic = this.m_aAromaticAtoms.contains( t_oSection.getLast().getAtom() );
 				Boolean nextIsAromatic = this.m_aAromaticAtoms.contains( t_oSection.getNext().getAtom() );
 				if ( !(lastIsAromatic&&nextIsAromatic) ) {
-					if ( bond.getType() == 2) t_strMAP += "=";
-					if ( bond.getType() == 3) t_strMAP += "#";
+					if ( t_oBond.getType() == 2) t_strMAP += "=";
+					if ( t_oBond.getType() == 3) t_strMAP += "#";
 				}
-				if ( graph.getStereo(bond)!=null ) t_strMAP += "^" + graph.getStereo(bond);
+				if ( graph.getStereo(t_oBond)!=null ) t_strMAP += "^" + graph.getStereo(t_oBond);
 			}
 
-			// For atom
-			Atom atom = t_oSection.getAtom();
-			if ( atom==null ) {
-				t_strMAP += "$" + (path.indexOf(t_oSection.getNext()) + 1);
-				continue;
-			}
-			String t_oSymbol = atom.getSymbol();
+			String t_oSymbol = t_oAtom.getSymbol();
 			if ( this.m_aBackboneAtoms.contains( t_oSection.getAtom() ) ) {
 				t_oSymbol = "*";
 				if ( this.m_mapBacboneCarbonToMAPPos.get(t_oSection.getAtom()) != 0 )
 					t_oSymbol += "["+this.m_mapBacboneCarbonToMAPPos.get(t_oSection.getAtom())+"]";
 			}
 			t_strMAP += t_oSymbol;
-			if ( graph.getStereo(atom)!=null ) t_strMAP += "^" + graph.getStereo(atom);
+			if ( graph.getStereo(t_oAtom)!=null ) t_strMAP += "^" + graph.getStereo(t_oAtom);
 		}
 		// For last aromatic atom
 		if ( this.m_aAromaticAtoms.contains( path.getLast().getNext().getAtom() ) ) t_strMAP += ")";
