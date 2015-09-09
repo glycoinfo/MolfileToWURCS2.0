@@ -104,12 +104,12 @@ public class HierarchicalDigraphComparator implements Comparator<HierarchicalDig
 		return 0;
 	}
 
+	// (5)2つの基が物質的かつ位相的に等しい（構成する原子の元素、個数、結合順序、質量数が等しい）が、立体化学が異なる場合。
+	// まず二重結合の幾何異性に関して、ZをEより優位とする。
+	// 次いでジアステレオ異性に関して、like （R,R またはS,S）を unlike （R,S またはS,R）より優位とする。
+	// 次いで、鏡像異性に関して、RをS より優位とする。
+	// 最後に、擬似不斉原子に関して、rをs より優位とする。
 	private int compareEZRS(final HierarchicalDigraph a_objGraph1, final HierarchicalDigraph a_objGraph2){
-		// (5)2つの基が物質的かつ位相的に等しい（構成する原子の元素、個数、結合順序、質量数が等しい）が、立体化学が異なる場合。
-		// まず二重結合の幾何異性に関して、ZをEより優位とする。
-		// 次いでジアステレオ異性に関して、like （R,R またはS,S）を unlike （R,S またはS,R）より優位とする。
-		// 次いで、鏡像異性に関して、RをS より優位とする。
-		// 最後に、擬似不斉原子に関して、rをs より優位とする。
 		LinkedList<HierarchicalDigraph> widthsearch1 = new LinkedList<HierarchicalDigraph>();
 		LinkedList<HierarchicalDigraph> widthsearch2 = new LinkedList<HierarchicalDigraph>();
 		widthsearch1.addLast(a_objGraph1);
@@ -118,7 +118,7 @@ public class HierarchicalDigraphComparator implements Comparator<HierarchicalDig
 			HierarchicalDigraph graph1 = widthsearch1.removeFirst();
 			HierarchicalDigraph graph2 = widthsearch2.removeFirst();
 
-			if(graph1.getAtom()==null&&graph2.getAtom()==null) continue;
+			if ( graph1.getAtom() == null && graph2.getAtom() == null ) continue;
 			String atomStereo1 = this.m_hashAtomToStereo.get(graph1.getAtom());
 			String atomStereo2 = this.m_hashAtomToStereo.get(graph2.getAtom());
 
@@ -129,40 +129,41 @@ public class HierarchicalDigraphComparator implements Comparator<HierarchicalDig
 				HierarchicalDigraph child2 = graph2.getChildren().get(ii);
 
 				// Get connection to parent
-				if(child1.getAtom()!=null&&child2.getAtom()!=null){
-					Connection connection1 = child1.getConnectionToParent();
-					Connection connection2 = child2.getConnectionToParent();
+				if ( child1.getAtom() == null || child2.getAtom() == null ) continue;
+//				if(child1.getAtom()!=null&&child2.getAtom()!=null){ }
 
-					// まず二重結合の幾何異性に関して、ZをEより優位とする。
-					// For geometrycal isormerise, prioritize "Z" more than "E"
-					String bondStereo1 = this.m_hashBondToStereo.get(connection1.getBond());
-					String bondStereo2 = this.m_hashBondToStereo.get(connection2.getBond());
-					if( bondStereo1!=null && bondStereo1!=null){
-						if( bondStereo1.equals("Z") && bondStereo2.equals("E")) return -1;
-						if( bondStereo1.equals("E") && bondStereo2.equals("Z")) return 1;
-					}
+				Connection connection1 = child1.getConnectionToParent();
+				Connection connection2 = child2.getConnectionToParent();
 
-					String conatomStereo1 = this.m_hashAtomToStereo.get(connection1.endAtom());
-					String conatomStereo2 = this.m_hashAtomToStereo.get(connection2.endAtom());
-					if( conatomStereo1!=null && conatomStereo2!=null){
-						// 次いでジアステレオ異性に関して、like （R,R またはS,S）を unlike （R,S またはS,R）より優位とする。
-						// For diastereoisomerism, prioritize "like" (R,R or S,S) more than "unlike" (R,S or S,R)
-						if( atomStereo1!=null && atomStereo2!=null){
-							if( conatomStereo1.equals(atomStereo1) && !conatomStereo2.equals(atomStereo2)) return -1;
-							if(!conatomStereo1.equals(atomStereo1) &&  conatomStereo2.equals(atomStereo2)) return 1;
-						}
-
-						// 次いで、鏡像異性に関して、RをS より優位とする。
-						// For enantiomerism, prioritize "R" more than "S"
-						if( conatomStereo1.equals("R") && conatomStereo2.equals("S")) return -1;
-						if( conatomStereo1.equals("S") && conatomStereo2.equals("R")) return 1;
-
-						// 最後に、擬似不斉原子に関して、rをs より優位とする。
-						// For the atom with pseudoasymmetry, prioritize "r" more than "s"
-						if( conatomStereo1.equals("r") && conatomStereo2.equals("s")) return -1;
-						if( conatomStereo1.equals("s") && conatomStereo2.equals("r")) return 1;
-					}
+				// まず二重結合の幾何異性に関して、ZをEより優位とする。
+				// For double bond geometrical isomerism, to prioritize "Z" more than "E"
+				String bondStereo1 = this.m_hashBondToStereo.get(connection1.getBond());
+				String bondStereo2 = this.m_hashBondToStereo.get(connection2.getBond());
+				if( bondStereo1!=null && bondStereo1!=null){
+					if( bondStereo1.equals("Z") && bondStereo2.equals("E")) return -1;
+					if( bondStereo1.equals("E") && bondStereo2.equals("Z")) return 1;
 				}
+
+				String conatomStereo1 = this.m_hashAtomToStereo.get(connection1.endAtom());
+				String conatomStereo2 = this.m_hashAtomToStereo.get(connection2.endAtom());
+				if( conatomStereo1 == null || conatomStereo2 == null) continue;
+
+				// 次いでジアステレオ異性に関して、like （R,R またはS,S）を unlike （R,S またはS,R）より優位とする。
+				// For diastereoisomerism, prioritize "like" (R,R or S,S) more than "unlike" (R,S or S,R)
+				if( atomStereo1!=null && atomStereo2!=null){
+					if( conatomStereo1.equals(atomStereo1) && !conatomStereo2.equals(atomStereo2)) return -1;
+					if(!conatomStereo1.equals(atomStereo1) &&  conatomStereo2.equals(atomStereo2)) return 1;
+				}
+
+				// 次いで、鏡像異性に関して、RをS より優位とする。
+				// For enantiomerism, prioritize "R" more than "S"
+				if( conatomStereo1.equals("R") && conatomStereo2.equals("S")) return -1;
+				if( conatomStereo1.equals("S") && conatomStereo2.equals("R")) return 1;
+
+				// 最後に、擬似不斉原子に関して、rをs より優位とする。
+				// For the atom with pseudoasymmetry, prioritize "r" more than "s"
+				if( conatomStereo1.equals("r") && conatomStereo2.equals("s")) return -1;
+				if( conatomStereo1.equals("s") && conatomStereo2.equals("r")) return 1;
 			}
 
 			// 子供をリストに追加

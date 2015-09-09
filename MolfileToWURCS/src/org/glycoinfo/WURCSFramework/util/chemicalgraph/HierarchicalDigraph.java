@@ -23,29 +23,29 @@ public class HierarchicalDigraph {
 	// Member variable
 	//----------------------------
 	/** Atom of this graph */
-	private Atom atom;
+	private Atom m_oAtom;
 	/** Average of atomic number(s) (for conjucate system) */
-	private double averageAtomicNumber;
+	private double m_dAverageAtomicNumber;
 	/** Parent of this graph (null if this graph is root) */
-	private HierarchicalDigraph parent = null;
+	private HierarchicalDigraph m_oParentHD = null;
 	/** Chidren of this graph */
-	private LinkedList<HierarchicalDigraph> children = new LinkedList<HierarchicalDigraph>();
+	private LinkedList<HierarchicalDigraph> m_aChildren = new LinkedList<HierarchicalDigraph>();
 	/** Whether or not this graph is unique order */
-	private boolean isUniqOrder;
+	private boolean m_bIsUniqOrder;
 	/** Whether or not full search of this graph has been completed */
-	private boolean isCompletedFullSearch = true;
+	private boolean m_bHasCompletedFullSearch = true;
 	/** Comparator of HierarchicalDigraph */
-	private HierarchicalDigraphComparator comparator;
+	private HierarchicalDigraphComparator m_oHDComp;
 	/** Aromatic atoms */
 
 	private HashSet<Atom> m_aAromaticAtoms = new HashSet<Atom>();
 
 	/** Target graph for search */
-	private ChemicalGraph targetGraph;
+	private ChemicalGraph m_oTargetGraph;
 	/** List of searched atoms */
-	private LinkedList<Atom> ancestors;
+	private LinkedList<Atom> m_aAncestorAtoms;
 	/** Depth of search. For unlimited search, negative value is set.*/
-	private int depth;
+	private int m_iDepth;
 
 	//----------------------------
 	// Constructor
@@ -59,28 +59,21 @@ public class HierarchicalDigraph {
 	 * @param EZRSCheck Flag for EZRS check
 	 */
 	public HierarchicalDigraph(final ChemicalGraph targetgraph, final Atom atom, final int depth, final HierarchicalDigraphComparator comparator){
-		this.targetGraph = targetgraph;
-		this.depth = depth;
-		this.averageAtomicNumber = Chemical.getAtomicNumber(atom.getSymbol());
-		this.ancestors = new LinkedList<Atom>();
-		this.comparator = comparator;
+		this.m_oTargetGraph = targetgraph;
+		this.m_iDepth = depth;
+		this.m_dAverageAtomicNumber = Chemical.getAtomicNumber(atom.getSymbol());
+		this.m_aAncestorAtoms = new LinkedList<Atom>();
+		this.m_oHDComp = comparator;
 
 		// Search aromatic atoms
 		Cyclization cyclic = new Cyclization();
-		for ( Atom a : this.targetGraph.getAtoms() ) {
+		for ( Atom a : this.m_oTargetGraph.getAtoms() ) {
 			cyclic.clear();
 			if ( cyclic.aromatize(a) ) this.m_aAromaticAtoms.addAll(cyclic);
 		}
 
-		this.isCompletedFullSearch = true;
-		this.depthSearch(atom, depth, this.averageAtomicNumber);
-		if(this.children != null){
-			for(HierarchicalDigraph child : this.children){
-				if(child.isCompletedFullSearch==false){
-					this.isCompletedFullSearch = false;
-				}
-			}
-		}
+		this.m_bHasCompletedFullSearch = this.depthSearch(atom, depth, this.m_dAverageAtomicNumber);
+		this.initializeSearchFlag();
 	}
 
 	/**
@@ -90,21 +83,22 @@ public class HierarchicalDigraph {
 	 * @param averageAtomicNumber
 	 */
 	public HierarchicalDigraph(final HierarchicalDigraph parent, final Atom atom, final double averageAtomicNumber) {
-		this.parent = parent;
-		this.atom = atom;
-		this.depth = parent.depth - 1;
-		this.targetGraph = parent.targetGraph;
-		this.ancestors = parent.ancestors;
-		this.comparator = parent.comparator;
+		this.m_oParentHD = parent;
+		this.m_oAtom = atom;
+		this.m_iDepth = parent.m_iDepth - 1;
+		this.m_oTargetGraph = parent.m_oTargetGraph;
+		this.m_aAncestorAtoms = parent.m_aAncestorAtoms;
+		this.m_oHDComp = parent.m_oHDComp;
 
-		this.isCompletedFullSearch = true;
-		this.depthSearch(atom, this.depth, averageAtomicNumber);
-		if(this.children != null){
-			for(HierarchicalDigraph child : this.children){
-				if(child.isCompletedFullSearch==false){
-					this.isCompletedFullSearch = false;
-				}
-			}
+		this.m_bHasCompletedFullSearch = this.depthSearch(atom, this.m_iDepth, averageAtomicNumber);
+		this.initializeSearchFlag();
+	}
+
+	private void initializeSearchFlag() {
+		if(this.m_aChildren == null) return;
+		for(HierarchicalDigraph child : this.m_aChildren){
+			if(child.m_bHasCompletedFullSearch) continue;
+			this.m_bHasCompletedFullSearch = false;
 		}
 	}
 
@@ -112,65 +106,54 @@ public class HierarchicalDigraph {
 	// Accessor
 	//----------------------------
 	public double getAverageAtomicNumber() {
-		return this.averageAtomicNumber;
+		return this.m_dAverageAtomicNumber;
 	}
 
 	public Atom getAtom() {
-		return this.atom;
+		return this.m_oAtom;
 	}
 
 	public Connection getConnection() {
-		if ( this.parent == null ) return null;
-		for ( Connection con : this.parent.atom.getConnections() ) {
-			if ( con.endAtom().equals( this.atom ) ) return con;
+		if ( this.m_oParentHD == null ) return null;
+		for ( Connection con : this.m_oParentHD.m_oAtom.getConnections() ) {
+			if ( con.endAtom().equals( this.m_oAtom ) ) return con;
 		}
 		return null;
 	}
 
 	public Connection getConnectionToParent() {
-		if ( this.parent == null ) return null;
-		for ( Connection con : this.atom.getConnections() ) {
-			if ( con.endAtom().equals( this.parent.atom ) ) return con;
+		if ( this.m_oParentHD == null ) return null;
+		for ( Connection con : this.m_oAtom.getConnections() ) {
+			if ( con.endAtom().equals( this.m_oParentHD.m_oAtom ) ) return con;
 		}
 		return null;
 	}
 
 	public LinkedList<HierarchicalDigraph> getChildren() {
-		return this.children;
+		return this.m_aChildren;
 	}
 
 	public void addChild(HierarchicalDigraph child) {
-		this.children.addLast(child);
+		this.m_aChildren.addLast(child);
 	}
 
 	public void sortChildren( HierarchicalDigraphComparator comparator ) {
-		Collections.sort( this.children, comparator );
+		Collections.sort( this.m_aChildren, comparator );
 	}
 
 	/**
 	 * Whether or not this graph is unique order
 	 */
 	public boolean isUniqueOrder() {
-		HierarchicalDigraph child1, child2;
-		int numChildren = this.children.size();
-		if ( numChildren == 0 ) return true;
-		for(int ii=0; ii<numChildren-1; ii++){
-			child1 = this.children.get(ii);
-			child2 = this.children.get(ii+1);
-//			if(tree1.compareTo(tree2, EZRScheck)!=0) continue;
-			if ( this.comparator.compare(child1, child2)!=0 ) continue;
-//			if ( child1.isUniqueOrder() && child2.isUniqueOrder() ) continue;
-			return false;
-		}
-		return true;
+		return this.m_bIsUniqOrder;
 	}
 
 	public boolean isCompletedFullSearch() {
-		return this.isCompletedFullSearch;
+		return this.m_bHasCompletedFullSearch;
 	}
 
 	public void setCompleteFullSearch(boolean b) {
-		this.isCompletedFullSearch = b;
+		this.m_bHasCompletedFullSearch = b;
 	}
 
 	//----------------------------
@@ -195,52 +178,50 @@ public class HierarchicalDigraph {
 	 * Construct HierarchicalDigraph using depth-first search
 	 * @param atom Atom for search
 	 * @param averageAtomicNumber Average atomic number, for conjugate system
-	 * @param ancestors 探索済み原子のリスト、該当原子に到達したら引き返す。
 	 * @param depth 探索する深さに制限を付ける場合に利用
+	 * @return True if full search is completed
 	 */
-	private void depthSearch(final Atom atom, final int depth, final double averageAtomicNumber){
+	private boolean depthSearch(final Atom atom, final int depth, final double averageAtomicNumber){
 //		if( atom!=null && !atom.symbol.equals("H") && !targetgraph.contains(atom) ) return;
-		if( atom!=null && !atom.getSymbol().equals("H") && !this.targetGraph.contains(atom) ) return;
-		this.atom = atom;
-		this.averageAtomicNumber = averageAtomicNumber;
-		this.children = new LinkedList<HierarchicalDigraph>();
-		if(this.atom == null) return;
-		if(this.ancestors.contains(this.atom)) return;
-		if(depth == 0){
-			this.isCompletedFullSearch = false;
-			return;
-		}
+		if( atom!=null && !atom.getSymbol().equals("H") && !this.m_oTargetGraph.contains(atom) ) return true;
+		this.m_oAtom = atom;
+		this.m_dAverageAtomicNumber = averageAtomicNumber;
+		this.m_aChildren = new LinkedList<HierarchicalDigraph>();
+		if(this.m_oAtom == null) return true;
+		if(this.m_aAncestorAtoms.contains(this.m_oAtom)) return true;
+		// Full search has not completed, reaching to depth end
+		if(depth == 0) return false;
 
 		// Add Children
 		int num = 0;
 		int sumAtomicNumber = 0;
-		ancestors.addLast(this.atom);
-		for(Connection connection : this.atom.getConnections()){
+		m_aAncestorAtoms.addLast(this.m_oAtom);
+		for(Connection connection : this.m_oAtom.getConnections()){
 			Atom conatom = connection.endAtom();
 			// Skip if the connect atom is hydrogen or out of target graph
-			if( !conatom.getSymbol().equals("H") && !this.targetGraph.contains(conatom) ) continue;
+			if( !conatom.getSymbol().equals("H") && !this.m_oTargetGraph.contains(conatom) ) continue;
 //			this.children.add(new HierarchicalDigraph(targetgraph, conatom, depth-1, (double)Chemical.getAtomicNumber(conatom.getSymbol()), ancestors, EZRScheck));
 			// Add child sub graph for connect atom
-			this.children.add( new HierarchicalDigraph( this, conatom, (double)Chemical.getAtomicNumber(conatom.getSymbol()) ) );
+			this.m_aChildren.add( new HierarchicalDigraph( this, conatom, (double)Chemical.getAtomicNumber(conatom.getSymbol()) ) );
 			// For conjugate or multiple bond, it is consider that same atom is duplecated.
 //			if(this.atom.isAromatic && connection.atom.isAromatic){
-			if( this.m_aAromaticAtoms.contains(this.atom) && this.m_aAromaticAtoms.contains(conatom) ){
+			if( this.m_aAromaticAtoms.contains(this.m_oAtom) && this.m_aAromaticAtoms.contains(conatom) ){
 				num++;
 				sumAtomicNumber+=(double)Chemical.getAtomicNumber(conatom.getSymbol());
 			}else if(connection.getBond().getType()==2 || connection.getBond().getType()==3){
 				for(int ii=connection.getBond().getType(); ii>1; ii--){
-					this.children.add( new HierarchicalDigraph( this, null, (double)Chemical.getAtomicNumber(conatom.getSymbol()) ) );
+					this.m_aChildren.add( new HierarchicalDigraph( this, null, (double)Chemical.getAtomicNumber(conatom.getSymbol()) ) );
 				}
 			}
 		}
 		// 共益系 connect
 		if(num!=0){
-			this.children.add( new HierarchicalDigraph( this, null, (double)sumAtomicNumber/(double)num ) );
+			this.m_aChildren.add( new HierarchicalDigraph( this, null, (double)sumAtomicNumber/(double)num ) );
 		}
-		ancestors.removeLast();
+		m_aAncestorAtoms.removeLast();
 
 		// Sort Children
-		Collections.sort(this.children, this.comparator);
+		Collections.sort(this.m_aChildren, this.m_oHDComp);
 /*
 		Collections.sort(this.children, new Comparator<HierarchicalDigraph>() {
 			public int compare(HierarchicalDigraph tree1, HierarchicalDigraph tree2) {
@@ -250,18 +231,20 @@ public class HierarchicalDigraph {
 */
 		// Set false to "isUniqOrder" of child graph which CIP order is not unique
 		// CIPorderがユニークにならない要素にfalseを立てる
-		for(HierarchicalDigraph child : this.children){
-			child.isUniqOrder = true;
+		for(HierarchicalDigraph child : this.m_aChildren){
+			child.m_bIsUniqOrder = true;
 		}
-		int childrenNum = this.children.size();
+		int childrenNum = this.m_aChildren.size();
 		for(int ii=0; ii<childrenNum-1; ii++){
-			HierarchicalDigraph tree1 = this.children.get(ii);
-			HierarchicalDigraph tree2 = this.children.get(ii+1);
+			HierarchicalDigraph tree1 = this.m_aChildren.get(ii);
+			HierarchicalDigraph tree2 = this.m_aChildren.get(ii+1);
 //			if(tree1.compareTo(tree2, EZRScheck)!=0) continue;
-			if( this.comparator.compare(tree1, tree2)!=0 ) continue;
-			tree1.isUniqOrder = false;
-			tree2.isUniqOrder = false;
+			if( this.m_oHDComp.compare(tree1, tree2)!=0 ) continue;
+			tree1.m_bIsUniqOrder = false;
+			tree2.m_bIsUniqOrder = false;
 		}
+
+		return true;
 	}
 
 	/**
@@ -280,17 +263,17 @@ public class HierarchicalDigraph {
 			ps.print(" +");
 		}
 //		ps.print("-" + ((this.atom==null)?"null":(this.atom.getSymbol() + "(" + this. this.atom.molfileAtomNo + ")")) + "(" + this.averageAtomicNumber + ")" + " : ");
-		ps.print("-" + ((this.atom==null)?"null":(this.atom.getSymbol() + "(" + this.targetGraph.getAtoms().indexOf(this.atom) + ")")) + "(" + this.averageAtomicNumber + ")" + " : ");
+		ps.print("-" + ((this.m_oAtom==null)?"null":(this.m_oAtom.getSymbol() + "(" + this.m_oTargetGraph.getAtoms().indexOf(this.m_oAtom) + ")")) + "(" + this.m_dAverageAtomicNumber + ")" + " : ");
 
-		if(this.children==null) return;
+		if(this.m_aChildren==null) return;
 
-		for(HierarchicalDigraph child : this.children){
-			ps.print((this.children.indexOf(child)+1) + "(" + (child.isUniqOrder?"o":"x") + ")" + "." + ((child.atom==null)?"null":(child.atom.getSymbol() + "(" + this.targetGraph.getAtoms().indexOf(this.atom) + ")")) + "(" + child.averageAtomicNumber + "), ");
+		for(HierarchicalDigraph child : this.m_aChildren){
+			ps.print((this.m_aChildren.indexOf(child)+1) + "(" + (child.m_bIsUniqOrder?"o":"x") + ")" + "." + ((child.m_oAtom==null)?"null":(child.m_oAtom.getSymbol() + "(" + this.m_oTargetGraph.getAtoms().indexOf(this.m_oAtom) + ")")) + "(" + child.m_dAverageAtomicNumber + "), ");
 		}
 		ps.println();
 
-		for(HierarchicalDigraph child : children){
-			historys.addLast(children.getLast()!=child);
+		for(HierarchicalDigraph child : m_aChildren){
+			historys.addLast(m_aChildren.getLast()!=child);
 			child.print(historys, ps);
 			historys.removeLast();
 		}

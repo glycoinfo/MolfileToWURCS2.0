@@ -156,10 +156,11 @@ public class SubGraphToModification {
 			// Select connections
 			for ( Connection con : t_oTailAtom.getConnections() ) {
 				Bond bond = con.getBond();
-				if ( !graph.contains(bond) ) continue;    // not consider
+				if ( !graph.contains(bond) ) continue;    // not consider out of subgraph
 				if (  t_oPath.contains(bond) ) continue;    // has searched
 				if (  t_aSelectedConnects.contains(con) ) continue;  // has stored
 				if (  t_aSelectedConnects.contains(con.getReverse()) ) continue; // has stored reverse
+				if (  con.endAtom().getSymbol().equals("H") ) continue; // ignore hydrogen
 				t_aSelectedConnects.add(con);
 			}
 
@@ -302,13 +303,13 @@ public class SubGraphToModification {
 				if ( graph.getStereo(t_oBond)!=null ) t_strMAP += "^" + graph.getStereo(t_oBond);
 			}
 
-			String t_oSymbol = t_oAtom.getSymbol();
+			String t_strSymbol = t_oAtom.getSymbol();
 			if ( this.m_aBackboneAtoms.contains( t_oSection.getAtom() ) ) {
-				t_oSymbol = "*";
+				t_strSymbol = "*";
 				if ( this.m_mapBacboneCarbonToMAPPos.get(t_oSection.getAtom()) != 0 )
-					t_oSymbol += "["+this.m_mapBacboneCarbonToMAPPos.get(t_oSection.getAtom())+"]";
+					t_strSymbol += "["+this.m_mapBacboneCarbonToMAPPos.get(t_oSection.getAtom())+"]";
 			}
-			t_strMAP += t_oSymbol;
+			t_strMAP += t_strSymbol;
 			if ( graph.getStereo(t_oAtom)!=null ) t_strMAP += "^" + graph.getStereo(t_oAtom);
 		}
 		// For last aromatic atom

@@ -1,7 +1,9 @@
 package org.glycoinfo.WURCSFramework.util.chemicalgraph.analytical;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 
 import org.glycoinfo.WURCSFramework.chemicalgraph.Atom;
@@ -25,16 +27,57 @@ public class StereochemicalAnalyzer {
 	private HierarchicalDigraphCreator    m_objCreator    = new HierarchicalDigraphCreator();
 	private HierarchicalDigraphComparator m_objComparator = new HierarchicalDigraphComparator();
 
-	private HashMap<Atom, Boolean>       m_hashAtomIsUniqueOrder        = new HashMap<Atom, Boolean>();
-	private HashMap<Atom, String>        m_hashAtomToStereo             = new HashMap<Atom, String>();
-	private HashMap<Bond, String>        m_hashBondToStereo             = new HashMap<Bond, String>();
-	private HashMap<Connection, Boolean> m_hashConnectionHasFullSearch  = new HashMap<Connection, Boolean>();
-	private HashMap<Connection, Boolean> m_hashConnectionIsUniqueOrder  = new HashMap<Connection, Boolean>();
-	private HashMap<Connection, Integer> m_hashConnectionToCIPOrder     = new HashMap<Connection, Integer>();
+	private HashMap<Atom, Boolean>       m_mapAtomToOrderIsUnique        = new HashMap<Atom, Boolean>();
+	private HashMap<Atom, String>        m_mapAtomToStereo             = new HashMap<Atom, String>();
+	private HashMap<Bond, String>        m_mapBondToStereo             = new HashMap<Bond, String>();
+	private HashMap<Connection, Boolean> m_mapConnectionToFullSearchHasCompleted  = new HashMap<Connection, Boolean>();
+	private HashMap<Connection, Boolean> m_mapConnectionToOrderIsUnique  = new HashMap<Connection, Boolean>();
+	private HashMap<Connection, Integer> m_mapConnectionToCIPOrder     = new HashMap<Connection, Integer>();
+
+	/** Get stereo of atom */
+	public String getStereo(Atom atom) {
+		return this.m_mapAtomToStereo.get(atom);
+	}
+
+	/** Get stereo of bond */
+	public String getStereo(Bond bond) {
+		return this.m_mapBondToStereo.get(bond);
+	}
+
+	/** Get CIP order of connection */
+	public Integer getCIPOrder(Connection con) {
+		return this.m_mapConnectionToCIPOrder.get(con);
+	}
 
 	//----------------------------
-	// Public method (void)
+	// Private method (void)
 	//----------------------------
+	/** Clear member valiable */
+	private void clear() {
+		this.m_mapAtomToStereo.clear();
+		this.m_mapAtomToOrderIsUnique.clear();
+		this.m_mapConnectionToFullSearchHasCompleted.clear();
+		this.m_mapConnectionToOrderIsUnique.clear();
+		this.m_mapConnectionToCIPOrder.clear();
+		this.m_mapBondToStereo.clear();
+	}
+
+	/** Initialize member valiable */
+	private void initialize() {
+		this.clear();
+		for ( Atom atom : this.m_objGraph.getAtoms() ) {
+			this.m_mapAtomToStereo.put(atom, null);
+			this.m_mapAtomToOrderIsUnique.put(atom, null);
+			for ( Connection con : atom.getConnections() ) {
+				this.m_mapConnectionToFullSearchHasCompleted.put(con, false);
+				this.m_mapConnectionToOrderIsUnique.put(con, false);
+			}
+		}
+		for ( Bond bond : this.m_objGraph.getBonds() ) {
+			this.m_mapBondToStereo.put(bond, null);
+		}
+	}
+
 	/**
 	 * Execute stereochemcial analysis for the molecule
 	 * @param mol
@@ -45,80 +88,42 @@ public class StereochemicalAnalyzer {
 		this.initialize();
 //		this.setStereo();
 
-		HashMap<Atom, Boolean> t_aAnalyzedAtoms = new HashMap<Atom, Boolean>();
-		for ( Atom atom : graph.getAtoms() ) {
-			t_aAnalyzedAtoms.put(atom, false);
-		}
+		HashSet<Atom> t_setAnalyzedAtoms = new HashSet<Atom>();
+//		HashMap<Atom, Boolean> t_mapAtomToAnalyzed = new HashMap<Atom, Boolean>();
+//		for ( Atom atom : graph.getAtoms() ) {
+//			t_mapAtomToAnalyzed.put(atom, false);
+//		}
 
 		// EZRS check
 		this.m_objComparator.setCheckType(false);
-		this.analyzeStereo(t_aAnalyzedAtoms);
+//		this.analyzeStereo(t_mapAtomToAnalyzed);
+		this.analyzeStereo(t_setAnalyzedAtoms);
 		this.setStereoEZRS();
 
 		// rs check, use EZRS results of other element.
 		for(Atom atom : this.m_objGraph.getAtoms()){
-			String stereo = this.m_hashAtomToStereo.get(atom);
-			t_aAnalyzedAtoms.put(atom, ( stereo=="R" || stereo=="S" ) );
+			String stereo = this.m_mapAtomToStereo.get(atom);
+//			t_mapAtomToAnalyzed.put(atom, ( stereo=="R" || stereo=="S" ) );
+			if ( stereo != null && ( stereo.equals("R") || stereo.equals("S") ) )
+				t_setAnalyzedAtoms.add(atom);
 		}
 		this.m_objComparator.setCheckType(true);
-		this.m_objComparator.setAtomStereos(this.m_hashAtomToStereo);
-		this.m_objComparator.setBondStereos(this.m_hashBondToStereo);
-		this.analyzeStereo(t_aAnalyzedAtoms);
+		this.m_objComparator.setAtomStereos(this.m_mapAtomToStereo);
+		this.m_objComparator.setBondStereos(this.m_mapBondToStereo);
+//		this.analyzeStereo(t_mapAtomToAnalyzed);
+		this.analyzeStereo(t_setAnalyzedAtoms);
 		this.setStereors();
-	}
-
-	//----------------------------
-	// Public method (non void)
-	//----------------------------
-	/** Get stereo of atom */
-	public String getStereo(Atom atom) {
-		return this.m_hashAtomToStereo.get(atom);
-	}
-
-	/** Get stereo of bond */
-	public String getStereo(Bond bond) {
-		return this.m_hashBondToStereo.get(bond);
-	}
-
-	/** Get CIP order of connection */
-	public Integer getCIPOrder(Connection con) {
-		return this.m_hashConnectionToCIPOrder.get(con);
-	}
-
-	//----------------------------
-	// Private method (void)
-	//----------------------------
-	/** Clear member valiable */
-	private void clear() {
-		this.m_hashAtomToStereo.clear();
-		this.m_hashAtomIsUniqueOrder.clear();
-		this.m_hashConnectionHasFullSearch.clear();
-		this.m_hashConnectionIsUniqueOrder.clear();
-		this.m_hashConnectionToCIPOrder.clear();
-		this.m_hashBondToStereo.clear();
-	}
-
-	/** Initialize member valiable */
-	private void initialize() {
-		this.clear();
-		for ( Atom atom : this.m_objGraph.getAtoms() ) {
-			this.m_hashAtomToStereo.put(atom, null);
-			this.m_hashAtomIsUniqueOrder.put(atom, null);
-			for ( Connection con : atom.getConnections() ) {
-				this.m_hashConnectionHasFullSearch.put(con, false);
-				this.m_hashConnectionIsUniqueOrder.put(con, false);
-			}
-		}
-		for ( Bond bond : this.m_objGraph.getBonds() ) {
-			this.m_hashBondToStereo.put(bond, null);
-		}
 	}
 
 	/**
 	 * Analyze stereo chemistry and set stero to stereoTmp.
 	 */
-	private void analyzeStereo(HashMap<Atom, Boolean> analyzedAtoms){
+//	private void analyzeStereo(HashMap<Atom, Boolean> a_mapAtomToAnalyzed){
+	private void analyzeStereo(HashSet<Atom> a_setAnalyzedAtoms){
 		// Set type for HierarchicalDigraph comparator
+
+		HashMap<Connection, Integer> t_mapConnectionToCIPOrder     = new HashMap<Connection, Integer>();
+
 
 		boolean continueflg = true;
 		int depth = 0;
@@ -127,50 +132,58 @@ public class StereochemicalAnalyzer {
 			depth++;
 			for(Atom atom : this.m_objGraph.getAtoms()){
 //				if(atom.connections.tmpflg) continue;
-				if ( analyzedAtoms.get(atom) ) continue;
+//				if ( a_mapAtomToAnalyzed.get(atom) ) continue;
+				if ( a_setAnalyzedAtoms.contains(atom) ) continue;
 
 				continueflg = true;
 				// Set full search flag for connections
 //				atom.connections.setIsCompletedFullSearch(false);
 				for(Connection connection : atom.getConnections()){
-					this.m_hashConnectionHasFullSearch.put(connection, false);
+					if ( !connection.endAtom().getSymbol().equals("H") && !this.m_objGraph.contains( connection.endAtom() ) ) continue;
+					this.m_mapConnectionToFullSearchHasCompleted.put(connection, false);
 				}
 
 				// Construct HierarchicalDigraph with "depth"
-				HierarchicalDigraph hd = new HierarchicalDigraph(this.m_objGraph, atom, depth, this.m_objComparator);
+				HierarchicalDigraph t_oHD = new HierarchicalDigraph(this.m_objGraph, atom, depth, this.m_objComparator);
 				// Set CIP order
-				this.m_hashAtomIsUniqueOrder.put(atom, true);
+				this.m_mapAtomToOrderIsUnique.put(atom, true);
 //				atom.connections.isUniqOrder = true;
 				int order = 0;
 				boolean pre = true;
-				for(HierarchicalDigraph child : hd.getChildren()){
-					if(pre||child.isUniqueOrder()) order++;
+				for(HierarchicalDigraph t_oChildHD : t_oHD.getChildren()){
+					if(pre||t_oChildHD.isUniqueOrder()) order++;
 //					Connection connection = atom.getConnections().getConnect(child.atom);
 //					Connection connection = child.getConnectionToParent();
-					Connection connection = child.getConnection();
+					Connection connection = t_oChildHD.getConnection();
 
 					if(connection!=null){
 //						connection.isUniqOrder = child.isUniqOrder;
-						this.m_hashConnectionIsUniqueOrder.put(connection, child.isUniqueOrder());
+						this.m_mapConnectionToOrderIsUnique.put(connection, t_oChildHD.isUniqueOrder());
 //						connection.isCompletedFullSearch = child.isCompletedFullSearch;
-						this.m_hashConnectionHasFullSearch.put(connection, child.isCompletedFullSearch());
+						this.m_mapConnectionToFullSearchHasCompleted.put(connection, t_oChildHD.isCompletedFullSearch());
 //						connection.CIPorder = order;
-						this.m_hashConnectionToCIPOrder.put(connection, order);
+						this.m_mapConnectionToCIPOrder.put(connection, order);
 					}
 
 //					if(!child.isUniqueOrder()) atom.connections.isUniqOrder = false;
-					if(!child.isUniqueOrder()) this.m_hashAtomIsUniqueOrder.put(atom, false);
-					pre = child.isUniqueOrder();
+					if(!t_oChildHD.isUniqueOrder()) this.m_mapAtomToOrderIsUnique.put(atom, false);
+					pre = t_oChildHD.isUniqueOrder();
 				}
 //				atom.connections.sortByCIPorder();
-				final HashMap<Connection, Integer> t_hashConnectionToCIPOrder = this.m_hashConnectionToCIPOrder;
-				atom.sortConnections( new Comparator<Connection>() {
+				LinkedList<Connection> t_aConns = new LinkedList<Connection>();
+				for ( Connection t_oConn : atom.getConnections() ) {
+					if ( !t_oConn.endAtom().getSymbol().equals("H") && !this.m_objGraph.contains( t_oConn.endAtom() ) ) continue;
+					t_aConns.add(t_oConn);
+				}
+				final HashMap<Connection, Integer> t_hashConnectionToCIPOrder = this.m_mapConnectionToCIPOrder;
+//				atom.sortConnections( new Comparator<Connection>() {
+				Collections.sort( t_aConns, new Comparator<Connection>() {
 					public int compare(Connection connection1, Connection connection2) {
 						Integer t_iOrder1 = t_hashConnectionToCIPOrder.get(connection1);
 						Integer t_iOrder2 = t_hashConnectionToCIPOrder.get(connection2);
-						if ( t_iOrder1 == t_iOrder2 ) return 0;
-						if ( t_iOrder1 != null && t_iOrder2 == null ) return -1;
-						if ( t_iOrder1 == null && t_iOrder2 != null ) return 1;
+//						if ( t_iOrder1 == t_iOrder2 ) return 0;
+//						if ( t_iOrder1 != null && t_iOrder2 == null ) return -1;
+//						if ( t_iOrder1 == null && t_iOrder2 != null ) return 1;
 						return t_iOrder1 - t_iOrder2;
 //						return connection1.CIPorder - connection2.CIPorder;
 					}
@@ -179,42 +192,19 @@ public class StereochemicalAnalyzer {
 				// 打ち切りチェック
 				// maxDepthForHierarchicalDigraphの判定がおかしいのでやり直し
 //				if(atom.connections.isUniqOrder){
-				if( this.m_hashAtomIsUniqueOrder.get(atom) ){
+				if( this.m_mapAtomToOrderIsUnique.get(atom) ){
 					// Stop search if the atom is chiral
 					// chiralであることが確定した場合、探索を打ち切る。
 //					atom.connections.tmpflg = true;
-					analyzedAtoms.put(atom, true);
+//					a_mapAtomToAnalyzed.put(atom, true);
+					a_setAnalyzedAtoms.add(atom);
 					continue;
-				}else{
-					// achiralであることが確定した場合、探索を打ち切る。
-					// 順位が等しい結合のペアが存在し、かつそのペアが全探索が完了している場合
-					// atom.connectionsは優先順位でソートされている
-					// Stop search if the atom is achiral.
-					// If there are bond pair with same order and the pair completed full search,
-					// atom.connections has been sorted by the priority.
-					//
-					// Check the connection which is not with "isUniqueOrder "
-					// isUniqOrder==falseとなるconnectionは順位のつかなかったconnectionを意味しており、順位が等しい別のconnectionが存在する
-					// Listの中で連続してisUniqOrder==falseとなっているconnectionが順位が等しいconnectionとなっている
-					// 順位が等しいconnectionペアがどちらも全探索が完了している場合にachiralである事が確定する。
-					for(int ii=0; ii<atom.getConnections().size()-1; ii++){
-						Connection connection1 = atom.getConnections().get(ii);
-//						if( connection1.isUniqOrder) continue;
-						if ( this.m_hashConnectionIsUniqueOrder.get(connection1) ) continue;
-//						if(!connection1.isCompletedFullSearch) continue;
-						if ( !this.m_hashConnectionHasFullSearch.get(connection1) ) continue;
-//						if ( t_aSearchedConnections.contains(connection1) ) continue;
-						for ( int jj=ii+1; jj<atom.getConnections().size(); jj++ ) {
-							Connection connection2 = atom.getConnections().get(jj);
-//							if( connection2.isUniqOrder) break;
-							if ( this.m_hashConnectionIsUniqueOrder.get(connection2) ) break;
-//							if(!connection2.isCompletedFullSearch) continue;
-							if ( !this.m_hashConnectionHasFullSearch.get(connection2) ) continue;
-//							if ( t_aSearchedConnections.contains(connection2) ) continue;
-//							atom.connections.tmpflg = true;
-							analyzedAtoms.put(atom, true);
-						}
-					}
+				}
+
+				// Check achiral
+				if ( this.jadgeAchiral(t_aConns) ) {
+//					a_mapAtomToAnalyzed.put( atom, true );
+					a_setAnalyzedAtoms.add(atom);
 				}
 
 				// ここから追加
@@ -223,13 +213,47 @@ public class StereochemicalAnalyzer {
 				// しかし、ここではダミー以外の要素のみをチェックしているので、achiralが確定していても上記のチェックを逃れてしまう。
 				// その為ここでチェックする。
 //				if(hd.isCompletedFullSearch){
-				if ( hd.isCompletedFullSearch() ) {
+				if ( t_oHD.isCompletedFullSearch() ) {
 //					atom.connections.tmpflg = true;
-					analyzedAtoms.put(atom, true);
+//					a_mapAtomToAnalyzed.put(atom, true);
+					a_setAnalyzedAtoms.add(atom);
 				}
 				// ここまで
 			}
 		}
+	}
+
+	// achiralであることが確定した場合、探索を打ち切る。
+	// 順位が等しい結合のペアが存在し、かつそのペアが全探索が完了している場合
+	// atom.connectionsは優先順位でソートされている
+	// Stop search if the atom is achiral.
+	// If there are bond pair with same order and the pair completed full search,
+	// atom.connections has been sorted by the priority.
+	//
+	// Check the connection which is not with "isUniqueOrder "
+	// isUniqOrder==falseとなるconnectionは順位のつかなかったconnectionを意味しており、順位が等しい別のconnectionが存在する
+	// Listの中で連続してisUniqOrder==falseとなっているconnectionが順位が等しいconnectionとなっている
+	// 順位が等しいconnectionペアがどちらも全探索が完了している場合にachiralである事が確定する。
+	private boolean jadgeAchiral(LinkedList<Connection> a_aConns) {
+		for(int ii=0; ii<a_aConns.size()-1; ii++){
+			Connection connection1 = a_aConns.get(ii);
+//			if( connection1.isUniqOrder) continue;
+			if ( this.m_mapConnectionToOrderIsUnique.get(connection1) ) continue;
+//			if(!connection1.isCompletedFullSearch) continue;
+			if ( !this.m_mapConnectionToFullSearchHasCompleted.get(connection1) ) continue;
+//			if ( t_aSearchedConnections.contains(connection1) ) continue;
+			for ( int jj=ii+1; jj<a_aConns.size(); jj++ ) {
+				Connection connection2 = a_aConns.get(jj);
+//				if( connection2.isUniqOrder) break;
+				if ( this.m_mapConnectionToOrderIsUnique.get(connection2) ) break;
+//				if(!connection2.isCompletedFullSearch) continue;
+				if ( !this.m_mapConnectionToFullSearchHasCompleted.get(connection2) ) continue;
+//				if ( t_aSearchedConnections.contains(connection2) ) continue;
+//				atom.connections.tmpflg = true;
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/** Set stereo to member valiable for EZRS. */
@@ -242,13 +266,13 @@ public class StereochemicalAnalyzer {
 //			if(!atom.hybridOrbital().equals("sp3")) continue;
 			if ( !ident.getHybridOrbital().equals("sp3") ) continue;
 //			if(!atom.connections.isUniqOrder) continue;
-			if ( !this.m_hashAtomIsUniqueOrder.get(atom) ) continue;
+			if ( !this.m_mapAtomToOrderIsUnique.get(atom) ) continue;
 //			ConnectionList subgraphConnects = this.getConnects(atom);
 			LinkedList<Connection> subgraphConnects = this.getConnects(atom);
 			if ( subgraphConnects.size()!=4 ) continue;
 			String stereo = Chemical.sp3stereo(subgraphConnects.get(0), subgraphConnects.get(1), subgraphConnects.get(2), subgraphConnects.get(3));
 //			atom.stereoTmp = stereo;
-			this.m_hashAtomToStereo.put(atom, stereo);
+			this.m_mapAtomToStereo.put(atom, stereo);
 		}
 		// Judge EZ
 		for ( Bond bond : this.m_objGraph.getBonds() ){
@@ -257,8 +281,8 @@ public class StereochemicalAnalyzer {
 			Atom b0 = bond.getAtom2();
 //			if(!a0.connections.isUniqOrder) continue;
 //			if(!b0.connections.isUniqOrder) continue;
-			if ( !this.m_hashAtomIsUniqueOrder.get(a0) ) continue;
-			if ( !this.m_hashAtomIsUniqueOrder.get(b0) ) continue;
+			if ( !this.m_mapAtomToOrderIsUnique.get(a0) ) continue;
+			if ( !this.m_mapAtomToOrderIsUnique.get(b0) ) continue;
 //			ConnectionList a0connects = this.getConnects(a0);
 //			ConnectionList b0connects = this.getConnects(b0);
 			LinkedList<Connection> a0connects = this.getConnects(a0);
@@ -269,7 +293,7 @@ public class StereochemicalAnalyzer {
 			Atom b1 = (b0connects.get(0).endAtom() == a0) ? b0connects.get(1).endAtom() : b0connects.get(0).endAtom();
 			String stereo = Chemical.sp2stereo(a0, a1, b0, b1);
 //			bond.stereoTmp = stereo;
-			this.m_hashBondToStereo.put(bond, stereo);
+			this.m_mapBondToStereo.put(bond, stereo);
 		}
 	}
 
@@ -280,19 +304,19 @@ public class StereochemicalAnalyzer {
 		// Judge rs
 		for ( Atom atom : this.m_objGraph.getAtoms() ) {
 //			if( atom.stereoTmp!=null) continue;
-			if ( this.m_hashAtomToStereo.get(atom)!=null ) continue;
+			if ( this.m_mapAtomToStereo.get(atom)!=null ) continue;
 			ident.setAtom(atom);
 //			if(!atom.hybridOrbital().equals("sp3")) continue;
 			if(!ident.getHybridOrbital().equals("sp3")) continue;
 //			if(!atom.connections.isUniqOrder) continue;
-			if ( !this.m_hashAtomIsUniqueOrder.get(atom) ) continue;
+			if ( !this.m_mapAtomToOrderIsUnique.get(atom) ) continue;
 //			ConnectionList subgraphConnects = this.getConnects(atom);
 			LinkedList<Connection> subgraphConnects = this.getConnects(atom);
 			if( subgraphConnects.size()!=4) continue;
 			String stereo = Chemical.sp3stereo(subgraphConnects.get(0), subgraphConnects.get(1), subgraphConnects.get(2), subgraphConnects.get(3)).toLowerCase();
 //			atom.stereoTmp = stereo;
 			System.err.println(stereo);
-			this.m_hashAtomToStereo.put(atom, stereo);
+			this.m_mapAtomToStereo.put(atom, stereo);
 		}
 	}
 
