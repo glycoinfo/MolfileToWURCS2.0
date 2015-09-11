@@ -125,7 +125,7 @@ public class SubGraphToModification {
 			this.m_mapBacboneCarbonToMAPPos.put(t_oCi, t_iMAPID);
 			t_iComp = t_mapAtomToInitECNum.get(t_oCi) - t_mapAtomToInitECNum.get(t_oCj);
 			// TODO: remove print
-			System.err.println(t_oCi+" vs "+t_oCj+" : "+t_iComp);
+//			System.err.println(t_oCi+" vs "+t_oCj+" : "+t_iComp);
 			if ( t_iComp != 0 ) t_iMAPID++;
 			this.m_mapBacboneCarbonToMAPPos.put(t_oCj, t_iMAPID);
 		}
@@ -140,7 +140,7 @@ public class SubGraphToModification {
 		final HashSet<Atom> aromaticAtoms = this.m_aAromaticAtoms;
 
 		// TODO: remove print
-		System.err.println("Print EC number : "+graph);
+//		System.err.println("Print EC number : "+graph);
 
 		// Pathの構築
 		// Constract paths
@@ -150,7 +150,7 @@ public class SubGraphToModification {
 		while(true){
 			final Atom t_oTailAtom = t_oPath.getLast().getNext().getAtom();
 			// TODO: remove print
-			System.err.println( t_oTailAtom+"-"+t_oTailAtom.getSymbol()+"("+graph.getAtoms().indexOf(t_oTailAtom)+"):"+t_mapAtomToInitECNum.get(t_oTailAtom)  );
+//			System.err.println( t_oTailAtom+"-"+t_oTailAtom.getSymbol()+"("+graph.getAtoms().indexOf(t_oTailAtom)+"):"+t_mapAtomToInitECNum.get(t_oTailAtom)  );
 
 			// 隣接Connectを抽出
 			// Select connections
@@ -307,7 +307,7 @@ public class SubGraphToModification {
 			if ( this.m_aBackboneAtoms.contains( t_oSection.getAtom() ) ) {
 				t_strSymbol = "*";
 				if ( this.m_mapBacboneCarbonToMAPPos.get(t_oSection.getAtom()) != 0 )
-					t_strSymbol += "["+this.m_mapBacboneCarbonToMAPPos.get(t_oSection.getAtom())+"]";
+					t_strSymbol += this.m_mapBacboneCarbonToMAPPos.get(t_oSection.getAtom());
 			}
 			t_strMAP += t_strSymbol;
 			if ( graph.getStereo(t_oAtom)!=null ) t_strMAP += "^" + graph.getStereo(t_oAtom);

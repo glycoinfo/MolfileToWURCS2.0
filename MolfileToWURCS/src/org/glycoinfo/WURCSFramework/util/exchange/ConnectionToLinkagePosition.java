@@ -42,21 +42,17 @@ public class ConnectionToLinkagePosition {
 	public LinkagePosition convert( Connection con, LinkedList<Atom> chain, SubGraph graph ) {
 //		if ( !this.m_hashConnectionToBackboneChain.containsKey(con) ) return null;
 		// PCB: Get carbon position in the backbone
-		int PCB = chain.indexOf( con.startAtom() )+1;
+		int t_iBPos = chain.indexOf( con.startAtom() )+1;
 
 		// DMB: Get direction of modification on the backbone carbon
-		String strDMB = this.getConnectionDirection( con, chain );
-		DirectionDescriptor DMB = this.convertDirectionDesctiptorString(strDMB);
-
-		// Check DMB can ellipsis
-//		ConnectTypeList types = new ConnectTypeList(connect.start(), connect.start().backbone);
-//		if(outputFullInformation || types.get(types.uniqBackboneNum).connects.size() != 1){
-		boolean ellipsisDMB = ( this.countModificationNumberOnCarbon(con, chain) == 0 );
+		String t_strDirection = this.getConnectionDirection( con, chain );
+		DirectionDescriptor t_enumDD = this.convertDirectionDesctiptorString(t_strDirection);
 
 		// PCA: Get carbon poistion in the modification
 //		LinkedList<Atom> modCarbons = this.m_hashGraphToModificationCarbons.get(graph);
 //		int PCA = modCarbons.indexOf( con.startAtom() )+1;
 		HashMap<Atom, Integer> t_mapModCarbonToID = this.m_hashGraphToModificationCarbonsMap.get(graph);
+/*
 		// TODO: remove print
 		System.err.println("graph+"+graph);
 		int i=1;
@@ -64,13 +60,20 @@ public class ConnectionToLinkagePosition {
 			System.err.println(i++ +" : "+t_oA+" : "+t_mapModCarbonToID.get(t_oA));
 		}
 		System.err.println(con.startAtom());
+*/
 		int PCA = t_mapModCarbonToID.get( con.startAtom() );
 
 		// Check PCA can ellipsis
 //		boolean ellipsisPCA = !( !(modCarbons.size()==2 && graph.getAtoms().size()==3) && modCarbons.size() > 1 );
 		boolean ellipsisPCA = ( PCA == 0 );
 
-		LinkagePosition link = new LinkagePosition(PCB, DMB, ellipsisDMB, PCA, ellipsisPCA);
+		// Check DMB can ellipsis
+//		ConnectTypeList types = new ConnectTypeList(connect.start(), connect.start().backbone);
+//		if(outputFullInformation || types.get(types.uniqBackboneNum).connects.size() != 1){
+		boolean t_bCanEllipsisDirection =
+				( this.countModificationNumberOnCarbon(con, chain) == 0 || t_enumDD == DirectionDescriptor.N );
+
+		LinkagePosition link = new LinkagePosition(t_iBPos, t_enumDD, t_bCanEllipsisDirection, PCA, ellipsisPCA);
 		return link;
 
 	}
@@ -295,7 +298,7 @@ public class ConnectionToLinkagePosition {
 	}
 
 	/**
-	 * Get DirectionDescriptor form DMB string
+	 * Get DirectionDescriptor from DMB string
 	 * @param strDMB String of DMB
 	 * @return DirectionDescriptor of DMB
 	 */

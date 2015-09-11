@@ -33,6 +33,7 @@ public class StereochemicalAnalyzer {
 	private HashMap<Connection, Boolean> m_mapConnectionToFullSearchHasCompleted  = new HashMap<Connection, Boolean>();
 	private HashMap<Connection, Boolean> m_mapConnectionToOrderIsUnique  = new HashMap<Connection, Boolean>();
 	private HashMap<Connection, Integer> m_mapConnectionToCIPOrder     = new HashMap<Connection, Integer>();
+	private HashMap<Atom, LinkedList<Connection>> m_mapAtomToSortedConnections = new HashMap<Atom, LinkedList<Connection>>();
 
 	/** Get stereo of atom */
 	public String getStereo(Atom atom) {
@@ -122,9 +123,6 @@ public class StereochemicalAnalyzer {
 	private void analyzeStereo(HashSet<Atom> a_setAnalyzedAtoms){
 		// Set type for HierarchicalDigraph comparator
 
-		HashMap<Connection, Integer> t_mapConnectionToCIPOrder     = new HashMap<Connection, Integer>();
-
-
 		boolean continueflg = true;
 		int depth = 0;
 		while(continueflg){
@@ -192,19 +190,13 @@ public class StereochemicalAnalyzer {
 				// 打ち切りチェック
 				// maxDepthForHierarchicalDigraphの判定がおかしいのでやり直し
 //				if(atom.connections.isUniqOrder){
-				if( this.m_mapAtomToOrderIsUnique.get(atom) ){
-					// Stop search if the atom is chiral
-					// chiralであることが確定した場合、探索を打ち切る。
+				// Stop search if the atom is chiral or achiral
+				// chiralであることが確定した場合、探索を打ち切る。
+				// achiralであることが確定した場合、探索を打ち切る。
+				if( this.m_mapAtomToOrderIsUnique.get(atom) || this.jadgeAchiral(t_aConns) ) {
 //					atom.connections.tmpflg = true;
-//					a_mapAtomToAnalyzed.put(atom, true);
 					a_setAnalyzedAtoms.add(atom);
-					continue;
-				}
-
-				// Check achiral
-				if ( this.jadgeAchiral(t_aConns) ) {
-//					a_mapAtomToAnalyzed.put( atom, true );
-					a_setAnalyzedAtoms.add(atom);
+					this.m_mapAtomToSortedConnections.put(atom, t_aConns);
 				}
 
 				// ここから追加
@@ -215,10 +207,12 @@ public class StereochemicalAnalyzer {
 //				if(hd.isCompletedFullSearch){
 				if ( t_oHD.isCompletedFullSearch() ) {
 //					atom.connections.tmpflg = true;
-//					a_mapAtomToAnalyzed.put(atom, true);
 					a_setAnalyzedAtoms.add(atom);
+					this.m_mapAtomToSortedConnections.put(atom, t_aConns);
 				}
 				// ここまで
+
+
 			}
 		}
 	}
@@ -268,7 +262,8 @@ public class StereochemicalAnalyzer {
 //			if(!atom.connections.isUniqOrder) continue;
 			if ( !this.m_mapAtomToOrderIsUnique.get(atom) ) continue;
 //			ConnectionList subgraphConnects = this.getConnects(atom);
-			LinkedList<Connection> subgraphConnects = this.getConnects(atom);
+//			LinkedList<Connection> subgraphConnects = this.getConnects(atom);
+			LinkedList<Connection> subgraphConnects = this.m_mapAtomToSortedConnections.get(atom);
 			if ( subgraphConnects.size()!=4 ) continue;
 			String stereo = Chemical.sp3stereo(subgraphConnects.get(0), subgraphConnects.get(1), subgraphConnects.get(2), subgraphConnects.get(3));
 //			atom.stereoTmp = stereo;
@@ -285,8 +280,10 @@ public class StereochemicalAnalyzer {
 			if ( !this.m_mapAtomToOrderIsUnique.get(b0) ) continue;
 //			ConnectionList a0connects = this.getConnects(a0);
 //			ConnectionList b0connects = this.getConnects(b0);
-			LinkedList<Connection> a0connects = this.getConnects(a0);
-			LinkedList<Connection> b0connects = this.getConnects(b0);
+//			LinkedList<Connection> a0connects = this.getConnects(a0);
+//			LinkedList<Connection> b0connects = this.getConnects(b0);
+			LinkedList<Connection> a0connects = this.m_mapAtomToSortedConnections.get(a0);
+			LinkedList<Connection> b0connects = this.m_mapAtomToSortedConnections.get(b0);
 			if ( a0connects.size()<2 ) continue;
 			if ( b0connects.size()<2 ) continue;
 			Atom a1 = (a0connects.get(0).endAtom() == b0) ? a0connects.get(1).endAtom() : a0connects.get(0).endAtom();
@@ -311,7 +308,8 @@ public class StereochemicalAnalyzer {
 //			if(!atom.connections.isUniqOrder) continue;
 			if ( !this.m_mapAtomToOrderIsUnique.get(atom) ) continue;
 //			ConnectionList subgraphConnects = this.getConnects(atom);
-			LinkedList<Connection> subgraphConnects = this.getConnects(atom);
+//			LinkedList<Connection> subgraphConnects = this.getConnects(atom);
+			LinkedList<Connection> subgraphConnects = this.m_mapAtomToSortedConnections.get(atom);
 			if( subgraphConnects.size()!=4) continue;
 			String stereo = Chemical.sp3stereo(subgraphConnects.get(0), subgraphConnects.get(1), subgraphConnects.get(2), subgraphConnects.get(3)).toLowerCase();
 //			atom.stereoTmp = stereo;

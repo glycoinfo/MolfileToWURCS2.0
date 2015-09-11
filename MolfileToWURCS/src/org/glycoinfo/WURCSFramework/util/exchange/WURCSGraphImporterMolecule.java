@@ -299,11 +299,11 @@ public class WURCSGraphImporterMolecule {
 	private LinkedList<SubGraph> findModificationGraphs(final LinkedList<LinkedList<Atom>> a_aBackboneChains) {
 		// Collect carbons of backbones
 		CarbonChainAnalyzer analCC = new CarbonChainAnalyzer();
-		HashSet<Atom> aBackboneCarbons = new HashSet<Atom>();
-		HashSet<Atom> aAnomericCarbons = new HashSet<Atom>();
+		HashSet<Atom> t_aBackboneCarbons = new HashSet<Atom>();
+		HashSet<Atom> t_aAnomericCarbons = new HashSet<Atom>();
 		for ( LinkedList<Atom> backbone : a_aBackboneChains ) {
-			aBackboneCarbons.addAll(backbone);
-			aAnomericCarbons.add( analCC.setCarbonChain(backbone).getAnomericCarbon() );
+			t_aBackboneCarbons.addAll(backbone);
+			t_aAnomericCarbons.add( analCC.setCarbonChain(backbone).getAnomericCarbon() );
 		}
 
 		// Collect start atoms for modification sub graphs
@@ -312,7 +312,7 @@ public class WURCSGraphImporterMolecule {
 			for ( Atom atom : backbone ) {
 				for ( Connection con : atom.getConnections() ) {
 					Atom conatom = con.endAtom();
-					if ( aBackboneCarbons.contains(conatom) ) continue;
+					if ( t_aBackboneCarbons.contains(conatom) ) continue;
 					if ( conatom.getSymbol().equals("H") ) continue;
 					startAtoms.add(conatom);
 				}
@@ -320,7 +320,7 @@ public class WURCSGraphImporterMolecule {
 		}
 
 		// Create sub graph for candidate modifications
-		SubGraphCreator creator = new SubGraphCreator(startAtoms, aBackboneCarbons);
+		SubGraphCreator creator = new SubGraphCreator(startAtoms, t_aBackboneCarbons);
 		LinkedList<SubGraph> candidateModifications = creator.create();
 
 		// Find aglycons from the candidate modifications
@@ -328,8 +328,8 @@ public class WURCSGraphImporterMolecule {
 			boolean isAglycon = true;
 			for ( Connection con : graph.getExternalConnections() ) {
 				Atom conatom = con.endAtom();
-				if ( !aBackboneCarbons.contains( conatom ) ) continue;
-				if (  aAnomericCarbons.contains( conatom ) ) continue;
+				if ( !t_aBackboneCarbons.contains( conatom ) ) continue;
+				if (  t_aAnomericCarbons.contains( conatom ) ) continue;
 				isAglycon = false;
 			}
 			if ( isAglycon ) this.m_aAglyconGraphs.addLast( graph );
@@ -339,7 +339,7 @@ public class WURCSGraphImporterMolecule {
 		for ( SubGraph graph : candidateModifications ) {
 			for ( Connection con : graph.getExternalConnections() ) {
 				Atom conatom = con.endAtom();
-				if ( !aBackboneCarbons.contains( conatom ) ) continue;
+				if ( !t_aBackboneCarbons.contains( conatom ) ) continue;
 				graph.add( conatom );
 				graph.add( con.getBond() );
 			}
@@ -354,7 +354,7 @@ public class WURCSGraphImporterMolecule {
 
 			for ( Connection con : aglycon.getExternalConnections() ) {
 				Atom conatom = con.endAtom();
-				if ( !aBackboneCarbons.contains( conatom ) ) continue;
+				if ( !t_aBackboneCarbons.contains( conatom ) ) continue;
 				SubGraph newMod = new SubGraph();
 				newMod.add(con.startAtom());
 				newMod.add(conatom);

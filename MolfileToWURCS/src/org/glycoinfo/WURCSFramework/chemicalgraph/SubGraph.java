@@ -64,7 +64,7 @@ public class SubGraph extends ChemicalGraph {
 			for ( Connection con : atom.getConnections() ){
 				Atom conAtom = con.endAtom();
 				if ( ignoreAtoms.contains(conAtom) ) continue;
-//				if ( conAtom.getSymbol().equals("H") ) continue;
+				if ( conAtom.getSymbol().equals("H") ) continue;
 				if ( !this.contains(conAtom) ){
 					this.add(conAtom);
 				}
@@ -87,7 +87,7 @@ public class SubGraph extends ChemicalGraph {
 			Atom atom = it.next();
 			for ( Connection con : atom.getConnections() ) {
 				if ( this.m_aAtoms.contains(con.endAtom()) ) continue;
-//				if ( atom.getSymbol().equals("H") ) continue;
+				if ( atom.getSymbol().equals("H") ) continue;
 				connections.add(con);
 			}
 		}

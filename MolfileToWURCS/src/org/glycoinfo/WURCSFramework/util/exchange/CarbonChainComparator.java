@@ -18,19 +18,26 @@ public class CarbonChainComparator implements Comparator<LinkedList<Atom>> {
 
 	@Override
 	public int compare(LinkedList<Atom> chain1, LinkedList<Atom> chain2) {
-		// C1にketoneLike, aldehideLike, KetalLike, acetalLike 構造を持ち、CarboxylLikeでないかどうかの0,1からなる文字列を、辞書順で降順
+		// For length of carbon chain, to prioritize longer one
+		// TODO: check comparation order
+//		int t_iComp = chain2.size() - chain1.size();
+//		if ( t_iComp != 0 ) return t_iComp;
+
 		this.m_objAnalyzer1.setCarbonChain(chain1);
 		this.m_objAnalyzer2.setCarbonChain(chain2);
-		String sequence1 = this.m_objAnalyzer1.getCoOCOSequence();
-		String sequence2 = this.m_objAnalyzer2.getCoOCOSequence();
-		int checkCoOCOSequence = sequence2.compareTo(sequence1);
-		if ( checkCoOCOSequence != 0 ) return checkCoOCOSequence;
 
 		// C1が環の一部(C1がヘテロ原子を挟んでBackboneの他の炭素に結合している)であるBackboneを優先
 		Atom etherCarbon1 = this.m_objAnalyzer1.getFirstCyclicEtherCarbon();
 		Atom etherCarbon2 = this.m_objAnalyzer2.getFirstCyclicEtherCarbon();
 		if(chain1.getFirst() == etherCarbon1 && chain2.getFirst() != etherCarbon2) return -1;
 		if(chain1.getFirst() != etherCarbon1 && chain2.getFirst() == etherCarbon2) return 1;
+
+		// C1にketoneLike, aldehideLike, KetalLike, acetalLike 構造を持ち、CarboxylLikeでないかどうかの0,1からなる文字列を、辞書順で降順
+		// For sequence of (potential) carbonyl and not carboxyl
+		String sequence1 = this.m_objAnalyzer1.getCoOCOSequence();
+		String sequence2 = this.m_objAnalyzer2.getCoOCOSequence();
+		int checkCoOCOSequence = sequence2.compareTo(sequence1);
+		if ( checkCoOCOSequence != 0 ) return checkCoOCOSequence;
 
 		// oxidationSequenceを辞書順で降順
 		sequence1 = this.m_objAnalyzer1.getOxidationSequence();

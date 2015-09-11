@@ -352,7 +352,7 @@ public class CarbonChainToBackbone_TBD {
 			bcConfig = bc;
 			// XXX remove print
 //			System.err.print(bc.getDesctriptor().getChar());
-			if ( i == 5 ) break;
+			if ( i == 4 ) break;
 		}
 
 		// Determine anomeric charactor
