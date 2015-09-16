@@ -25,6 +25,7 @@ public class CTFileReader {
 	private String m_strFileName;
 	private int m_nTotalRecode;
 	private BufferedReaderWithStdout m_brOutput;
+	private String m_strMOLString;
 	private boolean m_bOutputToSDFile;
 	private int m_iRecordNo; //record number of ctfile
 	private HashMap<String, LinkedList<String>> m_mapIDToData = new HashMap<String, LinkedList<String>>();
@@ -47,15 +48,47 @@ public class CTFileReader {
 		this.m_iRecordNo = 1;
 	}
 
-	//----------------------------
-	// Public method (non void)
-	//----------------------------
+	/**
+	 * Get field data of field ID in sd file
+	 * @return String of field data
+	 */
+	public String getFieldData(String a_strFieldID) {
+		String t_strField = "";
+		if( this.m_mapIDToData.containsKey(a_strFieldID) ){
+			t_strField = "";
+			for(String t_strData : this.m_mapIDToData.get(a_strFieldID)){
+				t_strField += t_strData;
+			}
+		}else{
+			t_strField = this.m_strFileName;
+			if(this.m_nTotalRecode!=1) t_strField += "_" + this.m_iRecordNo;
+		}
+		return t_strField;
+	}
+
+	public int getRecordNo() {
+		return this.m_iRecordNo;
+	}
+
+	public String getFileName() {
+		return this.m_strFileName;
+	}
+
+	public String getMOLString() {
+		return this.m_strMOLString;
+	}
+
+	public void close() throws IOException {
+		this.m_brOutput.close();
+	}
+
 	/**
 	 * read a record from ctfile and store Molecule
 	 * @return Molecule (or null if file has no more molecule)
 	 */
 	public Molecule getMolecule() {
 		Molecule t_oMol = new Molecule();
+		this.m_strMOLString = "";
 
 		while(true){
 			// Header Block
@@ -64,21 +97,22 @@ public class CTFileReader {
 			// 0123456789012345678901234567890123456789012345678901
 			String t_strLine;
 
-			t_strLine = this.m_brOutput.readLine(this.m_bOutputToSDFile); if(t_strLine == null) return null;
-			t_strLine = this.m_brOutput.readLine(this.m_bOutputToSDFile); if(t_strLine == null) return null;
-			t_strLine = this.m_brOutput.readLine(this.m_bOutputToSDFile); if(t_strLine == null) return null;
+			t_strLine = this.readLine(); if(t_strLine == null) return null;
+			t_strLine = this.readLine(); if(t_strLine == null) return null;
+			t_strLine = this.readLine(); if(t_strLine == null) return null;
 
 			// Counts Line
 			// aaabbblllfffcccsssxxxrrrpppiiimmmvvvvvv
 			// 000000000011111111112222222222333333333
 			// 012345678901234567890123456789012345678
-			t_strLine = this.m_brOutput.readLine(this.m_bOutputToSDFile, "$$$$");
+			t_strLine = this.readLine();
 
 			//201304170004 IssakuYAMADA
 			if(t_strLine.length() < 18){  // 39 || !line.substring(34, 39).trim().equals("V2000")){
 				//201304170004 IssakuYAMADA
 				// Not ignore V2000 and others
-				while(t_strLine!=null && !t_strLine.equals("$$$$")) t_strLine = this.m_brOutput.readLine(this.m_bOutputToSDFile, "$$$$");
+				while(t_strLine!=null && !t_strLine.equals("$$$$"))
+					t_strLine = this.readLine();
 				if(t_strLine==null) return null;
 				if(t_strLine.equals("$$$$")) return t_oMol;
 			}
@@ -90,7 +124,7 @@ public class CTFileReader {
 			// 000000000011111111112222222222333333333344444444445555555555666666666
 			// 012345678901234567890123456789012345678901234567890123456789012345678
 			for(int i = 0; i<t_nAtom; i++){
-				t_strLine = this.m_brOutput.readLine(this.m_bOutputToSDFile);
+				t_strLine = this.readLine();
 
 //				Atom atom = new Atom();
 //				atom.molfileAtomNo = AtomNo + 1;
@@ -126,7 +160,7 @@ public class CTFileReader {
 
 			// Bond Block
 			for(int i = 0; i<t_nBond; i++){
-				t_strLine = this.m_brOutput.readLine(this.m_bOutputToSDFile);
+				t_strLine = this.readLine();
 //				Atom atom0 = mol.atoms.get(Integer.parseInt(line.substring(0, 3).trim()) - 1);
 //				Atom atom1 = mol.atoms.get(Integer.parseInt(line.substring(3, 6).trim()) - 1);
 				// TODO:
@@ -154,7 +188,7 @@ public class CTFileReader {
 			LinkedList<Atom> t_aAtomList = t_oMol.getAtoms();
 			// Properties Block
 			// "M  CHG", "M  RAD" and "M  ISO" are readable
-			while((t_strLine = this.m_brOutput.readLine(this.m_bOutputToSDFile)) != null){
+			while((t_strLine = this.readLine()) != null){
 				if(t_strLine.length() < 6) continue;
 				if(t_strLine.substring(0, 6).trim().equals("M  END")){
 					break;
@@ -232,7 +266,7 @@ public class CTFileReader {
 			// HEXAHYDROPHTHALIC ACID TRANS,L            // Data
 			//                                           // Blank line
 			String key = "";
-			while((t_strLine = this.m_brOutput.readLine(this.m_bOutputToSDFile, "$$$$")) != null){
+			while( (t_strLine = this.readLine()) != null){
 				if(t_strLine.equals("$$$$")){
 					break;
 				}else if(t_strLine.length() == 0){
@@ -259,33 +293,11 @@ public class CTFileReader {
 		}
 	}
 
-	/**
-	 * Get field data of field ID in sd file
-	 * @return String of field data
-	 */
-	public String getFieldData(String a_strFieldID) {
-		String t_strField = "";
-		if( this.m_mapIDToData.containsKey(a_strFieldID) ){
-			t_strField = "";
-			for(String t_strData : this.m_mapIDToData.get(a_strFieldID)){
-				t_strField += t_strData;
-			}
-		}else{
-			t_strField = this.m_strFileName;
-			if(this.m_nTotalRecode!=1) t_strField += "_" + this.m_iRecordNo;
-		}
-		return t_strField;
-	}
-
-	public int getRecordNo() {
-		return this.m_iRecordNo;
-	}
-
-	public String getFileName() {
-		return this.m_strFileName;
-	}
-
-	public void close() throws IOException {
-		this.m_brOutput.close();
+	private String readLine() {
+		String t_strLine = this.m_brOutput.readLine(this.m_bOutputToSDFile);
+		if ( t_strLine == null ) return null;
+		if ( !t_strLine.equals("$$$$") )
+			this.m_strMOLString += t_strLine+"\n";
+		return t_strLine;
 	}
 }
