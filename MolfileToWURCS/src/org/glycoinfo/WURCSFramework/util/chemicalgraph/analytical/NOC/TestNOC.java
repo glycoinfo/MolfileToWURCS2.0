@@ -18,19 +18,29 @@ public class TestNOC {
 		// read argument and files using SelectFileDialog
 		ParameterReader t_objParam = new ParameterReader(args, true);
 
-		for ( String t_strFilepath : t_objParam.getCTfileList() )
-			readCTFile(t_strFilepath, false);
+		for ( String t_strFilepath : t_objParam.getCTfileList() ) {
+			// New SDFile
+			String t_strOutSDFile = t_strFilepath;
+			if ( t_strOutSDFile.contains(".mol") )
+				t_strOutSDFile = t_strOutSDFile.replace(".mol", "");
+			t_strOutSDFile += ".sdf";
+			System.out.println(t_strOutSDFile);
+			try {
+				PrintWriter t_pwNewSDF = FileIOUtils.openTextFileW(t_strOutSDFile);
+				readCTFile(t_strFilepath, t_pwNewSDF);
+				t_pwNewSDF.close();
+			} catch (Exception e) {
+				// TODO 自動生成された catch ブロック
+				e.printStackTrace();
+			}
+		}
 	}
 
-	public static void readCTFile(String a_strFilePath, boolean a_bOutput) {
+	public static void readCTFile(String a_strFilePath, PrintWriter a_pwOut) {
 		// read CTFiles
 		CTFileReader t_objCTReader = new CTFileReader(a_strFilePath, false);
 
-		String t_strNewSDF = "";
 		while(true){
-			if ( !t_strNewSDF.equals("") )
-				t_strNewSDF += "$$$$\n";
-
 			// read a record from CTFile
 			Molecule mol = t_objCTReader.getMolecule();
 			if(mol==null) break;
@@ -40,6 +50,8 @@ public class TestNOC {
 			LinkedList<Integer> t_aCarbonIDs = new LinkedList<Integer>();
 			NOCApproach t_oNOC = new NOCApproach();
 			t_oNOC.countNabourOxygen(mol);
+			String t_strPhaseI = "";
+			String t_strPhaseII = "";
 			HashSet<Atom> t_aMSCarbons = t_oNOC.getMonosaccharideCarbon();
 			for ( int i=0; i<mol.getAtoms().size(); i++ ) {
 				System.out.print( (i+1)+":" );
@@ -49,6 +61,12 @@ public class TestNOC {
 					System.out.println("-");
 					continue;
 				}
+
+				if ( !t_strPhaseI.equals("") ) t_strPhaseI += ",";
+				t_strPhaseI  += (i+1)+":"+t_oNOC.getNOCNumMapPhase1().get(t_oAtom);
+				if ( !t_strPhaseII.equals("") ) t_strPhaseII += ",";
+				t_strPhaseII += (i+1)+":"+t_oNOC.getNOCNumMapPhase2().get(t_oAtom);
+
 				System.out.println(
 						t_oNOC.getNOCNumMapPhase1().get(t_oAtom)
 						+"-"
@@ -61,33 +79,22 @@ public class TestNOC {
 			}
 			Collections.sort(t_aCarbonIDs);
 
+			String t_strTag = "> <NOC-PhaseI>\n";
+			t_strTag += t_strPhaseI+"\n\n";
+			t_strTag += "> <NOC-PhaseII>\n";
+			t_strTag += t_strPhaseII+"\n\n";
 			// Make hit atoms tag
-			String t_strTag = "> <HitAtoms>\n";
+			t_strTag += "> <HitAtoms>\n";
 			String t_strIDList = "";
 			for ( int t_iID : t_aCarbonIDs ) {
 				if ( !t_strIDList.equals("") ) t_strIDList += ",";
 				t_strIDList += t_iID;
 			}
-			t_strTag += t_strIDList + "\n\n";
+			t_strTag += t_strIDList+"\n\n";
 
-			t_strNewSDF += t_objCTReader.getMOLString()+t_strTag;
+			a_pwOut.write( t_objCTReader.getMOLString()+t_strTag+"$$$$\n" );
+			a_pwOut.flush();
 		}
-
-		// New SDFile
-		String t_strOutSDFile = a_strFilePath;
-		if ( t_strOutSDFile.contains(".mol") )
-			t_strOutSDFile = t_strOutSDFile.replace(".mol", "");
-		t_strOutSDFile += ".sdf";
-		System.out.println(t_strOutSDFile);
-		try {
-			PrintWriter t_pwNewSDF = FileIOUtils.openTextFileW(t_strOutSDFile);
-			t_pwNewSDF.write( t_strNewSDF );
-			t_pwNewSDF.close();
-		} catch (Exception e) {
-			// TODO 自動生成された catch ブロック
-			e.printStackTrace();
-		}
-
 	}
 
 }
