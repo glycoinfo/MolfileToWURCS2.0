@@ -11,11 +11,6 @@ import java.io.IOException;
  * @author MasaakiMatsubara
  */
 public class BufferedReaderWithStdout extends BufferedReader{
-	//----------------------------
-	// Member variable
-	//----------------------------
-	BufferedReader br;
-	String m_strReadString = "";
 
 	//----------------------------
 	// Constructor
@@ -23,10 +18,6 @@ public class BufferedReaderWithStdout extends BufferedReader{
 	public BufferedReaderWithStdout(FileReader fr){
 		super(fr);
 //		br = new BufferedReader(fr);
-	}
-
-	public String getReadString() {
-		return this.m_strReadString;
 	}
 
 	//----------------------------
@@ -37,7 +28,6 @@ public class BufferedReaderWithStdout extends BufferedReader{
 		try {
 			line = super.readLine();
 			if(line==null) return null;
-			this.m_strReadString += line+"\n";
 			if(outputStdout){
 				if(ignore==null || !line.equals(ignore)){
 					System.out.println(line);

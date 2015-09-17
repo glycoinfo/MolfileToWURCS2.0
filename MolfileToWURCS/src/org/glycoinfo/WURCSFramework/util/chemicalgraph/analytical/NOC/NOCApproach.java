@@ -14,6 +14,10 @@ public class NOCApproach {
 	private HashMap<Atom, Integer> m_mapAtomToNOCNumPhase2 = new HashMap<Atom, Integer>();
 	private HashSet<Atom> m_aMonosaccharideCarbons = new HashSet<Atom>();
 
+	public NOCApproach(Molecule a_oMol) {
+		this.countNabourOxygen(a_oMol);
+	}
+
 	public HashMap<Atom, Integer> getNOCNumMapPhase1() {
 		return this.m_mapAtomToNOCNumPhase1;
 	}
@@ -32,7 +36,7 @@ public class NOCApproach {
 		this.m_aMonosaccharideCarbons = new HashSet<Atom>();
 	}
 
-	public void countNabourOxygen(Molecule a_oMol) {
+	private void countNabourOxygen(Molecule a_oMol) {
 		this.clear();
 		// For first phase
 		for ( Atom t_oCarbon : a_oMol.getAtoms() ) {
