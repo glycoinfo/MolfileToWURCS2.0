@@ -10,11 +10,21 @@ import org.glycoinfo.WURCSFramework.chemicalgraph.Molecule;
 
 public class NOCApproach {
 
+	public static int SCORING_TYPE0 = 0;
+	public static int SCORING_TYPE1 = 1;
+	public static int SCORING_TYPE2 = 2;
+
+	private int m_iScoreType = SCORING_TYPE0;
 	private HashMap<Atom, Integer> m_mapAtomToNOCNumPhase1 = new HashMap<Atom, Integer>();
 	private HashMap<Atom, Integer> m_mapAtomToNOCNumPhase2 = new HashMap<Atom, Integer>();
 	private HashSet<Atom> m_aMonosaccharideCarbons = new HashSet<Atom>();
 
 	public NOCApproach(Molecule a_oMol) {
+		this.countNabourOxygen(a_oMol);
+	}
+
+	public NOCApproach(Molecule a_oMol, int a_iType ) {
+		this.m_iScoreType = a_iType;
 		this.countNabourOxygen(a_oMol);
 	}
 
@@ -40,15 +50,10 @@ public class NOCApproach {
 		this.clear();
 		// For first phase
 		for ( Atom t_oCarbon : a_oMol.getAtoms() ) {
-			int t_nOxygen = 0;
 			if ( !t_oCarbon.getSymbol().equals("C") ) continue;
 
-			for ( Connection t_oConn : t_oCarbon.getConnections() ) {
-				if ( !t_oConn.endAtom().getSymbol().equals("O") ) continue;
-				t_nOxygen++;
-				if ( t_oConn.getBond().getType() == 2 ) t_nOxygen++;
-			}
-			this.m_mapAtomToNOCNumPhase1.put(t_oCarbon, t_nOxygen);
+			// Calculate and set carbon score
+			this.m_mapAtomToNOCNumPhase1.put( t_oCarbon, this.getCarbonScore(t_oCarbon) );
 		}
 
 		// Second phase
@@ -93,5 +98,42 @@ public class NOCApproach {
 			}
 		}
 
+	}
+
+	public int getCarbonScore( Atom a_oCarbon ) {
+		int t_nO = 0;
+		int t_nX = 0;
+		int t_nC = 0;
+		for ( Connection t_oConn : a_oCarbon.getConnections() ) {
+			int t_iType = t_oConn.getBond().getType();
+			String t_strSymbol = t_oConn.endAtom().getSymbol();
+			if ( t_strSymbol.equals("O") ){
+				if ( t_iType == 1 ) t_nO++;
+				if ( t_iType == 2 ) t_nO+=2;
+				continue;
+			}
+			if ( t_strSymbol.equals("C") ) {
+				t_nC++;
+				continue;
+			}
+			if ( t_strSymbol.equals("H") ) continue;
+
+			t_nX++;
+		}
+
+		if ( this.m_iScoreType == SCORING_TYPE1 ) {
+			// For Carboxyl
+			if ( t_nO == 3 ) return 2;
+			// For Aldehyde or ketone
+			if ( t_nO == 2 ) return 3;
+		}
+
+		if ( this.m_iScoreType == SCORING_TYPE2 ) {
+			// For Carboxyl
+			if ( t_nC == 1 && t_nO == 3 && t_nX == 0 ) return 1;
+			// For Aldehyde
+			if ( t_nC == 1 && t_nO == 2 && t_nX == 0 ) return 3;
+		}
+		return t_nO;
 	}
 }

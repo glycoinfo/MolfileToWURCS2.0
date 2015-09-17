@@ -9,6 +9,7 @@ import org.glycoinfo.WURCSFramework.chemicalgraph.Molecule;
 import org.glycoinfo.WURCSFramework.exec.FileIOUtils;
 import org.glycoinfo.WURCSFramework.io.MDLMOL.CTFileReader;
 import org.glycoinfo.WURCSFramework.io.MDLMOL.ParameterReader;
+import org.glycoinfo.WURCSFramework.util.chemicalgraph.analytical.Cyclization;
 
 public class TestNOC {
 
@@ -21,11 +22,18 @@ public class TestNOC {
 			String t_strOutSDFile = t_strFilepath;
 			if ( t_strOutSDFile.contains(".mol") )
 				t_strOutSDFile = t_strOutSDFile.replace(".mol", "");
-			t_strOutSDFile += ".sdf";
+			if ( t_strOutSDFile.contains(".sdf") )
+				t_strOutSDFile = t_strOutSDFile.replace(".sdf", "");
 			System.out.println(t_strOutSDFile);
 			try {
-				PrintWriter t_pwNewSDF = FileIOUtils.openTextFileW(t_strOutSDFile);
-				readCTFile(t_strFilepath, t_pwNewSDF);
+				PrintWriter t_pwNewSDF = FileIOUtils.openTextFileW(t_strOutSDFile +"_score0.sdf");
+				readCTFile(t_strFilepath, t_pwNewSDF, NOCApproach.SCORING_TYPE0);
+				t_pwNewSDF.close();
+				t_pwNewSDF = FileIOUtils.openTextFileW(t_strOutSDFile +"_score1.sdf");
+				readCTFile(t_strFilepath, t_pwNewSDF, NOCApproach.SCORING_TYPE1);
+				t_pwNewSDF.close();
+				t_pwNewSDF = FileIOUtils.openTextFileW(t_strOutSDFile +"_score2.sdf");
+				readCTFile(t_strFilepath, t_pwNewSDF, NOCApproach.SCORING_TYPE2);
 				t_pwNewSDF.close();
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -33,7 +41,7 @@ public class TestNOC {
 		}
 	}
 
-	public static void readCTFile(String a_strFilePath, PrintWriter a_pwOut) {
+	public static void readCTFile(String a_strFilePath, PrintWriter a_pwOut, int a_iScoringType) {
 		// read CTFiles
 		CTFileReader t_objCTReader = new CTFileReader(a_strFilePath, false);
 
@@ -46,11 +54,21 @@ public class TestNOC {
 			String ID = t_objCTReader.getFieldData("ChEBI_ID");
 			System.out.println(t_nMol+":"+ID);
 
+			// Get aromatic carbons
+			// Search aromatic atoms
+			HashSet<Atom> t_aAromatics = new HashSet<Atom>();
+			Cyclization cyclic = new Cyclization();
+			for ( Atom a : mol.getAtoms() ) {
+				cyclic.clear();
+				if ( cyclic.aromatize(a) ) t_aAromatics.addAll(cyclic);
+			}
 
 			LinkedList<Integer> t_aCarbonIDs = new LinkedList<Integer>();
-			NOCApproach t_oNOC = new NOCApproach(mol);
+			NOCApproach t_oNOC = new NOCApproach(mol, a_iScoringType);
 			String t_strPhaseI  = "";
 			String t_strPhaseII = "";
+			String t_strAromatics = "";
+			String t_strHitAtoms = "";
 			HashSet<Atom> t_aMSCarbons = t_oNOC.getMonosaccharideCarbon();
 			LinkedList<Atom> t_aAtoms = mol.getAtoms();
 			for ( Atom t_oAtom : t_aAtoms ) {
@@ -62,22 +80,29 @@ public class TestNOC {
 				if ( !t_strPhaseII.equals("") ) t_strPhaseII += ",";
 				t_strPhaseII += t_iID+":"+t_oNOC.getNOCNumMapPhase2().get(t_oAtom);
 
+				// For aromatics
+				if ( t_aAromatics.contains(t_oAtom) ){
+					if ( !t_strAromatics.equals("") ) t_strAromatics += ",";
+					t_strAromatics += t_iID;
+					continue;
+				}
+
 				if ( !t_aMSCarbons.contains(t_oAtom) ) continue;
-				t_aCarbonIDs.add(t_iID);
+
+				// Make hit atoms
+				if ( !t_strHitAtoms.equals("") ) t_strHitAtoms += ",";
+				t_strHitAtoms += t_iID;
 			}
 
-			String t_strTag = "> <NOC-PhaseI>\n";
+			// Make tags
+			String t_strTag = "> <NOC-PassI>\n";
 			t_strTag += t_strPhaseI+"\n\n";
-			t_strTag += "> <NOC-PhaseII>\n";
+			t_strTag += "> <NOC-PassII>\n";
 			t_strTag += t_strPhaseII+"\n\n";
-			// Make hit atoms tag
+			t_strTag += "> <AromaticCarbons>\n";
+			t_strTag += t_strAromatics+"\n\n";
 			t_strTag += "> <HitAtoms>\n";
-			String t_strIDList = "";
-			for ( int t_iID : t_aCarbonIDs ) {
-				if ( !t_strIDList.equals("") ) t_strIDList += ",";
-				t_strIDList += t_iID;
-			}
-			t_strTag += t_strIDList+"\n\n";
+			t_strTag += t_strHitAtoms+"\n\n";
 
 			String t_strNewSDF = t_objCTReader.getMOLString();
 			t_strNewSDF += t_strTag+"$$$$\n";
