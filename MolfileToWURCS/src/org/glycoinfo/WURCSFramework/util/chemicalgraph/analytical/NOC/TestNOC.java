@@ -63,8 +63,11 @@ public class TestNOC {
 				if ( cyclic.aromatize(a) ) t_aAromatics.addAll(cyclic);
 			}
 
-			LinkedList<Integer> t_aCarbonIDs = new LinkedList<Integer>();
-			NOCApproach t_oNOC = new NOCApproach(mol, a_iScoringType);
+			NOCApproach t_oNOC = new NOCApproach(mol);
+			if ( a_iScoringType == NOCApproach.SCORING_TYPE1 )
+				t_oNOC.setType1();
+			if ( a_iScoringType == NOCApproach.SCORING_TYPE2 )
+				t_oNOC.setType2();
 			String t_strPhaseI  = "";
 			String t_strPhaseII = "";
 			String t_strAromatics = "";

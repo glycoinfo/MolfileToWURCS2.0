@@ -23,9 +23,12 @@ public class NOCApproach {
 		this.countNabourOxygen(a_oMol);
 	}
 
-	public NOCApproach(Molecule a_oMol, int a_iType ) {
-		this.m_iScoreType = a_iType;
-		this.countNabourOxygen(a_oMol);
+	public void setType1() {
+		this.m_iScoreType = SCORING_TYPE1;
+	}
+
+	public void setType2() {
+		this.m_iScoreType = SCORING_TYPE2;
 	}
 
 	public HashMap<Atom, Integer> getNOCNumMapPhase1() {
