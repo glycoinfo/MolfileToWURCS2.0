@@ -342,35 +342,46 @@ public class CarbonChainToBackbone_TBD {
 	/** Get anomeric symbol */
 	private char getAnomericSymbol(Backbone_TBD a_oBackbone, BackboneCarbon a_oAnomCarbon) {
 		// Get configurational carbon
-		int pos = a_oBackbone.getAnomericPosition();
-		if ( pos == 0 ) return 'x';
-		int i = 0;
-		BackboneCarbon bcConfig = null;
-		for ( BackboneCarbon bc : a_oBackbone.getBackboneCarbons() ) {
-			if ( !bc.isChiral() ) continue;
-			i++;
-			bcConfig = bc;
-			// XXX remove print
-//			System.err.print(bc.getDesctriptor().getChar());
-			if ( i == 4 ) break;
+		int t_iAnomPos = a_oBackbone.getAnomericPosition();
+		if ( t_iAnomPos == 0 ) return 'x';
+
+		LinkedList<BackboneCarbon> t_aBCs = a_oBackbone.getBackboneCarbons();
+		// For reversed backbone
+		boolean t_bIsReverse = false;
+		if ( t_iAnomPos > t_aBCs.size()/2 ) {
+			t_bIsReverse = true;
+			Collections.reverse(t_aBCs);
+			t_iAnomPos = t_aBCs.size()-t_iAnomPos+1;
 		}
+
+		BackboneCarbon t_oAnomRefCarbon = null;
+		for ( int i=t_iAnomPos-1, n=t_aBCs.size(); i<n; i++ ) {
+			BackboneCarbon t_oBC = a_oBackbone.getBackboneCarbons().get(i);
+			if ( !t_oBC.isChiral() ) continue;
+			t_oAnomRefCarbon = t_oBC;
+			// XXX remove print
+//			System.err.print(t_oBC.getDesctriptor().getChar());
+			if ( i == t_iAnomPos+4 ) break;
+		}
+		if ( t_bIsReverse )
+			Collections.reverse(t_aBCs);
 
 		// Determine anomeric charactor
 		char anom = 'x';
-		if ( bcConfig == null ) return anom;
+		if ( t_oAnomRefCarbon == null ) return anom;
 		if ( a_oAnomCarbon == null ) return anom;
 		// XXX remove print
 //		System.err.println(" "+bcConfig.getDesctriptor().getChar());
 
-		char cConfig = bcConfig.getDesctriptor().getChar();
+		char cRef = t_oAnomRefCarbon.getDesctriptor().getChar();
 		char cAnom = a_oAnomCarbon.getDesctriptor().getChar();
 
-		if ( cConfig == 'x' || cConfig == 'X' ) {
+		if ( cRef == 'x' || cRef == 'X' ) {
 			return (cAnom == '3' || cAnom == '7')? 'b' :
 				   (cAnom == '4' || cAnom == '8')? 'a' : anom;
 		}
-		if ( !Character.isDigit(cConfig) ) return anom;
-		int iConfig = Character.getNumericValue(cConfig);
+		if ( !Character.isDigit(cRef) ) return anom;
+		int iConfig = Character.getNumericValue(cRef);
 
 		if ( !Character.isDigit(cAnom) ) return anom;
 		int iAnom = Character.getNumericValue(cAnom);

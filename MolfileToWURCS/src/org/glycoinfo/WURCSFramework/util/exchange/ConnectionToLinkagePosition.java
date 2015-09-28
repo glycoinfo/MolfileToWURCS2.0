@@ -1,6 +1,7 @@
 package org.glycoinfo.WURCSFramework.util.exchange;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 
 import org.glycoinfo.WURCSFramework.chemicalgraph.Atom;
@@ -71,7 +72,8 @@ public class ConnectionToLinkagePosition {
 //		ConnectTypeList types = new ConnectTypeList(connect.start(), connect.start().backbone);
 //		if(outputFullInformation || types.get(types.uniqBackboneNum).connects.size() != 1){
 		boolean t_bCanEllipsisDirection =
-				( this.countModificationNumberOnCarbon(con, chain) == 0 || t_enumDD == DirectionDescriptor.N );
+//				( this.countUniqueModificationNumberOnCarbon(con, chain) == 0 || t_enumDD == DirectionDescriptor.N );
+				( this.isDirectionOmitted(con, chain) || t_enumDD == DirectionDescriptor.N );
 
 		LinkagePosition link = new LinkagePosition(t_iBPos, t_enumDD, t_bCanEllipsisDirection, PCA, ellipsisPCA);
 		return link;
@@ -148,7 +150,7 @@ public class ConnectionToLinkagePosition {
 			}
 
 			// sp3 terminal
-			if ( Co.getChirality()!=null ) return "0";
+			if ( Co.getChirality()==null ) return "0";
 
 			Connection conC = (CSmall == null)? conCLarge : conCSmall;
 			String turn = Chemical.sp3stereo(aConMod.get(0), aConMod.get(1), aConMod.get(2), conC);
@@ -319,25 +321,68 @@ public class ConnectionToLinkagePosition {
 	 * @param chain Backbone carbon chain
 	 * @return Number of other modifications
 	 */
-	private int countModificationNumberOnCarbon(Connection conB2M, LinkedList<Atom> chain) {
+	private int countUniqueModificationNumberOnCarbon(Connection conB2M, LinkedList<Atom> chain) {
 		CarbonChainAnalyzer analCC = new CarbonChainAnalyzer();
 		Atom anomC = analCC.setCarbonChain(chain).getAnomericCarbon();
 		Atom Co = conB2M.startAtom();
+		HashSet<String> t_aSymbols = new HashSet<String>();
 		int nMo = 0;
 		for ( Connection con : Co.getConnections() ) {
 			if ( con.equals(conB2M) ) continue;
 			Atom Mo = con.endAtom();
 			if ( Mo.getSymbol().equals("H") ) continue;
 			if ( chain.contains(Mo) ) continue;
+
+			// For bridging modification at anomeric position
 			if ( Co.equals( anomC ) ) {
-				// check bridge modification
 				int nBackboneConnection = 0;
 				for ( Connection concon : Mo.getConnections() )
 					if ( chain.contains( concon.endAtom() ) ) nBackboneConnection++;
 				if ( nBackboneConnection > 1 ) continue;
 			}
+
+			// Collect unique attached atom of modification
+			t_aSymbols.add( Mo.getSymbol() );
+
 			nMo++;
 		}
 		return nMo;
+	}
+
+	/**
+	 * Check that modification is ommited
+	 * @param conB2M Connection between backbone carbon and modification
+	 * @param chain Backbone carbon chain
+	 * @return Number of other modifications
+	 */
+	private boolean isDirectionOmitted(Connection conB2M, LinkedList<Atom> chain) {
+		CarbonChainAnalyzer analCC = new CarbonChainAnalyzer();
+		Atom anomC = analCC.setCarbonChain(chain).getAnomericCarbon();
+		Atom Co = conB2M.startAtom();
+		HashSet<String> t_aSymbols = new HashSet<String>();
+		int nMo = 0;
+		for ( Connection con : Co.getConnections() ) {
+			Atom Mo = con.endAtom();
+
+			// Ignore hydrogen and carbon chain
+			if ( Mo.getSymbol().equals("H") ) continue;
+			if ( chain.contains(Mo) ) continue;
+
+			// Ignore modification which bridged carbon chain at anomeric position
+			if ( Co.equals( anomC ) ) {
+				int nBackboneConnection = 0;
+				for ( Connection concon : Mo.getConnections() )
+					if ( chain.contains( concon.endAtom() ) ) nBackboneConnection++;
+				if ( nBackboneConnection > 1 ) continue;
+			}
+
+			// Collect unique attached atom symbols of modification
+			t_aSymbols.add( Mo.getSymbol() );
+
+			nMo++;
+		}
+		if ( nMo < 2 ) return true;
+		if ( t_aSymbols.size() > 1 ) return true;
+		return false;
 	}
 }
