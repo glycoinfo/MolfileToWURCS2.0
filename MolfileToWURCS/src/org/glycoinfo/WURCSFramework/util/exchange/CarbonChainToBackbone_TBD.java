@@ -355,13 +355,15 @@ public class CarbonChainToBackbone_TBD {
 		}
 
 		BackboneCarbon t_oAnomRefCarbon = null;
+		int t_nChiral = 0;
 		for ( int i=t_iAnomPos-1, n=t_aBCs.size(); i<n; i++ ) {
 			BackboneCarbon t_oBC = a_oBackbone.getBackboneCarbons().get(i);
 			if ( !t_oBC.isChiral() ) continue;
+			t_nChiral++;
 			t_oAnomRefCarbon = t_oBC;
 			// XXX remove print
-//			System.err.print(t_oBC.getDesctriptor().getChar());
-			if ( i == t_iAnomPos+4 ) break;
+			System.err.print(t_oBC.getDesctriptor().getChar());
+			if ( t_nChiral == t_iAnomPos+3 ) break;
 		}
 		if ( t_bIsReverse )
 			Collections.reverse(t_aBCs);
