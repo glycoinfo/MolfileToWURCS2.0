@@ -55,7 +55,7 @@ public class MOLToWURCS {
 				ID = String.format("%1$05d", Integer.parseInt(ID) );
 			} catch (NumberFormatException e) {
 			}
-			if ( !ID.equals("G00109NL") ) continue;
+//			if ( !ID.equals("G99947OL") ) continue;
 //			if ( !ID.equals("23373") ) continue;
 //			if ( !ID.equals("CHEBI:10101") ) continue;
 //			if(!t_objParam.m_sdfileOutput){

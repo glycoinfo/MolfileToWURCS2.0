@@ -83,6 +83,7 @@ public class CarbonChainFinder {
 			String t_strNOCPass1 = t_oNOCCount.getNOCPass1();
 			String t_strNOCPass2 = t_oNOCCount.getNOCPass2();
 			String t_strNOCPass2Ex = t_oNOCCount.getNOCPass2Ex();
+			// TODO: remove print
 			System.err.println( t_strNOCPass1+"\n"+t_strNOCPass2+"\n"+t_strNOCPass2Ex );
 */
 			// Screen by number of connected N, O, or S

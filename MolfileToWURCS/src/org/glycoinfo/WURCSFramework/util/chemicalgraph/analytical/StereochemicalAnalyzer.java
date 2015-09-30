@@ -313,6 +313,7 @@ public class StereochemicalAnalyzer {
 			if( subgraphConnects.size()!=4) continue;
 			String stereo = Chemical.sp3stereo(subgraphConnects.get(0), subgraphConnects.get(1), subgraphConnects.get(2), subgraphConnects.get(3)).toLowerCase();
 //			atom.stereoTmp = stereo;
+			// TODO: remove print
 			System.err.println(stereo);
 			this.m_mapAtomToStereo.put(atom, stereo);
 		}

@@ -174,9 +174,10 @@ public class CarbonChainToBackbone_TBD {
 				return 0;
 			}
 		});
-		// Remove "_"
+		// TODO: remove "_"
 //		System.err.println();
 		for ( int i=0; i< modStrList.size(); i++ ) {
+			// TODO: remove print
 //			System.err.println(modStrList.get(i) + ":" + modStrList.get(i).substring(1, modStrList.get(i).length()) );
 			modStrList.set( i, modStrList.get(i).replaceAll("_", "") );
 		}
@@ -346,6 +347,8 @@ public class CarbonChainToBackbone_TBD {
 		if ( t_iAnomPos == 0 ) return 'x';
 
 		LinkedList<BackboneCarbon> t_aBCs = a_oBackbone.getBackboneCarbons();
+		// XXX remove print
+//		System.err.println(a_oBackbone.getSkeletonCode());
 		// For reversed backbone
 		boolean t_bIsReverse = false;
 		if ( t_iAnomPos > t_aBCs.size()/2 ) {
@@ -356,15 +359,17 @@ public class CarbonChainToBackbone_TBD {
 
 		BackboneCarbon t_oAnomRefCarbon = null;
 		int t_nChiral = 0;
-		for ( int i=t_iAnomPos-1, n=t_aBCs.size(); i<n; i++ ) {
+		for ( int i=0, n=t_aBCs.size(); i<n; i++ ) {
 			BackboneCarbon t_oBC = a_oBackbone.getBackboneCarbons().get(i);
 			if ( !t_oBC.isChiral() ) continue;
-			t_nChiral++;
+			if ( i != t_iAnomPos-1 ) t_nChiral++;
 			t_oAnomRefCarbon = t_oBC;
 			// XXX remove print
-			System.err.print(t_oBC.getDesctriptor().getChar());
-			if ( t_nChiral == t_iAnomPos+3 ) break;
+//			System.err.print(t_oBC.getDesctriptor().getChar());
+			if ( t_nChiral == 4 ) break;
 		}
+		// XXX remove print
+//		System.err.println();
 		if ( t_bIsReverse )
 			Collections.reverse(t_aBCs);
 

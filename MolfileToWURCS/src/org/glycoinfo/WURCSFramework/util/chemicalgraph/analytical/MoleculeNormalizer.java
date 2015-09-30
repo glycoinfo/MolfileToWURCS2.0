@@ -80,6 +80,7 @@ public class MoleculeNormalizer {
 				addConnect.add(con);
 			}
 		}
+		// TODO: remove print
 		System.err.println("attach " + addConnect.size());
 		// Add atom and bond of hidden hydrogens
 		for ( Connection con : addConnect ) {

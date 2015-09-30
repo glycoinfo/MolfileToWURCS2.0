@@ -134,6 +134,7 @@ public class WURCSGraphImporterMolecule {
 				t_mapAtomToBackboneCarbon.put( chain.get(i), backbone.getBackboneCarbons().get(i) );
 			}
 
+			// TODO: remove print
 //			System.err.println( aBackboneChains.indexOf(chain) + ": " + backbone.getSkeletonCode() );
 		}
 
@@ -145,7 +146,8 @@ public class WURCSGraphImporterMolecule {
 		SubGraphToModification SG2M = new SubGraphToModification(t_oStAnal.getAromaticAtoms(), t_aBackboneChains);
 		for ( SubGraph graph : t_aModificationGraphs ) {
 			Modification modification = SG2M.convert(graph);
-			System.err.println(modification.getMAPCode());
+			// TODO: remove print
+//			System.err.println(modification.getMAPCode());
 			hashGraphToModification.put(graph, modification);
 			hashGraphToModificationCarbons.put(graph, SG2M.getBackboneAtoms());
 			// Set backbone carbon id in MAP
@@ -184,6 +186,7 @@ public class WURCSGraphImporterMolecule {
 
 			count++;
 		}
+		// TODO: remove print
 //		System.err.println("edge count:"+count);
 		return objWURCSGlycan;
 	}
@@ -240,6 +243,7 @@ public class WURCSGraphImporterMolecule {
 		// # If there are two or more suitable one.
 		HashMap<LinkedList<Atom>, Boolean> hashIsBackbone = new HashMap<LinkedList<Atom>, Boolean>();
 		for(LinkedList<LinkedList<Atom>> backbones : t_aCandidateBackboneGroups){
+			// TODO: remove print
 //			System.err.println("Group" + t_aCandidateBackboneGroups.indexOf(backbones) + ":");
 //			this.printCarbonChains(backbones);
 
@@ -382,6 +386,7 @@ public class WURCSGraphImporterMolecule {
 					if ( chain.contains(conatom) ) continue;
 					for ( SubGraph graph : graphs ) {
 						if ( !graph.contains(conatom) ) continue;
+						// TODO: remove print
 //						System.err.print(conatom.getSymbol());
 						aConB2M.add(con);
 						this.m_hashConnectionToBackboneChain.put(con, chain);
