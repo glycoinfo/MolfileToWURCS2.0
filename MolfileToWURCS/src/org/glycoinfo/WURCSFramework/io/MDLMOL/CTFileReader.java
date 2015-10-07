@@ -187,7 +187,7 @@ public class CTFileReader {
 			// TODO:
 			LinkedList<Atom> t_aAtomList = t_oMol.getAtoms();
 			// Properties Block
-			// "M  CHG", "M  RAD" and "M  ISO" are readable
+			// "M  CHG", "M  RAD", "M  ISO" and "A  " are readable
 			while((t_strLine = this.readLine()) != null){
 				if(t_strLine.length() < 6) continue;
 				if(t_strLine.substring(0, 6).trim().equals("M  END")){
@@ -228,6 +228,14 @@ public class CTFileReader {
 						// TODO:
 						t_aAtomList.get(atomNo).setMass(value);
 					}
+				}else if(t_strLine.substring(0, 3).equals("A  ")){
+					//atom alias
+					// A  aaa
+					// 0123456789
+					int aliasAtomNo = Integer.parseInt(t_strLine.substring(4, 6).trim()) - 1;
+					// read next line
+					t_strLine = this.readLine();
+					t_aAtomList.get(aliasAtomNo).setAliasName(t_strLine.trim());
 				}
 			}
 

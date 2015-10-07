@@ -32,6 +32,8 @@ public class Atom implements AtomicVisitable {
 	private int      m_iPiElectron         = 0;
 	/** Chirarity                                                             */
 	private String   m_strChirality        = null;
+	/** Alias name                                                            */
+	private String   m_strAliasName        = null;
 
 	//----------------------------
 	// Constructor
@@ -75,6 +77,9 @@ public class Atom implements AtomicVisitable {
 		return this.m_strChirality;
 	}
 
+	public String getAliasName() {
+		return this.m_strAliasName;
+	}
 	//----------------------------
 	// Accessor(setter)
 	//----------------------------
@@ -106,6 +111,9 @@ public class Atom implements AtomicVisitable {
 		this.m_strChirality = chiral;
 	}
 
+	public void setAliasName(String alias) {
+		this.m_strAliasName = alias;
+	}
 	//----------------------------
 	// Public method
 	//----------------------------

@@ -95,6 +95,7 @@ public class ParameterReader {
 						if(line.length() == 0) continue;
 
 						if(line.substring(0, 1).equals(">")){
+							if ( ! line.startsWith("> ") ) continue;
 							// line.split("<")[0] = "> 25 ", line.split("<")[1] = "ALTERNATE.NAMES>"
 							// line.split("<")[1].split(">")[0] = "ALTERNATE.NAMES"
 							String DataHeader = line.split("<")[1].split(">")[0];

@@ -57,7 +57,7 @@ public class MOLToWURCS {
 			}
 //			if ( !ID.equals("G99947OL") ) continue;
 //			if ( !ID.equals("23373") ) continue;
-//			if ( !ID.equals("CHEBI:10101") ) continue;
+			if ( !ID.equals("CHEBI:87003") ) continue;
 //			if(!t_objParam.m_sdfileOutput){
 //				System.err.print( ID+":" );
 //			}
