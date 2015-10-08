@@ -23,7 +23,7 @@ public class ParameterReader {
 	// Member variable
 	//----------------------------
 	public int m_minNOS = 2; //BackboneLength 2014/05/27 IY
-	public int m_minO   = 2; //BackboneLength 2014/05/27 IY
+	public int m_minO   = 2; //BackboneLength 2014/05/27 IY -> 2015/10/08 MM
 	public int m_minBackboneLength = 3; //ok 2014/05/27 Issaku YAMADA
 	//public static int m_maxBackboneLength = 9; //;9,10,...20, 100, 1000, max(10000) 2014/05/27　2014/06/18 (999 IY // static 2014/06/18 IY
 	public int m_maxBackboneLength = 999; //2014/07/24 Issaku YAMADA

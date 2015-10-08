@@ -232,7 +232,7 @@ public class CTFileReader {
 					//atom alias
 					// A  aaa
 					// 0123456789
-					int aliasAtomNo = Integer.parseInt(t_strLine.substring(4, 6).trim()) - 1;
+					int aliasAtomNo = Integer.parseInt(t_strLine.substring(3, 6).trim()) - 1;
 					// read next line
 					t_strLine = this.readLine();
 					t_aAtomList.get(aliasAtomNo).setAliasName(t_strLine.trim());

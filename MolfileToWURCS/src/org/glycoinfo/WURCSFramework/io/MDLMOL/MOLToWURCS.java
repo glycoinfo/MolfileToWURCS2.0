@@ -11,6 +11,7 @@ import org.glycoinfo.WURCSFramework.util.WURCSException;
 import org.glycoinfo.WURCSFramework.util.WURCSFactory;
 import org.glycoinfo.WURCSFramework.util.exchange.WURCSGraphImporterMolecule;
 import org.glycoinfo.WURCSFramework.util.graph.WURCSGraphNormalizer;
+import org.glycoinfo.WURCSFramework.util.graph.visitor.WURCSVisitorSeparateWURCSGraphByAglycone;
 import org.glycoinfo.WURCSFramework.wurcs.graph.WURCSGraph;
 
 public class MOLToWURCS {
@@ -55,9 +56,9 @@ public class MOLToWURCS {
 				ID = String.format("%1$05d", Integer.parseInt(ID) );
 			} catch (NumberFormatException e) {
 			}
-//			if ( !ID.equals("G99947OL") ) continue;
+//			if ( !ID.equals("G92964ZO") ) continue;
 //			if ( !ID.equals("23373") ) continue;
-			if ( !ID.equals("CHEBI:87003") ) continue;
+//			if ( !ID.equals("CHEBI:87003") ) continue;
 //			if(!t_objParam.m_sdfileOutput){
 //				System.err.print( ID+":" );
 //			}
@@ -81,6 +82,23 @@ public class MOLToWURCS {
 				t_oLogger.addWURCS(ID, t_strWURCS);
 				System.err.println(t_strWURCS);
 //				System.exit(0);
+
+				// For separated graph
+				WURCSVisitorSeparateWURCSGraphByAglycone t_oSeparateGraph = new WURCSVisitorSeparateWURCSGraphByAglycone();
+				t_oSeparateGraph.start(t_objGlycan);
+				if ( t_oSeparateGraph.getAglycones().isEmpty() ) continue;
+
+				int i=0;
+				for ( WURCSGraph t_oSepGraph : t_oSeparateGraph.getSeparatedGraphs() ) {
+					i++;
+					t_objGraphNormalizer.start(t_oSepGraph);
+					WURCSFactory t_oSepFactory = new WURCSFactory(t_oSepGraph);
+					String t_strSepWURCS = t_oSepFactory.getWURCS();
+					String t_strAglycone = t_oSeparateGraph.getMapAglyconeToSeparatedGraph().get(t_oSepGraph).getMAPCode();
+					System.err.println("Sep"+i+": "+t_strSepWURCS+"\tAglycone: "+t_strAglycone);
+					t_mapIDtoWURCS.put(ID+"("+i+")", t_strSepWURCS+"\t*R: "+t_strAglycone);
+				}
+
 			} catch (WURCSException e) {
 				t_mapIDtoWURCS.put(ID, e.getErrorMessage());
 				System.err.println(ID+"\t"+e.getErrorMessage());
