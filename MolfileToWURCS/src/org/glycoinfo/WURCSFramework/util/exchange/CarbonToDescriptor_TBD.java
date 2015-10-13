@@ -1,19 +1,8 @@
 package org.glycoinfo.WURCSFramework.util.exchange;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-
-import org.glycoinfo.WURCSFramework.chemicalgraph.Atom;
-import org.glycoinfo.WURCSFramework.chemicalgraph.Connection;
-import org.glycoinfo.WURCSFramework.util.chemicalgraph.Chemical;
-import org.glycoinfo.WURCSFramework.util.chemicalgraph.analytical.CarbonIdentifier;
-import org.glycoinfo.WURCSFramework.wurcs.graph.CarbonDescriptor;
 
 public class CarbonToDescriptor_TBD {
-
+/*
 	public CarbonDescriptor convert(Atom a_objCarbon) {
 		// Return unknown type if carbon has connections more than 4
 		if ( a_objCarbon.getConnections().size() > 4 ) return CarbonDescriptor.XXX_UNKNOWN;
@@ -146,5 +135,5 @@ public class CarbonToDescriptor_TBD {
 		// Return matching CarbonDesctiptor
 		return CarbonDescriptor.forCarbonSituation(strOrbital, iType1, iType2, nUniq, strStereo, !bridgeCons.isEmpty(), strMod1, strMod2, strMod3 );
 	}
-
+*/
 }

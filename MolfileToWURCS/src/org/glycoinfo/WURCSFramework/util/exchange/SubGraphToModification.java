@@ -364,6 +364,7 @@ public class SubGraphToModification {
 	 * @param backbones
 	 * @return negative number if this have precedence over target. positive number if target have precedence over this. 0 otherwise.
 	 */
+	/*
 	public int compareTo(final Modification target, final BackboneList backbones){
 		// 主鎖との結合情報を各修飾に持たせている。
 		// 結合情報を複数持つ修飾の場合、本関数が実行される前に結合情報はソート済みである。
@@ -454,6 +455,7 @@ public class SubGraphToModification {
 		}
 		return 0;
 	}
+	*/
 
 	/**
 	 * 修飾に含まれる原子が酸素原子のみで、修飾が結合している主鎖炭素の他の修飾が-OH, -H, -O-(他の糖に結合していない)のみである場合他の省略対象である場合はtrueを返す。
@@ -461,6 +463,7 @@ public class SubGraphToModification {
 	 *  which all the other modifications on the connected backbone carbon are -OH, -H or -O- (not connect to other backbone).
 	 * @return true if modification is ElipseTarget
 	 */
+	/*
 	public boolean isEllipsisTarget ( SubGraph graph, String ALIN ) {
 		if ( ALIN.equals("") )
 		if( graph.getAtoms().size() .atomsOfModification.size()!=1) return false;
@@ -497,12 +500,14 @@ public class SubGraphToModification {
 
 		return true;
 	}
+	*/
 
 	/**
 	 * Return true if modification is Aglycone
 	 * Modificationを取得してからAglyconeチェックを行うのではなく、Aglyconeだったら主鎖と結合している修飾のみをModificationとして取得するように処理を書きかえる。
 	 * @return true if modification is Aglycone
 	 */
+	/*
 	public boolean isAglycone() {
 		if(this.atomsOfModification.size()==1) return false;
 		for(Atom atom : this.atomsOfBackbone){
@@ -510,27 +515,32 @@ public class SubGraphToModification {
 		}
 		return true;
 	}
+	*/
 
 	/**
 	 * Return true if modification is HydroxyGroup
 	 * @return true if modification is HydroxyGroup
 	 */
+	/*
 	public boolean isHydroxyGroup(){
 		if( this.atomsOfBackbone.size()!=1) return false;
 		if( this.atomsOfModification.size()!=1) return false;
 		if(!this.atomsOfModification.getFirst().symbol.equals("O")) return false;
 		return true;
 	}
+	*/
 
 	/**
 	 * Return true if modification is Ether
 	 * @return true if modification is Ether
 	 */
+	/*
 	public boolean isEther(){
 		if( this.atomsOfBackbone.size()!=2) return false;
 		if( this.atomsOfModification.size()!=1) return false;
 		if(!this.atomsOfModification.getFirst().symbol.equals("O")) return false;
 		return true;
 	}
+	*/
 
 }

@@ -105,7 +105,7 @@ public class HierarchicalDigraphCreator {
 		// Set false to "isUniqOrder" of child graph which CIP order is not unique
 		// CIPorderがユニークにならない要素にfalseを立てる
 		for ( HierarchicalDigraph child : graph.getChildren() ){
-			child.setUniqOrder(true);
+//			child.setUniqOrder(true);
 		}
 		int childrenNum = graph.getChildren().size();
 
@@ -114,8 +114,8 @@ public class HierarchicalDigraphCreator {
 			HierarchicalDigraph child2 = graph.getChildren().get(ii+1);
 //			if(tree1.compareTo(tree2, EZRScheck)!=0) continue;
 			if( this.m_objComparator.compare(child1, child2)!=0 ) continue;
-			child1.isUniqOrder = false;
-			child2.isUniqOrder = false;
+//			child1.isUniqOrder = false;
+//			child2.isUniqOrder = false;
 		}
 
 		// depth search for children
