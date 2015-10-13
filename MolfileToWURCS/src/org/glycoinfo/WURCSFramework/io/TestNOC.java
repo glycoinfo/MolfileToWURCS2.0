@@ -1,4 +1,4 @@
-package org.glycoinfo.WURCSFramework.util.chemicalgraph.analytical.NOC;
+package org.glycoinfo.WURCSFramework.io;
 
 import java.io.PrintWriter;
 import java.util.HashSet;
@@ -6,10 +6,11 @@ import java.util.LinkedList;
 
 import org.glycoinfo.WURCSFramework.chemicalgraph.Atom;
 import org.glycoinfo.WURCSFramework.chemicalgraph.Molecule;
-import org.glycoinfo.WURCSFramework.exec.FileIOUtils;
 import org.glycoinfo.WURCSFramework.io.MDLMOL.CTFileReader;
 import org.glycoinfo.WURCSFramework.io.MDLMOL.ParameterReader;
+import org.glycoinfo.WURCSFramework.util.FileIOUtils;
 import org.glycoinfo.WURCSFramework.util.chemicalgraph.analytical.Cyclization;
+import org.glycoinfo.WURCSFramework.util.chemicalgraph.analytical.NOC.NOCApproach;
 
 public class TestNOC {
 

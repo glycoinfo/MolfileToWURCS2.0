@@ -6,10 +6,10 @@ import java.util.ArrayList;
 import java.util.TreeMap;
 
 import org.glycoinfo.WURCSFramework.chemicalgraph.Molecule;
-import org.glycoinfo.WURCSFramework.exec.WURCSConversionLogger;
-import org.glycoinfo.WURCSFramework.exec.WURCSFileWriter;
+import org.glycoinfo.WURCSFramework.util.WURCSConversionLogger;
 import org.glycoinfo.WURCSFramework.util.WURCSException;
 import org.glycoinfo.WURCSFramework.util.WURCSFactory;
+import org.glycoinfo.WURCSFramework.util.WURCSFileWriter;
 import org.glycoinfo.WURCSFramework.util.exchange.WURCSGraphImporterMolecule;
 import org.glycoinfo.WURCSFramework.util.graph.WURCSGraphNormalizer;
 import org.glycoinfo.WURCSFramework.util.graph.visitor.WURCSVisitorSeparateWURCSGraphByAglycone;
