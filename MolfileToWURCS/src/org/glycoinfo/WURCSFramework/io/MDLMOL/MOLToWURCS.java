@@ -97,7 +97,7 @@ public class MOLToWURCS {
 					String t_strSepWURCS = t_oSepFactory.getWURCS();
 					String t_strAglycone = t_oSeparateGraph.getMapAglyconeToSeparatedGraph().get(t_oSepGraph).getMAPCode();
 					System.err.println("Sep"+i+": "+t_strSepWURCS+"\tAglycone: "+t_strAglycone);
-					t_mapIDtoWURCS.put(ID+"("+i+")", t_strSepWURCS+"\t*R: "+t_strAglycone);
+					t_mapIDtoWURCS.put(ID+"("+i+")", t_strSepWURCS+"\t@:"+t_strAglycone);
 				}
 
 			} catch (WURCSException e) {
