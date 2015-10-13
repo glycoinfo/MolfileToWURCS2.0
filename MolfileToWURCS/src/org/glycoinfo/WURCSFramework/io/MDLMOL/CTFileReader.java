@@ -23,6 +23,7 @@ public class CTFileReader {
 	//----------------------------
 	private String m_strfilePath;
 	private String m_strFileName;
+	private String m_strDirName;
 	private int m_nTotalRecode;
 	private BufferedReaderWithStdout m_brOutput;
 	private String m_strMOLString;
@@ -40,6 +41,7 @@ public class CTFileReader {
 //			FileReader fr = new FileReader(file);
 			this.m_brOutput = new BufferedReaderWithStdout(new FileReader(file));
 			this.m_strFileName = file.getName();
+			this.m_strDirName = file.getParent();
 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -72,6 +74,10 @@ public class CTFileReader {
 
 	public String getFileName() {
 		return this.m_strFileName;
+	}
+
+	public String getDirectoryName() {
+		return this.m_strDirName;
 	}
 
 	public String getMOLString() {

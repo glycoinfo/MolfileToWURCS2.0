@@ -1,5 +1,6 @@
 package org.glycoinfo.WURCSFramework.io.MDLMOL;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.TreeMap;
@@ -112,9 +113,11 @@ public class MOLToWURCS {
 
 		// Output results
 		String t_strFileName = t_objCTReader.getFileName();
-		WURCSFileWriter.printWURCSList(t_mapIDtoWURCS, "C:\\SDFToWURCS\\", t_strFileName+"_result.txt").close();
+		String t_strDirName = t_objCTReader.getDirectoryName() + File.separator;
+		System.err.println(t_strDirName);
+		WURCSFileWriter.printWURCSList(t_mapIDtoWURCS, t_strDirName, t_strFileName+"_result.txt").close();
 		try {
-			t_oLogger.printLog(  WURCSFileWriter.getResultFilePath("C:\\SDFToWURCS\\", t_strFileName+"_result.log") );
+			t_oLogger.printLog(  WURCSFileWriter.getResultFilePath(t_strDirName, t_strFileName+"_result.log") );
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
