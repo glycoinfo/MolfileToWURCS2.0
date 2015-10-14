@@ -62,7 +62,10 @@ public class ConnectionToLinkagePosition {
 		}
 		System.err.println(con.startAtom());
 */
-		int PCA = t_mapModCarbonToID.get( con.startAtom() );
+
+		int PCA = -1;
+		if ( t_mapModCarbonToID.get( con.startAtom() ) != null )
+			PCA = t_mapModCarbonToID.get( con.startAtom() );
 
 		// Check PCA can ellipsis
 //		boolean ellipsisPCA = !( !(modCarbons.size()==2 && graph.getAtoms().size()==3) && modCarbons.size() > 1 );

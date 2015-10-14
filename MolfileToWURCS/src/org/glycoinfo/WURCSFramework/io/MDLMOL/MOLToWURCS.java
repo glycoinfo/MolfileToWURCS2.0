@@ -57,6 +57,7 @@ public class MOLToWURCS {
 				ID = String.format("%1$05d", Integer.parseInt(ID) );
 			} catch (NumberFormatException e) {
 			}
+//			if ( !ID.equals("3u2w_G_5") ) continue;
 //			if ( !ID.equals("G92964ZO") ) continue;
 //			if ( !ID.equals("23373") ) continue;
 //			if ( !ID.equals("CHEBI:87003") ) continue;
@@ -95,9 +96,13 @@ public class MOLToWURCS {
 					t_objGraphNormalizer.start(t_oSepGraph);
 					WURCSFactory t_oSepFactory = new WURCSFactory(t_oSepGraph);
 					String t_strSepWURCS = t_oSepFactory.getWURCS();
-					String t_strAglycone = t_oSeparateGraph.getMapAglyconeToSeparatedGraph().get(t_oSepGraph).getMAPCode();
-					System.err.println("Sep"+i+": "+t_strSepWURCS+"\tAglycone: "+t_strAglycone);
-					t_mapIDtoWURCS.put(ID+"("+i+")", t_strSepWURCS+"\t@:"+t_strAglycone);
+					String t_strAglycone = null;
+					if ( t_oSeparateGraph.getMapAglyconeToSeparatedGraph().get(t_oSepGraph) != null )
+						t_strAglycone =  t_oSeparateGraph.getMapAglyconeToSeparatedGraph().get(t_oSepGraph).getMAPCode();
+					if ( t_strAglycone != null )
+						t_strSepWURCS += "\t@: "+t_strAglycone;
+					System.err.println("Sep"+i+": "+t_strSepWURCS);
+					t_mapIDtoWURCS.put(ID+"("+i+")", t_strSepWURCS);
 				}
 
 			} catch (WURCSException e) {
@@ -114,7 +119,7 @@ public class MOLToWURCS {
 		// Output results
 		String t_strFileName = t_objCTReader.getFileName();
 		String t_strDirName = t_objCTReader.getDirectoryName() + File.separator;
-		System.err.println(t_strDirName);
+		System.err.println("Output result to "+t_strDirName);
 		WURCSFileWriter.printWURCSList(t_mapIDtoWURCS, t_strDirName, t_strFileName+"_result.txt").close();
 		try {
 			t_oLogger.printLog(  WURCSFileWriter.getResultFilePath(t_strDirName, t_strFileName+"_result.log") );
