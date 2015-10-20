@@ -106,7 +106,7 @@ public class MOLToWURCS {
 				}
 
 			} catch (WURCSException e) {
-				t_mapIDtoWURCS.put(ID, e.getErrorMessage());
+//				t_mapIDtoWURCS.put(ID, e.getErrorMessage());
 				System.err.println(ID+"\t"+e.getErrorMessage());
 				t_oLogger.addMessage(ID, e.getErrorMessage(), "");
 				e.printStackTrace();
