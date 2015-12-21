@@ -128,12 +128,17 @@ public class StereochemicalAnalyzer {
 		while(continueflg){
 			continueflg = false;
 			depth++;
+			String t_strAtoms = "";
 			for(Atom atom : this.m_objGraph.getAtoms()){
 //				if(atom.connections.tmpflg) continue;
 //				if ( a_mapAtomToAnalyzed.get(atom) ) continue;
 				if ( a_setAnalyzedAtoms.contains(atom) ) continue;
 
 				continueflg = true;
+				if ( !t_strAtoms.equals("") ) t_strAtoms += ",";
+				t_strAtoms += atom.getSymbol();
+				t_strAtoms += "("+(this.m_objGraph.getAtoms().indexOf(atom)+1)+")";
+
 				// Set full search flag for connections
 //				atom.connections.setIsCompletedFullSearch(false);
 				for(Connection connection : atom.getConnections()){
@@ -214,6 +219,7 @@ public class StereochemicalAnalyzer {
 
 
 			}
+			System.err.println(depth +":"+ t_strAtoms);
 		}
 	}
 
