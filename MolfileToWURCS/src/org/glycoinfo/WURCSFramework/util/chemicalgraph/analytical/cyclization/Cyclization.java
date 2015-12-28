@@ -100,13 +100,6 @@ public class Cyclization extends LinkedList<Atom>{
 
 	private void search() {
 		while ( true ) {
-			String t_strHistory = "";
-			for ( Atom t_oAtom : this ) {
-				if ( !t_strHistory.equals("") ) t_strHistory += ",";
-				t_strHistory += t_oAtom.getAtomID();
-			}
-			System.err.println(t_strHistory);
-
 			// Reset flag
 			this.m_bIsSucceeded = false;
 
@@ -131,6 +124,14 @@ public class Cyclization extends LinkedList<Atom>{
 				this.addAll( this.m_aNeighborChain );
 				break;
 			}
+
+			String t_strHistory = "";
+			for ( Atom t_oAtom : this ) {
+				if ( !t_strHistory.equals("") ) t_strHistory += ",";
+				t_strHistory += t_oAtom.getAtomID();
+			}
+			System.err.println(t_strHistory);
+
 			if ( t_nAtom == this.size() ) break;
 		}
 	}
@@ -141,7 +142,7 @@ public class Cyclization extends LinkedList<Atom>{
 			if ( !t_strHistory.equals("") ) t_strHistory += "-";
 			t_strHistory += t_oAtom.getAtomID();
 		}
-		System.err.println(t_strHistory);
+		System.err.println(this.getClass().getName() +":"+ t_strHistory);
 
 		if ( this.isBreakWithNeighbor() ) return;
 
