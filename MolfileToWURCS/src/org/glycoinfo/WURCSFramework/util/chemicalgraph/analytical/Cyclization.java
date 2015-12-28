@@ -27,6 +27,18 @@ public class Cyclization extends LinkedList<Atom>{
 		this.isSucceeded = false;
 	}
 
+	public boolean isSixMembered() {
+		return (this.size() == 6);
+	}
+
+	public boolean isFiveMembered() {
+		return (this.size() == 5);
+	}
+
+	public boolean isSevenMembered() {
+		return (this.size() == 7);
+	}
+
 	//----------------------------
 	// Public method (void)
 	//----------------------------
