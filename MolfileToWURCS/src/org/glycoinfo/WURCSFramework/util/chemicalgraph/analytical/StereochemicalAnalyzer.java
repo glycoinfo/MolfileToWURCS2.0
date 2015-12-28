@@ -114,6 +114,7 @@ public class StereochemicalAnalyzer {
 //		this.analyzeStereo(t_mapAtomToAnalyzed);
 		this.analyzeStereo(t_setAnalyzedAtoms);
 		this.setStereors();
+
 	}
 
 	/**
@@ -121,10 +122,10 @@ public class StereochemicalAnalyzer {
 	 */
 //	private void analyzeStereo(HashMap<Atom, Boolean> a_mapAtomToAnalyzed){
 	private void analyzeStereo(HashSet<Atom> a_setAnalyzedAtoms){
-		// Set type for HierarchicalDigraph comparator
 
 		boolean continueflg = true;
 		int depth = 0;
+		String t_strContinuedHistry = "";
 		while(continueflg){
 			continueflg = false;
 			depth++;
@@ -135,9 +136,14 @@ public class StereochemicalAnalyzer {
 				if ( a_setAnalyzedAtoms.contains(atom) ) continue;
 
 				continueflg = true;
-				if ( !t_strAtoms.equals("") ) t_strAtoms += ",";
-				t_strAtoms += atom.getSymbol();
-				t_strAtoms += "("+(this.m_objGraph.getAtoms().indexOf(atom)+1)+")";
+
+				// List continued atoms
+				if ( depth > 1 ) {
+					if ( !t_strAtoms.equals("") ) t_strAtoms += ",";
+					t_strAtoms += atom.getSymbol();
+//					t_strAtoms += "("+(this.m_objGraph.getAtoms().indexOf(atom)+1)+")";
+					t_strAtoms += "("+(atom.getAtomID())+")";
+				}
 
 				// Set full search flag for connections
 //				atom.connections.setIsCompletedFullSearch(false);
@@ -219,8 +225,13 @@ public class StereochemicalAnalyzer {
 
 
 			}
-			System.err.println(depth +":"+ t_strAtoms);
+			if ( ! t_strAtoms.equals("") )
+				t_strContinuedHistry += depth +":"+ t_strAtoms + "\n";
 		}
+
+		System.err.println("Analyzed stereo for "+ this.m_objGraph);
+		System.err.println(t_strContinuedHistry);
+
 	}
 
 	// achiralであることが確定した場合、探索を打ち切る。

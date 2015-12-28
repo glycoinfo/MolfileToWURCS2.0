@@ -69,15 +69,15 @@ public class StructureAnalyzer {
 		for ( Atom atom : a_objMol.getAtoms() ) {
 
 			// Collect aromatic atoms
-			if ( t_objCyclize.aromatize(atom) )
+			if ( !this.m_aAromaticAtoms.contains(atom)     && t_objCyclize.aromatize(atom) )
 				this.m_aAromaticAtoms.addAll(t_objCyclize);
 
 			// Collect pi cyclic atoms
-			if ( t_objCyclize.piCyclize(atom) )
+			if ( !this.m_aPiCyclicAtoms.contains(atom)     && t_objCyclize.piCyclize(atom) )
 				this.m_aPiCyclicAtoms.addAll(t_objCyclize);
 
 			// Collect carbon ring atoms
-			if ( t_objCyclize.carbonCyclize(atom) )
+			if ( !this.m_aCarbonCyclicAtoms.contains(atom) && t_objCyclize.carbonCyclize(atom) )
 				this.m_aCarbonCyclicAtoms.addAll(t_objCyclize);
 		}
 

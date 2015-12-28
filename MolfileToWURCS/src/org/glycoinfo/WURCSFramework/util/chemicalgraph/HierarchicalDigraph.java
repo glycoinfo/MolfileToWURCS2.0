@@ -69,7 +69,7 @@ public class HierarchicalDigraph {
 		Cyclization cyclic = new Cyclization();
 		for ( Atom a : this.m_oTargetGraph.getAtoms() ) {
 			cyclic.clear();
-			if ( cyclic.aromatize(a) ) this.m_aAromaticAtoms.addAll(cyclic);
+			if ( !this.m_aAromaticAtoms.contains(a) && cyclic.aromatize(a) ) this.m_aAromaticAtoms.addAll(cyclic);
 		}
 
 		this.m_bHasCompletedFullSearch = this.depthSearch(atom, depth, this.m_dAverageAtomicNumber);
@@ -89,6 +89,7 @@ public class HierarchicalDigraph {
 		this.m_oTargetGraph = parent.m_oTargetGraph;
 		this.m_aAncestorAtoms = parent.m_aAncestorAtoms;
 		this.m_oHDComp = parent.m_oHDComp;
+		this.m_aAromaticAtoms = parent.m_aAromaticAtoms;
 
 		this.m_bHasCompletedFullSearch = this.depthSearch(atom, this.m_iDepth, averageAtomicNumber);
 		this.initializeSearchFlag();
@@ -240,6 +241,13 @@ public class HierarchicalDigraph {
 			HierarchicalDigraph tree2 = this.m_aChildren.get(ii+1);
 //			if(tree1.compareTo(tree2, EZRScheck)!=0) continue;
 			if( this.m_oHDComp.compare(tree1, tree2)!=0 ) continue;
+
+			// Set complete full search flag if two tree has same branch
+			if ( this.m_oHDComp.foundSameBranch() ) {
+				tree1.setCompleteFullSearch(true);
+				tree2.setCompleteFullSearch(true);
+			}
+
 			tree1.m_bIsUniqOrder = false;
 			tree2.m_bIsUniqOrder = false;
 		}
@@ -263,7 +271,7 @@ public class HierarchicalDigraph {
 			ps.print(" +");
 		}
 //		ps.print("-" + ((this.atom==null)?"null":(this.atom.getSymbol() + "(" + this. this.atom.molfileAtomNo + ")")) + "(" + this.averageAtomicNumber + ")" + " : ");
-		ps.print("-" + ((this.m_oAtom==null)?"null":(this.m_oAtom.getSymbol() + "(" + this.m_oTargetGraph.getAtoms().indexOf(this.m_oAtom) + ")")) + "(" + this.m_dAverageAtomicNumber + ")" + " : ");
+		ps.print("-" + ((this.m_oAtom==null)?"null":(this.m_oAtom.getSymbol() + "(" + this.m_oAtom.getAtomID() + ")")) + "(" + this.m_dAverageAtomicNumber + ")" + " : ");
 
 		if(this.m_aChildren==null) return;
 
