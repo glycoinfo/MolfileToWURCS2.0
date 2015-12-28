@@ -145,6 +145,7 @@ public class CTFileReader {
 
 				// TODO:
 				Atom t_oAtom = new Atom(symbol);
+				t_oAtom.setAtomID(i+1);
 				t_oAtom.setCoordinate(crd);
 
 				// mass difference -3, -2, -1, 0, 1, 2, 3, 4

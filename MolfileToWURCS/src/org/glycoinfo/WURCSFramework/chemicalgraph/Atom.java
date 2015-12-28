@@ -34,6 +34,8 @@ public class Atom implements AtomicVisitable {
 	private String   m_strChirality        = null;
 	/** Alias name                                                            */
 	private String   m_strAliasName        = null;
+	/** ID of the atom in input molecule (incremental number for hidden hydrogen) */
+	private int      m_iAtomID             = -1;
 
 	//----------------------------
 	// Constructor
@@ -80,6 +82,11 @@ public class Atom implements AtomicVisitable {
 	public String getAliasName() {
 		return this.m_strAliasName;
 	}
+
+	public int getAtomID() {
+		return this.m_iAtomID;
+	}
+
 	//----------------------------
 	// Accessor(setter)
 	//----------------------------
@@ -116,6 +123,11 @@ public class Atom implements AtomicVisitable {
 		if ( this.m_strSymbol.equals("*") )
 			this.m_strSymbol = this.m_strAliasName.substring(0,1);
 	}
+
+	public void setAtomID(int atomID) {
+		this.m_iAtomID = atomID;
+	}
+
 	//----------------------------
 	// Public method
 	//----------------------------
