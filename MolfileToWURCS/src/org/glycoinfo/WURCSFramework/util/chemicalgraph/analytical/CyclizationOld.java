@@ -10,7 +10,7 @@ import org.glycoinfo.WURCSFramework.chemicalgraph.Connection;
  * @author MasaakiMatsubara
  *
  */
-public class Cyclization extends LinkedList<Atom>{
+public class CyclizationOld extends LinkedList<Atom>{
 	//----------------------------
 	// Member variable
 	//----------------------------
@@ -45,7 +45,7 @@ public class Cyclization extends LinkedList<Atom>{
 	public boolean aromatize(final Atom start) {
 		this.clear();
 		this.addFirst(start);
-		this.searchCyclic(Cyclization.AROMATIC);
+		this.searchCyclic(CyclizationOld.AROMATIC);
 		if ( this.isSucceeded ) return true;
 		return false;
 	}
@@ -53,7 +53,7 @@ public class Cyclization extends LinkedList<Atom>{
 	public boolean piCyclize(final Atom start){
 		this.clear();
 		this.addFirst(start);
-		this.searchCyclic(Cyclization.PI_CYCLIC);
+		this.searchCyclic(CyclizationOld.PI_CYCLIC);
 		if ( this.isSucceeded ) return true;
 		return false;
 	}
@@ -61,7 +61,7 @@ public class Cyclization extends LinkedList<Atom>{
 	public boolean carbonCyclize(final Atom start){
 		this.clear();
 		this.addFirst(start);
-		this.searchCyclic(Cyclization.CARBON_CYCLIC);
+		this.searchCyclic(CyclizationOld.CARBON_CYCLIC);
 		if ( this.isSucceeded ) return true;
 		return false;
 	}
@@ -74,7 +74,7 @@ public class Cyclization extends LinkedList<Atom>{
 	 * @param type Number of cyclization type
 	 */
 	private void searchCyclic(final int type) {
-		if ( type == Cyclization.AROMATIC ) {
+		if ( type == CyclizationOld.AROMATIC ) {
 //			if(this.getLast().pi == 0) return;
 			// TODO:
 			if(this.getLast().getNumberOfPiElectron() == 0) return;
@@ -86,7 +86,7 @@ public class Cyclization extends LinkedList<Atom>{
 				}
 				return;
 			}
-		} else if ( type == Cyclization.PI_CYCLIC ) {
+		} else if ( type == CyclizationOld.PI_CYCLIC ) {
 //			if(this.getLast().pi == 0) return;
 			// TODO:
 			if(this.getLast().getNumberOfPiElectron() == 0) return;
@@ -95,7 +95,7 @@ public class Cyclization extends LinkedList<Atom>{
 				this.isSucceeded = true;
 				return;
 			}
-		} else if ( type == Cyclization.CARBON_CYCLIC ) {
+		} else if ( type == CyclizationOld.CARBON_CYCLIC ) {
 //			if(!this.getLast().symbol.equals("C")) return;
 			// TODO:
 			if(!this.getLast().getSymbol().equals("C")) return;

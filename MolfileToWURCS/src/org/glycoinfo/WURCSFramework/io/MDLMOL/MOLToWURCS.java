@@ -3,6 +3,7 @@ package org.glycoinfo.WURCSFramework.io.MDLMOL;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.TreeMap;
 
 import org.glycoinfo.WURCSFramework.chemicalgraph.Molecule;
@@ -56,6 +57,16 @@ public class MOLToWURCS {
 			try {
 				ID = String.format("%1$05d", Integer.parseInt(ID) );
 			} catch (NumberFormatException e) {
+			}
+			// Skip ID
+			LinkedList<String> t_aSkipIDs = new LinkedList<String>();
+//			t_aSkipIDs.add("CHEBI:52917");
+//			t_aSkipIDs.add("CHEBI:51385");
+//			t_aSkipIDs.add("CHEBI:51386");
+//			t_aSkipIDs.add("CHEBI:51399");
+			if ( t_aSkipIDs.contains(ID) ) {
+				System.err.println(ID + " is skipped.");
+				continue;
 			}
 //			if ( !ID.equals("3u2w_G_5") ) continue;
 //			if ( !ID.equals("G92964ZO") ) continue;
