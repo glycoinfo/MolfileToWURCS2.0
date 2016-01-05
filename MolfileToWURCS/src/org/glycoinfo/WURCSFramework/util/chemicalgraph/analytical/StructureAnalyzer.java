@@ -85,14 +85,6 @@ public class StructureAnalyzer {
 				this.m_aCarbonCyclicAtoms.addAll(t_objCyclize);
 		}
 */
-/*		// Collect aromatic ring atoms for five, six or seven membered
-		AromatizationLimited t_oAromatizeLimit = new AromatizationLimited();
-		for ( Atom t_oAtom : a_objMol.getAtoms() ) {
-			if ( this.m_aAromaticAtoms.contains(t_oAtom) ) continue;
-			if ( !t_oAromatizeLimit.start(t_oAtom) ) continue;
-			this.m_aAromaticAtoms.addAll(t_oAromatizeLimit);
-		}
-*/
 		// Collect aromatic ring atoms for other atoms
 		Aromatization t_oAromatize = new Aromatization();
 		for ( Atom t_oAtom : a_objMol.getAtoms() ) {
@@ -113,7 +105,6 @@ public class StructureAnalyzer {
 		// Collect carbon cyclic atoms
 		CarbonCyclization t_oCarbonCyclize = new CarbonCyclization();
 		for ( Atom t_oAtom : a_objMol.getAtoms() ) {
-			System.err.println("CCyclization");
 			if ( this.m_aCarbonCyclicAtoms.contains(t_oAtom) ) continue;
 			if ( !t_oCarbonCyclize.start(t_oAtom) ) continue;
 			this.m_aCarbonCyclicAtoms.addAll(t_oCarbonCyclize);

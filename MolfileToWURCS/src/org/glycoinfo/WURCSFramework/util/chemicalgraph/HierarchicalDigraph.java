@@ -8,7 +8,7 @@ import java.util.LinkedList;
 import org.glycoinfo.WURCSFramework.chemicalgraph.Atom;
 import org.glycoinfo.WURCSFramework.chemicalgraph.ChemicalGraph;
 import org.glycoinfo.WURCSFramework.chemicalgraph.Connection;
-import org.glycoinfo.WURCSFramework.util.chemicalgraph.analytical.CyclizationOld;
+import org.glycoinfo.WURCSFramework.util.chemicalgraph.analytical.cyclization.Aromatization;
 
 /**
  * Class for constructing HierarchicalDigraph and comparing the graph by CIP order<br>
@@ -66,10 +66,11 @@ public class HierarchicalDigraph {
 		this.m_oHDComp = comparator;
 
 		// Search aromatic atoms
-		CyclizationOld cyclic = new CyclizationOld();
+		Aromatization t_oAromatic = new Aromatization();
 		for ( Atom a : this.m_oTargetGraph.getAtoms() ) {
-			cyclic.clear();
-			if ( !this.m_aAromaticAtoms.contains(a) && cyclic.aromatize(a) ) this.m_aAromaticAtoms.addAll(cyclic);
+			t_oAromatic.clear();
+			if ( !this.m_aAromaticAtoms.contains(a) && t_oAromatic.start(a) )
+				this.m_aAromaticAtoms.addAll(t_oAromatic);
 		}
 
 		this.m_bHasCompletedFullSearch = this.depthSearch(atom, depth, this.m_dAverageAtomicNumber);

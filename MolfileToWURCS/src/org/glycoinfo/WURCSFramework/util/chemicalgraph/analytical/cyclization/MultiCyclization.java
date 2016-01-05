@@ -7,7 +7,7 @@ import org.glycoinfo.WURCSFramework.chemicalgraph.Atom;
 import org.glycoinfo.WURCSFramework.chemicalgraph.Connection;
 
 /**
- * Class for finding cyclic atoms
+ * Class for finding multi cyclic atoms
  * @author MasaakiMatsubara
  *
  */
@@ -24,23 +24,7 @@ public class MultiCyclization extends LinkedList<Atom>{
 		this.m_bIsSucceeded = false;
 	}
 
-	public boolean isSixMembered() {
-		return (this.size() == 6);
-	}
-
-	public boolean isFiveMembered() {
-		return (this.size() == 5);
-	}
-
-	public boolean isSevenMembered() {
-		return (this.size() == 7);
-	}
-
-	protected boolean isCyclic() {
-		return (this.size() > 2) && (this.getLast() == this.getFirst());
-	}
-
-	protected boolean isCyclicWithNeighbor() {
+	private boolean isCyclicWithNeighbor() {
 		return ( this.m_aNeighborAtoms.contains( this.m_aNeighborChain.getFirst() )
 				&& this.m_aNeighborAtoms.contains( this.m_aNeighborChain.getLast() )
 				&& this.m_aNeighborChain.getFirst() != this.m_aNeighborChain.getLast() );
@@ -58,44 +42,8 @@ public class MultiCyclization extends LinkedList<Atom>{
 	 * Judging break point for cyclization
 	 * @return true if break point is reached
 	 */
-	protected boolean isBreak() {
-		if ( this.isCyclic() ) {
-			this.m_bIsSucceeded = true;
-			return true;
-		}
-		return false;
-	}
-
 	protected boolean isBreakWithNeighbor() {
-		// Find cyclic
-		if ( this.isCyclicWithNeighbor() ){
-			this.m_bIsSucceeded = true;
-			return true;
-		}
-
 		return false;
-	}
-
-	private void depthSearch() {
-		String t_strHistory = "";
-		for ( Atom t_oAtom : this ) {
-			if ( !t_strHistory.equals("") ) t_strHistory += "-";
-			t_strHistory += t_oAtom.getAtomID();
-		}
-		System.err.println(t_strHistory);
-
-		if ( this.isBreak() ) return;
-
-		// Depth search
-		for(Connection connect : this.getLast().getConnections()){
-			Atom conAtom = connect.endAtom();
-			if(this.contains(conAtom) && (conAtom != this.getFirst())) continue;
-			if(this.contains(conAtom) && this.size() < 3) continue;
-			this.addLast(conAtom);
-			this.depthSearch();
-			this.removeLast();
-			if ( this.m_bIsSucceeded ) return;
-		}
 	}
 
 	private void search() {
@@ -103,7 +51,7 @@ public class MultiCyclization extends LinkedList<Atom>{
 		while ( !this.searchNeighbor(t_iDepth) ) {
 			t_iDepth++;
 		}
-
+/*
 		String t_strHistory = "";
 		for ( Atom t_oAtom : this ) {
 			if ( !t_strHistory.equals("") ) t_strHistory += ",";
@@ -111,13 +59,13 @@ public class MultiCyclization extends LinkedList<Atom>{
 		}
 		t_strHistory += "\n"+this.size()+":"+t_iDepth;
 		System.err.println(t_strHistory);
-
+*/
 	}
 
 	/**
-	 * Search
+	 * Search atom groups with depth
 	 * @param a_iDepth
-	 * @return
+	 * @return true if search is finished
 	 */
 	private boolean searchNeighbor(int a_iDepth) {
 		// Reset flag
@@ -166,7 +114,6 @@ public class MultiCyclization extends LinkedList<Atom>{
 					t_aNeighborAtoms.add(t_oConnAtom);
 				}
 			}
-			//TODO: jadge huckel rule
 			if ( t_aBridgedAtoms.isEmpty() ) break;
 
 			// Add bridged atoms to this atom group
@@ -177,23 +124,29 @@ public class MultiCyclization extends LinkedList<Atom>{
 	}
 
 	/**
-	 * Depth search for bridging cyclic atom group
+	 * Depth search for finding atom chain bridging cyclic atom group
 	 * @param a_iDepth depth of search
 	 * @return minimum depth value
 	 */
 	private int depthSearchNeighbor(int a_iDepth) {
 		// Return if maximum depth is reached
 		if ( a_iDepth == 0 ) return a_iDepth;
-
+/*
 		String t_strHistory = "";
 		for ( Atom t_oAtom : this.m_aNeighborChain ) {
 			if ( !t_strHistory.equals("") ) t_strHistory += "-";
 			t_strHistory += t_oAtom.getAtomID();
 		}
 		System.err.println(this.getClass().getSimpleName() +":"+ t_strHistory);
-
+*/
 		// Jadge break point
 		if ( this.isBreakWithNeighbor() ) return a_iDepth;
+
+		// Find cyclic part
+		if ( this.isCyclicWithNeighbor() ){
+			this.m_bIsSucceeded = true;
+			return a_iDepth;
+		}
 
 		// Depth search
 		int t_iMinDepth = a_iDepth;
