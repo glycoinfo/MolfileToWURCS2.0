@@ -1,6 +1,6 @@
 package org.glycoinfo.WURCSFramework.util.chemicalgraph.analytical.cyclization;
 
-public class PiCyclization extends Cyclization {
+public class PiCyclization extends MultiCyclization {
 
 	@Override
 	protected boolean isBreak() {

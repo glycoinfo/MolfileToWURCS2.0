@@ -11,7 +11,7 @@ import org.glycoinfo.WURCSFramework.chemicalgraph.Connection;
  * @author MasaakiMatsubara
  *
  */
-public class Cyclization extends LinkedList<Atom>{
+public class MultiCyclization extends LinkedList<Atom>{
 
 	private static final long serialVersionUID = 1L;
 

@@ -4,7 +4,7 @@ import java.util.LinkedList;
 
 import org.glycoinfo.WURCSFramework.chemicalgraph.Atom;
 
-public class Aromatization extends Cyclization {
+public class Aromatization extends MultiCyclization {
 
 	@Override
 	protected boolean isBreak() {
