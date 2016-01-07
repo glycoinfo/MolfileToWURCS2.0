@@ -287,7 +287,7 @@ public class CTFileReader {
 				}else if(t_strLine.length() == 0){
 					// Blank line
 					continue;
-				}else if(t_strLine.substring(0, 1).equals(">")){
+				}else if( t_strLine.length() > 2 && t_strLine.substring(0, 2).equals("> ")){
 					// Data header
 					// > 25 <ALTERNATE.NAMES>
 					// line.split("<")[0] = "> 25 ", line.split("<")[1] = "ALTERNATE.NAMES>"
