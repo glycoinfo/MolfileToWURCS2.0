@@ -2,13 +2,11 @@ package org.glycoinfo.WURCSFramework.util.chemicalgraph;
 
 import java.io.PrintStream;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.LinkedList;
 
 import org.glycoinfo.WURCSFramework.chemicalgraph.Atom;
 import org.glycoinfo.WURCSFramework.chemicalgraph.ChemicalGraph;
 import org.glycoinfo.WURCSFramework.chemicalgraph.Connection;
-import org.glycoinfo.WURCSFramework.util.chemicalgraph.analytical.cyclization.Aromatization;
 
 /**
  * Class for constructing HierarchicalDigraph and comparing the graph by CIP order<br>
@@ -38,7 +36,7 @@ public class HierarchicalDigraph {
 	private HierarchicalDigraphComparator m_oHDComp;
 	/** Aromatic atoms */
 
-	private HashSet<Atom> m_aAromaticAtoms = new HashSet<Atom>();
+//	private HashSet<Atom> m_aAromaticAtoms = new HashSet<Atom>();
 
 	/** Target graph for search */
 	private ChemicalGraph m_oTargetGraph;
@@ -65,6 +63,7 @@ public class HierarchicalDigraph {
 		this.m_aAncestorAtoms = new LinkedList<Atom>();
 		this.m_oHDComp = comparator;
 
+/*
 		// Search aromatic atoms
 		Aromatization t_oAromatic = new Aromatization();
 		for ( Atom a : this.m_oTargetGraph.getAtoms() ) {
@@ -72,7 +71,7 @@ public class HierarchicalDigraph {
 			if ( !this.m_aAromaticAtoms.contains(a) && t_oAromatic.start(a) )
 				this.m_aAromaticAtoms.addAll(t_oAromatic);
 		}
-
+*/
 		this.m_bHasCompletedFullSearch = this.depthSearch(atom, depth, this.m_dAverageAtomicNumber);
 		this.initializeSearchFlag();
 	}
@@ -90,7 +89,7 @@ public class HierarchicalDigraph {
 		this.m_oTargetGraph = parent.m_oTargetGraph;
 		this.m_aAncestorAtoms = parent.m_aAncestorAtoms;
 		this.m_oHDComp = parent.m_oHDComp;
-		this.m_aAromaticAtoms = parent.m_aAromaticAtoms;
+//		this.m_aAromaticAtoms = parent.m_aAromaticAtoms;
 
 		this.m_bHasCompletedFullSearch = this.depthSearch(atom, this.m_iDepth, averageAtomicNumber);
 		this.initializeSearchFlag();
@@ -207,7 +206,8 @@ public class HierarchicalDigraph {
 			this.m_aChildren.add( new HierarchicalDigraph( this, conatom, (double)Chemical.getAtomicNumber(conatom.getSymbol()) ) );
 			// For conjugate or multiple bond, it is consider that same atom is duplecated.
 //			if(this.atom.isAromatic && connection.atom.isAromatic){
-			if( this.m_aAromaticAtoms.contains(this.m_oAtom) && this.m_aAromaticAtoms.contains(conatom) ){
+//			if( this.m_aAromaticAtoms.contains(this.m_oAtom) && this.m_aAromaticAtoms.contains(conatom) ){
+			if ( this.m_oAtom.isAromatic() && conatom.isAromatic() ) {
 				num++;
 				sumAtomicNumber+=(double)Chemical.getAtomicNumber(conatom.getSymbol());
 			}else if(connection.getBond().getType()==2 || connection.getBond().getType()==3){

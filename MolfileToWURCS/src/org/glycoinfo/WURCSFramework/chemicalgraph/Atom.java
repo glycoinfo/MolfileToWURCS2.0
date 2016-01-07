@@ -30,6 +30,8 @@ public class Atom implements AtomicVisitable {
 	private int      m_iRadical            = 0;
 	/** Number of pi electron                                                 */
 	private int      m_iPiElectron         = 0;
+	/** Aromatic atom flag */
+	private boolean  m_bIsAromatic         = false;
 	/** Chirarity                                                             */
 	private String   m_strChirality        = null;
 	/** Alias name                                                            */
@@ -75,6 +77,10 @@ public class Atom implements AtomicVisitable {
 		return this.m_iPiElectron;
 	}
 
+	public boolean isAromatic() {
+		return this.m_bIsAromatic;
+	}
+
 	public String getChirality() {
 		return this.m_strChirality;
 	}
@@ -112,6 +118,10 @@ public class Atom implements AtomicVisitable {
 
 	public void setNumberOfPiElectron(int numPi) {
 		this.m_iPiElectron = numPi;
+	}
+
+	public void setAromaticity() {
+		this.m_bIsAromatic = true;
 	}
 
 	public void setChirality(String chiral) {

@@ -92,6 +92,10 @@ public class StructureAnalyzer {
 			if ( !t_oAromatize.start(t_oAtom) ) continue;
 			this.m_aAromaticAtoms.addAll(t_oAromatize);
 		}
+		// Set aromaticity
+		for ( Atom t_oAtom : this.m_aAromaticAtoms ) {
+			t_oAtom.setAromaticity();
+		}
 
 		// Collect pi cyclic atoms
 		this.m_aPiCyclicAtoms.addAll(this.m_aAromaticAtoms);
