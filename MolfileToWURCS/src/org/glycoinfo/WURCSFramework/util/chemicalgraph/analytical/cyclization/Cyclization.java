@@ -44,9 +44,19 @@ public class Cyclization extends LinkedList<Atom> {
 	 */
 	public boolean start(final Atom a_oStart) {
 		this.clear();
+		if ( !this.isTargetAtom(a_oStart) )
+			return false;
 		this.addFirst(a_oStart);
 		this.search();
-		return (this.size() > 1);
+		if ( this.size() == 1 ) {
+			this.clear();
+			return false;
+		}
+		return true;
+	}
+
+	protected boolean isTargetAtom(Atom a_oAtom) {
+		return true;
 	}
 
 	/**
@@ -81,6 +91,7 @@ public class Cyclization extends LinkedList<Atom> {
 		int t_iMinDepth = a_iDepth;
 		for ( Connection t_oConn : this.getLast().getConnections() ) {
 			Atom t_oConnAtom = t_oConn.endAtom();
+			if ( !this.isTargetAtom(t_oConnAtom) ) continue;
 			if ( this.contains(t_oConnAtom) && ( t_oConnAtom != this.getFirst() ) ) continue;
 			if ( this.contains(t_oConnAtom) && this.size() < 3) continue;
 			this.addLast(t_oConnAtom);

@@ -4,12 +4,10 @@ import java.util.LinkedList;
 
 import org.glycoinfo.WURCSFramework.chemicalgraph.Atom;
 
-public class Aromatization extends Cyclization {
+public class Aromatization extends PiCyclization {
 
 	@Override
 	protected boolean isBreak() {
-		if(this.getLast().getNumberOfPiElectron() == 0) return true;
-
 		if(this.isCyclic()){
 			if(this.isSatisfiedHuckelsRule())
 				this.m_bIsSucceeded = true;
@@ -22,7 +20,7 @@ public class Aromatization extends Cyclization {
 	 * Return true if the member of this list satisfied the huckels rule.
 	 * @return true if the member of this list satisfied the huckels rule
 	 */
-	protected boolean isSatisfiedHuckelsRule(){
+	private boolean isSatisfiedHuckelsRule(){
 		LinkedList<Atom> uniqAtom = new LinkedList<Atom>();
 		for ( Atom atom : this ) {
 			if ( uniqAtom.contains(atom) ) continue;
