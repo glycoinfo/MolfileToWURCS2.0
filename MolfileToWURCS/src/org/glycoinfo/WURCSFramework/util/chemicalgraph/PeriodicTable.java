@@ -119,7 +119,7 @@ public enum PeriodicTable {
 	Q  (-1, "Q"),
 	X  (-1, "X"),
 	UNK(-1, "?"),
-	R  (-1, "R"); // others
+	R  (-1, "R"); // unknown or anonymous symbols
 
 	private int m_iAtomicNumber;
 	private String m_strSymbol;
@@ -127,6 +127,10 @@ public enum PeriodicTable {
 	private PeriodicTable(int a_iNum, String a_strSymbol) {
 		this.m_iAtomicNumber = a_iNum;
 		this.m_strSymbol     = a_strSymbol;
+	}
+
+	public int getAtomicNumber() {
+		return this.m_iAtomicNumber;
 	}
 
 	public String getSymbol() {
