@@ -96,15 +96,89 @@ public class CarbonChainAnalyzer {
 	}
 
 	/**
+	 * Get ring ether atoms. Ether atom is bridged carbon chain.
+	 * @return List of ring ether atoms
+	 */
+	public LinkedList<Atom> getRingEtherAtoms() {
+		LinkedList<Atom> t_aEtherAtoms = new LinkedList<Atom>();
+		for ( Atom t_oCarbon : this.m_aCarbonChain ) {
+			// Search atom connected to other carbon
+			for ( Connection t_oConn : t_oCarbon.getConnections()){
+				Atom t_oConnAtom = t_oConn.endAtom();
+				if ( t_oConnAtom.getSymbol().equals("C")) continue;
+				if ( this.m_aCarbonChain.contains(t_oConnAtom)) continue;
+				for( Connection t_oConn2 : t_oConnAtom.getConnections() ) {
+					Atom t_oConn2Atom = t_oConn2.endAtom();
+					if ( t_oConn2Atom.equals(t_oCarbon) ) continue;
+					if ( !this.m_aCarbonChain.contains(t_oConn2Atom) ) continue;
+					t_aEtherAtoms.add(t_oConnAtom);
+				}
+			}
+		}
+		return t_aEtherAtoms;
+	}
+	/**
 	 * Get anomeric carbon. If number of candidate anomeric carbon is not one, return first anomeric carbon.
 	 * @return Atom Anomeric carbon
 	 */
 	public Atom getAnomericCarbon() {
+/*
 		for ( Atom atom : this.m_aCarbonChain ) {
 			this.m_objIdentC.setAtom(atom);
 			if ( this.m_objIdentC.isAnomericLike() ) return atom;
 		}
 		return this.m_aCarbonChain.getFirst();
+*/
+		if ( this.getRingEtherAtoms().isEmpty() ) return null;
+		LinkedList<Atom> t_aCandidateAnomericCarbons = new LinkedList<Atom>();
+		for ( Atom t_oEtherAtom : this.getRingEtherAtoms() ) {
+			for ( Connection t_oConn : t_oEtherAtom.getConnections() ) {
+				Atom t_oCarbon = t_oConn.endAtom();
+				if ( !this.m_aCarbonChain.contains(t_oCarbon) ) continue;
+				int t_nMod = 0;
+				// Search carbon which has only one modification except for hydrogen, backbone carbon and ring ether
+				for ( Connection t_oConn2 : t_oCarbon.getConnections() ) {
+					// For only single bond modification (ignore acid)
+					if ( t_oConn2.getBond().getType() != 1 ) continue;
+					Atom t_oConn2Atom = t_oConn2.endAtom();
+					if ( t_oConn2Atom.equals(t_oEtherAtom) ) continue;
+					if ( this.m_aCarbonChain.contains(t_oConn2Atom) ) continue;
+					if ( t_oConn2Atom.getSymbol().equals("H") ) continue;
+					t_nMod++;
+				}
+				if ( t_nMod != 1 ) continue;
+				if ( t_aCandidateAnomericCarbons.contains(t_oCarbon) ) continue;
+				t_aCandidateAnomericCarbons.add(t_oCarbon);
+			}
+		}
+		if ( t_aCandidateAnomericCarbons.isEmpty() ) return null;
+
+		// Screen candidate anomeric center
+		// Prioritize a carbon which has smaller number in the main chain
+		Atom t_oAnomCenter = t_aCandidateAnomericCarbons.getFirst();
+		int t_nMinCarbon = this.m_aCarbonChain.indexOf(t_oAnomCenter);
+		for ( Atom t_oCandidateAnomCenter : t_aCandidateAnomericCarbons ) {
+			int t_nCarbon = this.m_aCarbonChain.indexOf(t_oCandidateAnomCenter);
+			if ( t_nCarbon >= t_nMinCarbon ) continue;
+			t_oAnomCenter = t_oCandidateAnomCenter;
+			t_nMinCarbon = t_nCarbon;
+		}
+		return t_oAnomCenter;
 	}
 
+	public Atom getRingEtherAtomOnAnomericCarbon() {
+		Atom t_oAnomCenter = this.getAnomericCarbon();
+		if ( t_oAnomCenter == null ) return null;
+		for ( Connection t_oConn : t_oAnomCenter.getConnections() ) {
+			Atom t_oEtherAtom = t_oConn.endAtom();
+			if ( this.m_aCarbonChain.contains(t_oEtherAtom) ) continue;
+			for ( Connection t_oConn2 : t_oEtherAtom.getConnections() ) {
+				Atom t_oConn2Atom = t_oConn2.endAtom();
+				if ( t_oConn2Atom.equals(t_oAnomCenter) ) continue;
+				if ( !this.m_aCarbonChain.contains(t_oConn2Atom) ) continue;
+				return t_oEtherAtom;
+			}
+		}
+		return null;
+	}
 }

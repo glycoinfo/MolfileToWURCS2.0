@@ -9,6 +9,7 @@ import java.util.LinkedList;
 import org.glycoinfo.WURCSFramework.chemicalgraph.Atom;
 import org.glycoinfo.WURCSFramework.chemicalgraph.Connection;
 import org.glycoinfo.WURCSFramework.util.chemicalgraph.Chemical;
+import org.glycoinfo.WURCSFramework.util.chemicalgraph.analytical.CarbonChainAnalyzer;
 import org.glycoinfo.WURCSFramework.util.chemicalgraph.analytical.CarbonIdentifier;
 import org.glycoinfo.WURCSFramework.wurcs.graph.Backbone;
 import org.glycoinfo.WURCSFramework.wurcs.graph.BackboneCarbon;
@@ -32,7 +33,7 @@ public class CarbonChainToBackbone_TBD {
 	/** The carbon is sp2 and non-terminal, and has double bond between connected carbon */
 	private static final int SP2_NONTERMINAL = 4;
 
-	private CarbonIdentifier m_objIdent = new CarbonIdentifier();
+//	private CarbonIdentifier m_objIdent = new CarbonIdentifier();
 
 	/**
 	 * Create Backbone from carbon chain
@@ -42,6 +43,8 @@ public class CarbonChainToBackbone_TBD {
 	public Backbone convert(LinkedList<Atom> chain) {
 		Backbone_TBD backbone = new Backbone_TBD();
 		int anomPos = 0;
+		Atom t_oAnomericCarbon = new CarbonChainAnalyzer().setCarbonChain(chain).getAnomericCarbon();
+		System.err.println( t_oAnomericCarbon );
 		BackboneCarbon anomCarbon = null;
 		for ( Atom carbon : chain ) {
 			CarbonDescriptor_TBD cd = this.convertCarbonToDescriptor(carbon, chain);
@@ -49,8 +52,9 @@ public class CarbonChainToBackbone_TBD {
 
 			// For anomeric carbon
 			if ( anomPos != 0 ) continue;
-			if ( !this.m_objIdent.setAtom(carbon).isAnomericLike() ) continue;
-			if ( cd.getChar() == 'o' || cd.getChar() == 'O' ) continue;
+			if ( !carbon.equals(t_oAnomericCarbon) ) continue;
+//			if ( !this.m_objIdent.setAtom(carbon).isAnomericLike() ) continue;
+//			if ( cd.getChar() == 'o' || cd.getChar() == 'O' ) continue;
 			anomPos = chain.indexOf(carbon)+1;
 			anomCarbon = backbone.getBackboneCarbons().removeLast();
 			cd = ( anomPos == 1 )? CarbonDescriptor_TBD.SZX_ANOMER : CarbonDescriptor_TBD.SSX_ANOMER;
@@ -78,7 +82,7 @@ public class CarbonChainToBackbone_TBD {
 
 		// Get stereo (chirality)
 		String strStereo = a_objCarbon.getChirality();
-		String strOrbital = this.m_objIdent.setAtom(a_objCarbon).getHybridOrbital0();
+		String strOrbital = new CarbonIdentifier().setAtom(a_objCarbon).getHybridOrbital0();
 
 		// Set connected backbone carbon(s)
 		Atom C1=null, C2=null;
@@ -161,15 +165,15 @@ public class CarbonChainToBackbone_TBD {
 				if ( mod1.charAt(0) == '=' && mod2.charAt(0) != '=' ) return -1;
 				if ( mod1.charAt(0) != '=' && mod2.charAt(0) == '=' ) return 1;
 
+				// Compare bridging or not
+				if (  mod1.endsWith("_") && !mod2.endsWith("_") ) return -1;
+				if ( !mod1.endsWith("_") &&  mod2.endsWith("_") ) return 1;
+
 				// Compare symbol. Prioritize large atomic number.
 				String symbol1 = ( !mod1.endsWith("_") )? mod1.substring(1) : mod1.substring(1, mod1.length()-1);
 				String symbol2 = ( !mod2.endsWith("_") )? mod2.substring(1) : mod2.substring(1, mod2.length()-1);
 				if ( !symbol1.equals(symbol2) )
 					return Chemical.getAtomicNumber(symbol2) - Chemical.getAtomicNumber(symbol1);
-
-				// Compare bridging or not
-				if (  mod1.endsWith("_") && !mod2.endsWith("_") ) return -1;
-				if ( !mod1.endsWith("_") &&  mod2.endsWith("_") ) return 1;
 
 				return 0;
 			}
@@ -223,15 +227,15 @@ public class CarbonChainToBackbone_TBD {
 	private String getSP3StereoForBackbone(int carbonType, Atom C, Connection conC1, Connection conC2, LinkedList<Connection> Mods, final HashSet<Connection> bridgeCons ) {
 
 		// Sort connection of modifications
-		// bond type -> symbol -> is bridge
+		// bond type -> is bridge -> symbol
 		Collections.sort(Mods, new Comparator<Connection> (){
 			public int compare(Connection con1, Connection con2) {
 				if( con1.getBond().getType() != con2.getBond().getType()  )
 					return con2.getBond().getType() - con1.getBond().getType();
-				if(!con1.endAtom().getSymbol().equals(con2.endAtom().getSymbol()) )
-					return Chemical.getAtomicNumber(con2.endAtom().getSymbol()) - Chemical.getAtomicNumber(con1.endAtom().getSymbol());
 				if (  bridgeCons.contains(con1) && !bridgeCons.contains(con2) ) return -1;
 				if ( !bridgeCons.contains(con1) &&  bridgeCons.contains(con2) ) return 1;
+				if(!con1.endAtom().getSymbol().equals(con2.endAtom().getSymbol()) )
+					return Chemical.getAtomicNumber(con2.endAtom().getSymbol()) - Chemical.getAtomicNumber(con1.endAtom().getSymbol());
 				return 0;
 			}
 		});
