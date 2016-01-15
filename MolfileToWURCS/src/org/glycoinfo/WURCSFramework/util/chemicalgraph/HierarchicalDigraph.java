@@ -58,6 +58,7 @@ public class HierarchicalDigraph {
 	 */
 	public HierarchicalDigraph(final ChemicalGraph targetgraph, final Atom atom, final int depth, final HierarchicalDigraphComparator comparator){
 		this.m_oTargetGraph = targetgraph;
+		this.m_oAtom = atom;
 		this.m_iDepth = depth;
 		this.m_dAverageAtomicNumber = Chemical.getAtomicNumber(atom.getSymbol());
 		this.m_aAncestorAtoms = new LinkedList<Atom>();
@@ -86,6 +87,7 @@ public class HierarchicalDigraph {
 		this.m_oParentHD = parent;
 		this.m_oAtom = atom;
 		this.m_iDepth = parent.m_iDepth - 1;
+		this.m_dAverageAtomicNumber = averageAtomicNumber;
 		this.m_oTargetGraph = parent.m_oTargetGraph;
 		this.m_aAncestorAtoms = parent.m_aAncestorAtoms;
 		this.m_oHDComp = parent.m_oHDComp;
@@ -185,19 +187,31 @@ public class HierarchicalDigraph {
 	private boolean depthSearch(final Atom atom, final int depth, final double averageAtomicNumber){
 //		if( atom!=null && !atom.symbol.equals("H") && !targetgraph.contains(atom) ) return;
 		if( atom!=null && !atom.getSymbol().equals("H") && !this.m_oTargetGraph.contains(atom) ) return true;
-		this.m_oAtom = atom;
-		this.m_dAverageAtomicNumber = averageAtomicNumber;
-		this.m_aChildren = new LinkedList<HierarchicalDigraph>();
-		if(this.m_oAtom == null) return true;
-		if(this.m_aAncestorAtoms.contains(this.m_oAtom)) return true;
+//		this.m_oAtom = atom;
+//		this.m_dAverageAtomicNumber = averageAtomicNumber;
+//		if(this.m_oAtom == null) return true;
+		if(atom == null) return true;
+		// Return true if terminal atom
+		boolean t_bIsTerminal = true;
+		for ( Connection t_oConn : atom.getConnections() ) {
+			if ( t_oConn.endAtom().getSymbol().equals("H") ) continue;
+			if ( t_oConn.endAtom().equals(atom) ) continue;
+			if ( this.m_oTargetGraph.contains( t_oConn.endAtom() ) ) t_bIsTerminal = false;
+		}
+		if ( t_bIsTerminal ) return true;
+//		if(this.m_aAncestorAtoms.contains(this.m_oAtom)) return true;
+		if(this.m_aAncestorAtoms.contains(atom)) return true;
 		// Full search has not completed, reaching to depth end
 		if(depth == 0) return false;
 
 		// Add Children
+		this.m_aChildren = new LinkedList<HierarchicalDigraph>();
 		int num = 0;
 		int sumAtomicNumber = 0;
-		m_aAncestorAtoms.addLast(this.m_oAtom);
-		for(Connection connection : this.m_oAtom.getConnections()){
+//		m_aAncestorAtoms.addLast(this.m_oAtom);
+		m_aAncestorAtoms.addLast(atom);
+//		for(Connection connection : this.m_oAtom.getConnections()){
+		for(Connection connection : atom.getConnections()){
 			Atom conatom = connection.endAtom();
 			// Skip if the connect atom is hydrogen or out of target graph
 			if( !conatom.getSymbol().equals("H") && !this.m_oTargetGraph.contains(conatom) ) continue;
@@ -207,7 +221,8 @@ public class HierarchicalDigraph {
 			// For conjugate or multiple bond, it is consider that same atom is duplecated.
 //			if(this.atom.isAromatic && connection.atom.isAromatic){
 //			if( this.m_aAromaticAtoms.contains(this.m_oAtom) && this.m_aAromaticAtoms.contains(conatom) ){
-			if ( this.m_oAtom.isAromatic() && conatom.isAromatic() ) {
+//			if ( this.m_oAtom.isAromatic() && conatom.isAromatic() ) {
+			if ( atom.isAromatic() && conatom.isAromatic() ) {
 				num++;
 				sumAtomicNumber+=(double)Chemical.getAtomicNumber(conatom.getSymbol());
 			}else if(connection.getBond().getType()==2 || connection.getBond().getType()==3){
