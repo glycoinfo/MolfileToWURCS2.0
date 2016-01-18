@@ -1,5 +1,6 @@
 package org.glycoinfo.WURCSFramework.util.hierarchicaldigraph;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 
@@ -39,8 +40,8 @@ public class HierarchicalDigraphComparator implements Comparator<HierarchicalDig
 			HierarchicalDigraph graph2 = widthsearch2.removeFirst();
 
 			// Check for comaparing same branch
-			Connection t_oToParent1 = graph1.getConnectionToParent();
-			Connection t_oToParent2 = graph2.getConnectionToParent();
+			Connection t_oToParent1 = graph1.getConnection();
+			Connection t_oToParent2 = graph2.getConnection();
 			if ( t_oToParent1 != null && t_oToParent2 != null && t_oToParent1.equals(t_oToParent2) ) {
 				this.m_bFoundSameBranch = true;
 				return 0;
@@ -55,6 +56,8 @@ public class HierarchicalDigraphComparator implements Comparator<HierarchicalDig
 			// Compare children
 			LinkedList<HierarchicalDigraph> children1 = graph1.getChildren();
 			LinkedList<HierarchicalDigraph> children2 = graph2.getChildren();
+			Collections.sort(children1, this);
+			Collections.sort(children2, this);
 			int minChildNum = Math.min(children1.size(), children2.size());
 			for(int ii=0; ii<minChildNum; ii++){
 				double averageAtomicNumber1 = children1.get(ii).getAverageAtomicNumber();

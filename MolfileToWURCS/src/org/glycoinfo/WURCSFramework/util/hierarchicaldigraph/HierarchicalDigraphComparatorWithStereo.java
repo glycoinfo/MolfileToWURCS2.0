@@ -1,5 +1,6 @@
 package org.glycoinfo.WURCSFramework.util.hierarchicaldigraph;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -54,7 +55,11 @@ public class HierarchicalDigraphComparatorWithStereo extends HierarchicalDigraph
 			String atomStereo2 = this.m_hashAtomToStereo.get(graph2.getConnection().endAtom());
 
 			// Compare children
-			int minChildNum = Math.min(graph1.getChildren().size(), graph2.getChildren().size());
+			LinkedList<HierarchicalDigraph> children1 = graph1.getChildren();
+			LinkedList<HierarchicalDigraph> children2 = graph1.getChildren();
+			Collections.sort(children1, this);
+			Collections.sort(children2, this);
+			int minChildNum = Math.min(children1.size(), children2.size());
 			for(int ii=0; ii<minChildNum; ii++){
 				HierarchicalDigraph child1 = graph1.getChildren().get(ii);
 				HierarchicalDigraph child2 = graph2.getChildren().get(ii);

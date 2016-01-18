@@ -292,7 +292,7 @@ public class HierarchicalDigraph {
 		if(this.m_aChildren==null) return;
 
 		for(HierarchicalDigraph child : this.m_aChildren){
-			ps.print((this.m_aChildren.indexOf(child)+1) + "(" + (child.m_bIsUniqOrder?"o":"x") + ")" + "." + ((child.m_oAtom==null)?"null":(child.m_oAtom.getSymbol() + "(" + this.m_oTargetGraph.getAtoms().indexOf(this.m_oAtom) + ")")) + "(" + child.m_dAverageAtomicNumber + "), ");
+			ps.print((this.m_aChildren.indexOf(child)+1) + "(" + (child.m_bIsUniqOrder?"o":"x") + ")" + "." + ((child.m_oAtom==null)?"null":(child.m_oAtom.getSymbol() + "(" + child.m_oAtom.getAtomID() + ")")) + "(" + child.m_dAverageAtomicNumber + "), ");
 		}
 		ps.println();
 

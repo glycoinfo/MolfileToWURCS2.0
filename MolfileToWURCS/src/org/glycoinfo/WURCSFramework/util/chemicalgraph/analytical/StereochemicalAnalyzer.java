@@ -13,7 +13,6 @@ import org.glycoinfo.WURCSFramework.chemicalgraph.Connection;
 import org.glycoinfo.WURCSFramework.util.chemicalgraph.Chemical;
 import org.glycoinfo.WURCSFramework.util.chemicalgraph.HierarchicalDigraph;
 import org.glycoinfo.WURCSFramework.util.chemicalgraph.HierarchicalDigraphComparator;
-import org.glycoinfo.WURCSFramework.util.hierarchicaldigraph.HierarchicalDigraphCreator;
 
 /**
  * Class for stereochemical analyze of chemical graph
@@ -24,7 +23,7 @@ public class StereochemicalAnalyzer {
 
 	private ChemicalGraph m_objGraph;
 
-	private HierarchicalDigraphCreator    m_objCreator    = new HierarchicalDigraphCreator();
+//	private HierarchicalDigraphCreator    m_objCreator    = new HierarchicalDigraphCreator();
 	private HierarchicalDigraphComparator m_objComparator = new HierarchicalDigraphComparator();
 
 	private HashMap<Atom, Boolean>       m_mapAtomToOrderIsUnique        = new HashMap<Atom, Boolean>();
@@ -154,8 +153,12 @@ public class StereochemicalAnalyzer {
 
 				// Construct HierarchicalDigraph with "depth"
 				HierarchicalDigraph t_oHD = new HierarchicalDigraph(this.m_objGraph, atom, depth, this.m_objComparator);
-				System.err.println(t_strAtoms);
-				t_oHD.print(System.err);
+				// XXX: remove print
+				for ( Connection connection : atom.getConnections() ) {
+					if ( connection.getBond().getType() != 2 ) continue;
+					System.err.println(t_strAtoms);
+					t_oHD.print(System.err);
+				}
 				// Set CIP order
 				this.m_mapAtomToOrderIsUnique.put(atom, true);
 //				atom.connections.isUniqOrder = true;

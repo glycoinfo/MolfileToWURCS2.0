@@ -28,11 +28,6 @@ public class HierarchicalDigraph {
 		return this.m_oConnection;
 	}
 
-	public Connection getConnectionToParent() {
-		if ( this.m_oConnection == null ) return null;
-		return this.m_oConnection.getReverse();
-	}
-
 	public double getAverageAtomicNumber() {
 		return this.m_dAverageAtomicNumber;
 	}
