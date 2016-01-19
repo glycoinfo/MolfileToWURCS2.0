@@ -5,6 +5,9 @@ import java.util.HashSet;
 import org.glycoinfo.WURCSFramework.chemicalgraph.Atom;
 import org.glycoinfo.WURCSFramework.chemicalgraph.Connection;
 import org.glycoinfo.WURCSFramework.chemicalgraph.Molecule;
+import org.glycoinfo.WURCSFramework.util.chemicalgraph.analytical.cyclization.Aromatization;
+import org.glycoinfo.WURCSFramework.util.chemicalgraph.analytical.cyclization.CarbonCyclization;
+import org.glycoinfo.WURCSFramework.util.chemicalgraph.analytical.cyclization.PiCyclization;
 
 /**
  * Class for molecule structure analysis to find aromatic, pi cyclic and carbon cyclic atoms and terminal carbons
@@ -65,20 +68,50 @@ public class StructureAnalyzer {
 		this.clear();
 
 		// Collect cyclic atoms using Cyclization
-		Cyclization t_objCyclize = new Cyclization();
+/*
+		CyclizationOld t_objCyclize = new CyclizationOld();
 		for ( Atom atom : a_objMol.getAtoms() ) {
 
 			// Collect aromatic atoms
-			if ( t_objCyclize.aromatize(atom) )
+			if ( !this.m_aAromaticAtoms.contains(atom)     && t_objCyclize.aromatize(atom) )
 				this.m_aAromaticAtoms.addAll(t_objCyclize);
 
 			// Collect pi cyclic atoms
-			if ( t_objCyclize.piCyclize(atom) )
+			if ( !this.m_aPiCyclicAtoms.contains(atom)     && t_objCyclize.piCyclize(atom) )
 				this.m_aPiCyclicAtoms.addAll(t_objCyclize);
 
 			// Collect carbon ring atoms
-			if ( t_objCyclize.carbonCyclize(atom) )
+			if ( !this.m_aCarbonCyclicAtoms.contains(atom) && t_objCyclize.carbonCyclize(atom) )
 				this.m_aCarbonCyclicAtoms.addAll(t_objCyclize);
+		}
+*/
+		// Collect aromatic ring atoms for other atoms
+		Aromatization t_oAromatize = new Aromatization();
+		for ( Atom t_oAtom : a_objMol.getAtoms() ) {
+			if ( this.m_aAromaticAtoms.contains(t_oAtom) ) continue;
+			if ( !t_oAromatize.start(t_oAtom) ) continue;
+			this.m_aAromaticAtoms.addAll(t_oAromatize);
+		}
+		// Set aromaticity
+		for ( Atom t_oAtom : this.m_aAromaticAtoms ) {
+			t_oAtom.setAromaticity();
+		}
+
+		// Collect pi cyclic atoms
+		this.m_aPiCyclicAtoms.addAll(this.m_aAromaticAtoms);
+		PiCyclization t_oPiCyclize = new PiCyclization();
+		for ( Atom t_oAtom : a_objMol.getAtoms() ) {
+			if ( this.m_aPiCyclicAtoms.contains(t_oAtom) ) continue;
+			if ( !t_oPiCyclize.start(t_oAtom) ) continue;
+			this.m_aPiCyclicAtoms.addAll(t_oPiCyclize);
+		}
+
+		// Collect carbon cyclic atoms
+		CarbonCyclization t_oCarbonCyclize = new CarbonCyclization();
+		for ( Atom t_oAtom : a_objMol.getAtoms() ) {
+			if ( this.m_aCarbonCyclicAtoms.contains(t_oAtom) ) continue;
+			if ( !t_oCarbonCyclize.start(t_oAtom) ) continue;
+			this.m_aCarbonCyclicAtoms.addAll(t_oCarbonCyclize);
 		}
 
 		// Set ignore atoms

@@ -13,7 +13,6 @@ import org.glycoinfo.WURCSFramework.chemicalgraph.Connection;
 import org.glycoinfo.WURCSFramework.util.chemicalgraph.Chemical;
 import org.glycoinfo.WURCSFramework.util.chemicalgraph.HierarchicalDigraph;
 import org.glycoinfo.WURCSFramework.util.chemicalgraph.HierarchicalDigraphComparator;
-import org.glycoinfo.WURCSFramework.util.chemicalgraph.HierarchicalDigraphCreator;
 
 /**
  * Class for stereochemical analyze of chemical graph
@@ -24,7 +23,7 @@ public class StereochemicalAnalyzer {
 
 	private ChemicalGraph m_objGraph;
 
-	private HierarchicalDigraphCreator    m_objCreator    = new HierarchicalDigraphCreator();
+//	private HierarchicalDigraphCreator    m_objCreator    = new HierarchicalDigraphCreator();
 	private HierarchicalDigraphComparator m_objComparator = new HierarchicalDigraphComparator();
 
 	private HashMap<Atom, Boolean>       m_mapAtomToOrderIsUnique        = new HashMap<Atom, Boolean>();
@@ -114,6 +113,7 @@ public class StereochemicalAnalyzer {
 //		this.analyzeStereo(t_mapAtomToAnalyzed);
 		this.analyzeStereo(t_setAnalyzedAtoms);
 		this.setStereors();
+
 	}
 
 	/**
@@ -121,19 +121,29 @@ public class StereochemicalAnalyzer {
 	 */
 //	private void analyzeStereo(HashMap<Atom, Boolean> a_mapAtomToAnalyzed){
 	private void analyzeStereo(HashSet<Atom> a_setAnalyzedAtoms){
-		// Set type for HierarchicalDigraph comparator
 
 		boolean continueflg = true;
 		int depth = 0;
+		String t_strContinuedHistry = "";
 		while(continueflg){
 			continueflg = false;
 			depth++;
+			String t_strAtoms = "";
 			for(Atom atom : this.m_objGraph.getAtoms()){
 //				if(atom.connections.tmpflg) continue;
 //				if ( a_mapAtomToAnalyzed.get(atom) ) continue;
 				if ( a_setAnalyzedAtoms.contains(atom) ) continue;
 
 				continueflg = true;
+
+				// XXX: List continued atoms
+				if ( depth > 1 ) {
+					if ( !t_strAtoms.equals("") ) t_strAtoms += ",";
+					t_strAtoms += atom.getSymbol();
+//					t_strAtoms += "("+(this.m_objGraph.getAtoms().indexOf(atom)+1)+")";
+					t_strAtoms += "("+(atom.getAtomID())+")";
+				}
+
 				// Set full search flag for connections
 //				atom.connections.setIsCompletedFullSearch(false);
 				for(Connection connection : atom.getConnections()){
@@ -143,6 +153,12 @@ public class StereochemicalAnalyzer {
 
 				// Construct HierarchicalDigraph with "depth"
 				HierarchicalDigraph t_oHD = new HierarchicalDigraph(this.m_objGraph, atom, depth, this.m_objComparator);
+				// XXX: remove print
+				for ( Connection connection : atom.getConnections() ) {
+					if ( connection.getBond().getType() != 2 ) continue;
+					System.err.println(t_strAtoms);
+					t_oHD.print(System.err);
+				}
 				// Set CIP order
 				this.m_mapAtomToOrderIsUnique.put(atom, true);
 //				atom.connections.isUniqOrder = true;
@@ -214,7 +230,15 @@ public class StereochemicalAnalyzer {
 
 
 			}
+			// XXX:
+			if ( ! t_strAtoms.equals("") )
+				t_strContinuedHistry += depth +":"+ t_strAtoms + "\n";
 		}
+
+		// XXX: remove print
+//		System.err.println("Analyzed stereo for "+ this.m_objGraph);
+//		System.err.println(t_strContinuedHistry);
+
 	}
 
 	// achiralであることが確定した場合、探索を打ち切る。
@@ -284,10 +308,11 @@ public class StereochemicalAnalyzer {
 //			LinkedList<Connection> b0connects = this.getConnects(b0);
 			LinkedList<Connection> a0connects = this.m_mapAtomToSortedConnections.get(a0);
 			LinkedList<Connection> b0connects = this.m_mapAtomToSortedConnections.get(b0);
-			if ( a0connects.size()<2 ) continue;
-			if ( b0connects.size()<2 ) continue;
+			if ( a0connects.size()<2 || b0connects.size()<2 ) continue;
 			Atom a1 = (a0connects.get(0).endAtom() == b0) ? a0connects.get(1).endAtom() : a0connects.get(0).endAtom();
 			Atom b1 = (b0connects.get(0).endAtom() == a0) ? b0connects.get(1).endAtom() : b0connects.get(0).endAtom();
+			// Ignore if hydrogen is contained like imine
+			if ( a1.getSymbol().equals("H") || b1.getSymbol().equals("H") ) continue;
 			String stereo = Chemical.sp2stereo(a0, a1, b0, b1);
 //			bond.stereoTmp = stereo;
 			this.m_mapBondToStereo.put(bond, stereo);

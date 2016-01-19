@@ -39,7 +39,7 @@ public class MoleculeNormalizer {
 	private void removeMetalAtoms(){
 		ArrayList<Atom> removeAtoms = new ArrayList<Atom>();
 		for(Atom atom : this.m_objMolecule.getAtoms()){
-			if(Chemical.isMetal(atom.getSymbol())){
+			if(!Chemical.isNonMetal(atom.getSymbol())){
 				removeAtoms.add(atom);
 			}
 		}

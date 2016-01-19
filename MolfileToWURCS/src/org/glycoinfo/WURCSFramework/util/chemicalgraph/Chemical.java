@@ -30,6 +30,7 @@ public class Chemical {
 		"A", "Q", "X", "?", "R"                                                                                     // 104 - 108
 	};
 	private static String[] MetalAtoms = {"Li", "Na", "K", "Rb", "Cs", "Be", "Mg", "Ca", "Sr", "Ba", "Ra"};
+	private static String[] NonMetalAtoms = {"H", "B", "C", "N", "O", "F", "P", "S", "Cl", "As", "Se", "Br", "Te", "I", "At"};
 
 	/**
 	 * Don't let anyone instantiate this class.
@@ -70,10 +71,24 @@ public class Chemical {
 	}
 
 	/**
+	 * Return true if symbol is non metal atom.
+	 * @param symbol
+	 * @return true if symbol is non metal atom.
+	 */
+	public static boolean isNonMetal(String symbol){
+		for(int ii=0; ii<NonMetalAtoms.length; ii++){
+			if(symbol.equals(NonMetalAtoms[ii])){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * Determine RS stereo chemistry for tetrahedrally atom.
 	 * When viewed from a vertical direction on display and d locate in the back side from o,
 	 * stereo is R if a->b->c is cyclic, otherwise S.
-	 * Which o is center atom and for atoms connected o are a, b, c, d.
+	 * Which o is center atom and a, b, c, and d are four atoms connected to o.
 	 * 四面体中心原子をoとし、oに結合している4原子をa, b, c ,dとする。
 	 * dがoの真後ろ(紙面奥)に来るように配置して眺めた場合、a->b->cが右回転ならR、左回転ならSを返す。
 	 * For using RS notation, to assign 1:a, 2:b, 3:c and 4:d after ordering four atoms by CIP order.

@@ -145,6 +145,7 @@ public class CTFileReader {
 
 				// TODO:
 				Atom t_oAtom = new Atom(symbol);
+				t_oAtom.setAtomID(i+1);
 				t_oAtom.setCoordinate(crd);
 
 				// mass difference -3, -2, -1, 0, 1, 2, 3, 4
@@ -286,7 +287,7 @@ public class CTFileReader {
 				}else if(t_strLine.length() == 0){
 					// Blank line
 					continue;
-				}else if(t_strLine.substring(0, 1).equals(">")){
+				}else if( t_strLine.length() > 2 && t_strLine.substring(0, 2).equals("> ")){
 					// Data header
 					// > 25 <ALTERNATE.NAMES>
 					// line.split("<")[0] = "> 25 ", line.split("<")[1] = "ALTERNATE.NAMES>"

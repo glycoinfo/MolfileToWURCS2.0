@@ -98,7 +98,7 @@ public class CarbonChainFinder {
 
 			// Screen by chain length
 			int backboneLength = candidateChain.size();
-			if ( this.m_iMinLength > backboneLength && backboneLength > this.m_iMaxLength ) continue;
+			if ( backboneLength < this.m_iMinLength || backboneLength > this.m_iMaxLength ) continue;
 			candidates.add(candidateChain);
 		}
 

@@ -32,9 +32,7 @@ public class AtomicTraverserConnection extends AtomicTraverser {
 	 * @see AtomicTraverser.SubGraphTraverser#traverse(org.glycoinfo.WURCSFramework.chemicalgraph.Connection)
 	 */
 	@Override
-	public void traverse(Connection a_objConnection)
-			throws AtomicVisitorException {
-		// TODO 自動生成されたメソッド・スタブ
+	public void traverse(Connection a_objConnection) throws AtomicVisitorException {
 		// callback of the function before subtree
 		this.m_iState = AtomicTraverser.ENTER;
 		a_objConnection.accept(this.m_objVisitor);

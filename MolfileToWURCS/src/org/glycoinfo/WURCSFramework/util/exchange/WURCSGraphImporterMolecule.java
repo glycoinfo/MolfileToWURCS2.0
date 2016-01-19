@@ -79,7 +79,15 @@ public class WURCSGraphImporterMolecule {
 		MoleculeNormalizer t_oMolNorm = new MoleculeNormalizer();
 		t_oMolNorm.normalize(this.m_objMolecule);
 
-		// Structureral analyze molecule
+		// Throw exeption if there is no carbon
+		int t_nCarbon = 0;
+		for ( Atom t_oAtom : a_objMolecule.getAtoms() ) {
+			if ( t_oAtom.getSymbol().equals("C") ) t_nCarbon++;
+		}
+		if ( t_nCarbon == 0 )
+			throw new WURCSException("There is no carbon in the molecule.");
+
+		// Structureral analyze for molecule
 		// Collect atoms which membered aromatic, pi cyclic and carbon cyclic rings
 		StructureAnalyzer t_oStAnal = new StructureAnalyzer();
 		t_oStAnal.analyze(this.m_objMolecule);

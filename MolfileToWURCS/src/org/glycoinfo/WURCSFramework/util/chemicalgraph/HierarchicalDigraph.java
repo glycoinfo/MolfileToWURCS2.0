@@ -2,13 +2,11 @@ package org.glycoinfo.WURCSFramework.util.chemicalgraph;
 
 import java.io.PrintStream;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.LinkedList;
 
 import org.glycoinfo.WURCSFramework.chemicalgraph.Atom;
 import org.glycoinfo.WURCSFramework.chemicalgraph.ChemicalGraph;
 import org.glycoinfo.WURCSFramework.chemicalgraph.Connection;
-import org.glycoinfo.WURCSFramework.util.chemicalgraph.analytical.Cyclization;
 
 /**
  * Class for constructing HierarchicalDigraph and comparing the graph by CIP order<br>
@@ -38,7 +36,7 @@ public class HierarchicalDigraph {
 	private HierarchicalDigraphComparator m_oHDComp;
 	/** Aromatic atoms */
 
-	private HashSet<Atom> m_aAromaticAtoms = new HashSet<Atom>();
+//	private HashSet<Atom> m_aAromaticAtoms = new HashSet<Atom>();
 
 	/** Target graph for search */
 	private ChemicalGraph m_oTargetGraph;
@@ -60,18 +58,21 @@ public class HierarchicalDigraph {
 	 */
 	public HierarchicalDigraph(final ChemicalGraph targetgraph, final Atom atom, final int depth, final HierarchicalDigraphComparator comparator){
 		this.m_oTargetGraph = targetgraph;
+		this.m_oAtom = atom;
 		this.m_iDepth = depth;
 		this.m_dAverageAtomicNumber = Chemical.getAtomicNumber(atom.getSymbol());
 		this.m_aAncestorAtoms = new LinkedList<Atom>();
 		this.m_oHDComp = comparator;
 
+/*
 		// Search aromatic atoms
-		Cyclization cyclic = new Cyclization();
+		Aromatization t_oAromatic = new Aromatization();
 		for ( Atom a : this.m_oTargetGraph.getAtoms() ) {
-			cyclic.clear();
-			if ( cyclic.aromatize(a) ) this.m_aAromaticAtoms.addAll(cyclic);
+			t_oAromatic.clear();
+			if ( !this.m_aAromaticAtoms.contains(a) && t_oAromatic.start(a) )
+				this.m_aAromaticAtoms.addAll(t_oAromatic);
 		}
-
+*/
 		this.m_bHasCompletedFullSearch = this.depthSearch(atom, depth, this.m_dAverageAtomicNumber);
 		this.initializeSearchFlag();
 	}
@@ -86,9 +87,11 @@ public class HierarchicalDigraph {
 		this.m_oParentHD = parent;
 		this.m_oAtom = atom;
 		this.m_iDepth = parent.m_iDepth - 1;
+		this.m_dAverageAtomicNumber = averageAtomicNumber;
 		this.m_oTargetGraph = parent.m_oTargetGraph;
 		this.m_aAncestorAtoms = parent.m_aAncestorAtoms;
 		this.m_oHDComp = parent.m_oHDComp;
+//		this.m_aAromaticAtoms = parent.m_aAromaticAtoms;
 
 		this.m_bHasCompletedFullSearch = this.depthSearch(atom, this.m_iDepth, averageAtomicNumber);
 		this.initializeSearchFlag();
@@ -184,19 +187,31 @@ public class HierarchicalDigraph {
 	private boolean depthSearch(final Atom atom, final int depth, final double averageAtomicNumber){
 //		if( atom!=null && !atom.symbol.equals("H") && !targetgraph.contains(atom) ) return;
 		if( atom!=null && !atom.getSymbol().equals("H") && !this.m_oTargetGraph.contains(atom) ) return true;
-		this.m_oAtom = atom;
-		this.m_dAverageAtomicNumber = averageAtomicNumber;
-		this.m_aChildren = new LinkedList<HierarchicalDigraph>();
-		if(this.m_oAtom == null) return true;
-		if(this.m_aAncestorAtoms.contains(this.m_oAtom)) return true;
+//		this.m_oAtom = atom;
+//		this.m_dAverageAtomicNumber = averageAtomicNumber;
+//		if(this.m_oAtom == null) return true;
+		if(atom == null) return true;
+		// Return true if terminal atom
+		boolean t_bIsTerminal = true;
+		for ( Connection t_oConn : atom.getConnections() ) {
+			if ( t_oConn.endAtom().getSymbol().equals("H") ) continue;
+			if ( t_oConn.endAtom().equals(atom) ) continue;
+			if ( this.m_oTargetGraph.contains( t_oConn.endAtom() ) ) t_bIsTerminal = false;
+		}
+		if ( t_bIsTerminal ) return true;
+//		if(this.m_aAncestorAtoms.contains(this.m_oAtom)) return true;
+		if(this.m_aAncestorAtoms.contains(atom)) return true;
 		// Full search has not completed, reaching to depth end
 		if(depth == 0) return false;
 
 		// Add Children
+		this.m_aChildren = new LinkedList<HierarchicalDigraph>();
 		int num = 0;
 		int sumAtomicNumber = 0;
-		m_aAncestorAtoms.addLast(this.m_oAtom);
-		for(Connection connection : this.m_oAtom.getConnections()){
+//		m_aAncestorAtoms.addLast(this.m_oAtom);
+		m_aAncestorAtoms.addLast(atom);
+//		for(Connection connection : this.m_oAtom.getConnections()){
+		for(Connection connection : atom.getConnections()){
 			Atom conatom = connection.endAtom();
 			// Skip if the connect atom is hydrogen or out of target graph
 			if( !conatom.getSymbol().equals("H") && !this.m_oTargetGraph.contains(conatom) ) continue;
@@ -205,7 +220,9 @@ public class HierarchicalDigraph {
 			this.m_aChildren.add( new HierarchicalDigraph( this, conatom, (double)Chemical.getAtomicNumber(conatom.getSymbol()) ) );
 			// For conjugate or multiple bond, it is consider that same atom is duplecated.
 //			if(this.atom.isAromatic && connection.atom.isAromatic){
-			if( this.m_aAromaticAtoms.contains(this.m_oAtom) && this.m_aAromaticAtoms.contains(conatom) ){
+//			if( this.m_aAromaticAtoms.contains(this.m_oAtom) && this.m_aAromaticAtoms.contains(conatom) ){
+//			if ( this.m_oAtom.isAromatic() && conatom.isAromatic() ) {
+			if ( atom.isAromatic() && conatom.isAromatic() ) {
 				num++;
 				sumAtomicNumber+=(double)Chemical.getAtomicNumber(conatom.getSymbol());
 			}else if(connection.getBond().getType()==2 || connection.getBond().getType()==3){
@@ -240,6 +257,13 @@ public class HierarchicalDigraph {
 			HierarchicalDigraph tree2 = this.m_aChildren.get(ii+1);
 //			if(tree1.compareTo(tree2, EZRScheck)!=0) continue;
 			if( this.m_oHDComp.compare(tree1, tree2)!=0 ) continue;
+
+			// Set complete full search flag if two tree has same branch
+			if ( this.m_oHDComp.foundSameBranch() ) {
+				tree1.setCompleteFullSearch(true);
+				tree2.setCompleteFullSearch(true);
+			}
+
 			tree1.m_bIsUniqOrder = false;
 			tree2.m_bIsUniqOrder = false;
 		}
@@ -263,12 +287,12 @@ public class HierarchicalDigraph {
 			ps.print(" +");
 		}
 //		ps.print("-" + ((this.atom==null)?"null":(this.atom.getSymbol() + "(" + this. this.atom.molfileAtomNo + ")")) + "(" + this.averageAtomicNumber + ")" + " : ");
-		ps.print("-" + ((this.m_oAtom==null)?"null":(this.m_oAtom.getSymbol() + "(" + this.m_oTargetGraph.getAtoms().indexOf(this.m_oAtom) + ")")) + "(" + this.m_dAverageAtomicNumber + ")" + " : ");
+		ps.print("-" + ((this.m_oAtom==null)?"null":(this.m_oAtom.getSymbol() + "(" + this.m_oAtom.getAtomID() + ")")) + "(" + this.m_dAverageAtomicNumber + ")" + " : ");
 
 		if(this.m_aChildren==null) return;
 
 		for(HierarchicalDigraph child : this.m_aChildren){
-			ps.print((this.m_aChildren.indexOf(child)+1) + "(" + (child.m_bIsUniqOrder?"o":"x") + ")" + "." + ((child.m_oAtom==null)?"null":(child.m_oAtom.getSymbol() + "(" + this.m_oTargetGraph.getAtoms().indexOf(this.m_oAtom) + ")")) + "(" + child.m_dAverageAtomicNumber + "), ");
+			ps.print((this.m_aChildren.indexOf(child)+1) + "(" + (child.m_bIsUniqOrder?"o":"x") + ")" + "." + ((child.m_oAtom==null)?"null":(child.m_oAtom.getSymbol() + "(" + child.m_oAtom.getAtomID() + ")")) + "(" + child.m_dAverageAtomicNumber + "), ");
 		}
 		ps.println();
 

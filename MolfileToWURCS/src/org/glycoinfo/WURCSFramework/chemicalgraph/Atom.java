@@ -30,10 +30,14 @@ public class Atom implements AtomicVisitable {
 	private int      m_iRadical            = 0;
 	/** Number of pi electron                                                 */
 	private int      m_iPiElectron         = 0;
+	/** Aromatic atom flag */
+	private boolean  m_bIsAromatic         = false;
 	/** Chirarity                                                             */
 	private String   m_strChirality        = null;
 	/** Alias name                                                            */
 	private String   m_strAliasName        = null;
+	/** ID of the atom in input molecule (incremental number for hidden hydrogen) */
+	private int      m_iAtomID             = -1;
 
 	//----------------------------
 	// Constructor
@@ -73,6 +77,10 @@ public class Atom implements AtomicVisitable {
 		return this.m_iPiElectron;
 	}
 
+	public boolean isAromatic() {
+		return this.m_bIsAromatic;
+	}
+
 	public String getChirality() {
 		return this.m_strChirality;
 	}
@@ -80,6 +88,11 @@ public class Atom implements AtomicVisitable {
 	public String getAliasName() {
 		return this.m_strAliasName;
 	}
+
+	public int getAtomID() {
+		return this.m_iAtomID;
+	}
+
 	//----------------------------
 	// Accessor(setter)
 	//----------------------------
@@ -107,6 +120,10 @@ public class Atom implements AtomicVisitable {
 		this.m_iPiElectron = numPi;
 	}
 
+	public void setAromaticity() {
+		this.m_bIsAromatic = true;
+	}
+
 	public void setChirality(String chiral) {
 		this.m_strChirality = chiral;
 	}
@@ -116,6 +133,11 @@ public class Atom implements AtomicVisitable {
 		if ( this.m_strSymbol.equals("*") )
 			this.m_strSymbol = this.m_strAliasName.substring(0,1);
 	}
+
+	public void setAtomID(int atomID) {
+		this.m_iAtomID = atomID;
+	}
+
 	//----------------------------
 	// Public method
 	//----------------------------

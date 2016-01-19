@@ -9,8 +9,8 @@ import org.glycoinfo.WURCSFramework.chemicalgraph.Molecule;
 import org.glycoinfo.WURCSFramework.io.MDLMOL.CTFileReader;
 import org.glycoinfo.WURCSFramework.io.MDLMOL.ParameterReader;
 import org.glycoinfo.WURCSFramework.util.FileIOUtils;
-import org.glycoinfo.WURCSFramework.util.chemicalgraph.analytical.Cyclization;
 import org.glycoinfo.WURCSFramework.util.chemicalgraph.analytical.NOC.NOCApproach;
+import org.glycoinfo.WURCSFramework.util.chemicalgraph.analytical.cyclization.Aromatization;
 
 public class TestNOC {
 
@@ -58,10 +58,10 @@ public class TestNOC {
 			// Get aromatic carbons
 			// Search aromatic atoms
 			HashSet<Atom> t_aAromatics = new HashSet<Atom>();
-			Cyclization cyclic = new Cyclization();
+			Aromatization t_oAromatic = new Aromatization();
 			for ( Atom a : mol.getAtoms() ) {
-				cyclic.clear();
-				if ( cyclic.aromatize(a) ) t_aAromatics.addAll(cyclic);
+				t_oAromatic.clear();
+				if ( t_oAromatic.start(a) ) t_aAromatics.addAll(t_oAromatic);
 			}
 
 			NOCApproach t_oNOC = new NOCApproach(mol);

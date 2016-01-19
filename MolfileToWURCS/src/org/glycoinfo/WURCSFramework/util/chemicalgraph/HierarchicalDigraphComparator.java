@@ -21,6 +21,7 @@ public class HierarchicalDigraphComparator implements Comparator<HierarchicalDig
 	private boolean m_bEZRSCheck;
 	private HashMap<Atom, String> m_hashAtomToStereo;
 	private HashMap<Bond, String> m_hashBondToStereo;
+	private boolean m_bFoundSameBranch;
 
 	//----------------------------
 	// Accessor
@@ -37,6 +38,10 @@ public class HierarchicalDigraphComparator implements Comparator<HierarchicalDig
 		this.m_hashBondToStereo = a_hashBondToStereo;
 	}
 
+	public boolean foundSameBranch() {
+		return this.m_bFoundSameBranch;
+	}
+
 	public void clear() {
 		this.m_hashAtomToStereo.clear();
 		this.m_hashBondToStereo.clear();
@@ -49,10 +54,12 @@ public class HierarchicalDigraphComparator implements Comparator<HierarchicalDig
 		LinkedList<HierarchicalDigraph> widthsearch1 = new LinkedList<HierarchicalDigraph>();
 		LinkedList<HierarchicalDigraph> widthsearch2 = new LinkedList<HierarchicalDigraph>();
 
+		this.m_bFoundSameBranch = false;
+
 		// Compare atomic number
 		// 1. First, prioritize the atom which has greater atomic number.
 		// 2. Next, compare next atoms by first compare method.
-		// 3.
+		// 3. Repeat compare.
 		// (1)直接結合する原子の原子番号が大きい方を優位とする。
 		// (2)前項で決まらないときは、最初の原子に結合している原子（すなわち中心から2番目の原子）について (i) の基準で比べる。2番目の原子が最初の原子に複数結合しているときは、原子番号の大きい順に候補を1つずつ出して違いのあった時点で決める。
 		// (3)前項で決まらないときは、中心から2番目の原子（ただし、(ii)で除外された原子は除く）に結合している原子で比べる。以降、順に中心から離れた原子を比べる。
@@ -61,6 +68,18 @@ public class HierarchicalDigraphComparator implements Comparator<HierarchicalDig
 		while(widthsearch1.size()!=0 && widthsearch2.size()!=0){
 			HierarchicalDigraph graph1 = widthsearch1.removeFirst();
 			HierarchicalDigraph graph2 = widthsearch2.removeFirst();
+
+			// Check for comaparing same branch
+			Atom t_oAtom1 = graph1.getAtom();
+			Atom t_oAtom2 = graph2.getAtom();
+			if ( t_oAtom1 != null && t_oAtom2 != null && t_oAtom1.equals(t_oAtom2) ) {
+				Connection t_oToParent1 = graph1.getConnectionToParent();
+				Connection t_oToParent2 = graph2.getConnectionToParent();
+				if ( t_oToParent1 != null && t_oToParent2 != null && t_oToParent1.equals(t_oToParent2) ) {
+					this.m_bFoundSameBranch = true;
+					return 0;
+				}
+			}
 
 			// 原子番号が大きい方を優位
 			// Prioritize greater atomic number
@@ -97,6 +116,7 @@ public class HierarchicalDigraphComparator implements Comparator<HierarchicalDig
 
 		// (4)2つの基が位相的に等しい（構成する原子の元素、個数、結合順序が等しい）が、質量数が異なる原子を含む場合、質量数の大きい原子を含む基を優位とする。
 		// WURCS生成時には、正規化の段階で同位体情報は削除されるので、この比較は行わない。
+		// Isomer infomation is reduced at normalization, this comparison is not perfomed.
 
 		// (5)2つの基が物質的かつ位相的に等しい（構成する原子の元素、個数、結合順序、質量数が等しい）が、立体化学が異なる場合。
 		if(this.m_bEZRSCheck) return this.compareEZRS(a_objGraph1, a_objGraph2);
