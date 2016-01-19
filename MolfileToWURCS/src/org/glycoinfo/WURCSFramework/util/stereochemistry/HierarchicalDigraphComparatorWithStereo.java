@@ -1,4 +1,4 @@
-package org.glycoinfo.WURCSFramework.util.hierarchicaldigraph;
+package org.glycoinfo.WURCSFramework.util.stereochemistry;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -31,7 +31,7 @@ public class HierarchicalDigraphComparatorWithStereo extends HierarchicalDigraph
 		this.m_hashBondToStereo = a_hashBondToStereo;
 	}
 
-	public int compare(final HierarchicalDigraph a_objGraph1, final HierarchicalDigraph a_objGraph2){
+	public int compare(final HierarchicalDigraphNode a_objGraph1, final HierarchicalDigraphNode a_objGraph2){
 
 		// Compare by super class
 		int t_iComp = super.compare(a_objGraph1, a_objGraph2);
@@ -42,27 +42,27 @@ public class HierarchicalDigraphComparatorWithStereo extends HierarchicalDigraph
 		// 次いでジアステレオ異性に関して、like （R,R またはS,S）を unlike （R,S またはS,R）より優位とする。
 		// 次いで、鏡像異性に関して、RをS より優位とする。
 		// 最後に、擬似不斉原子に関して、rをs より優位とする。
-		LinkedList<HierarchicalDigraph> widthsearch1 = new LinkedList<HierarchicalDigraph>();
-		LinkedList<HierarchicalDigraph> widthsearch2 = new LinkedList<HierarchicalDigraph>();
+		LinkedList<HierarchicalDigraphNode> widthsearch1 = new LinkedList<HierarchicalDigraphNode>();
+		LinkedList<HierarchicalDigraphNode> widthsearch2 = new LinkedList<HierarchicalDigraphNode>();
 		widthsearch1.addLast(a_objGraph1);
 		widthsearch2.addLast(a_objGraph2);
 		while(widthsearch1.size()!=0 && widthsearch2.size()!=0){
-			HierarchicalDigraph graph1 = widthsearch1.removeFirst();
-			HierarchicalDigraph graph2 = widthsearch2.removeFirst();
+			HierarchicalDigraphNode graph1 = widthsearch1.removeFirst();
+			HierarchicalDigraphNode graph2 = widthsearch2.removeFirst();
 
-			if ( graph1.getConnection() == null && graph2.getConnection() == null ) continue;
+			if ( graph1.getConnection() == null || graph2.getConnection() == null ) continue;
 			String atomStereo1 = this.m_hashAtomToStereo.get(graph1.getConnection().endAtom());
 			String atomStereo2 = this.m_hashAtomToStereo.get(graph2.getConnection().endAtom());
 
 			// Compare children
-			LinkedList<HierarchicalDigraph> children1 = graph1.getChildren();
-			LinkedList<HierarchicalDigraph> children2 = graph1.getChildren();
+			LinkedList<HierarchicalDigraphNode> children1 = graph1.getChildren();
+			LinkedList<HierarchicalDigraphNode> children2 = graph1.getChildren();
 			Collections.sort(children1, this);
 			Collections.sort(children2, this);
 			int minChildNum = Math.min(children1.size(), children2.size());
 			for(int ii=0; ii<minChildNum; ii++){
-				HierarchicalDigraph child1 = graph1.getChildren().get(ii);
-				HierarchicalDigraph child2 = graph2.getChildren().get(ii);
+				HierarchicalDigraphNode child1 = graph1.getChildren().get(ii);
+				HierarchicalDigraphNode child2 = graph2.getChildren().get(ii);
 
 				// Get connection from parent
 				if ( child1.getConnection() == null || child2.getConnection() == null ) continue;
@@ -104,10 +104,10 @@ public class HierarchicalDigraphComparatorWithStereo extends HierarchicalDigraph
 
 			// 子供をリストに追加
 			// Add children
-			for(HierarchicalDigraph child1 : graph1.getChildren()){
+			for(HierarchicalDigraphNode child1 : graph1.getChildren()){
 				widthsearch1.addLast(child1);
 			}
-			for(HierarchicalDigraph child2 : graph2.getChildren()){
+			for(HierarchicalDigraphNode child2 : graph2.getChildren()){
 				widthsearch2.addLast(child2);
 			}
 		}

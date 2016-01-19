@@ -1,4 +1,4 @@
-package org.glycoinfo.WURCSFramework.util.hierarchicaldigraph;
+package org.glycoinfo.WURCSFramework.util.stereochemistry;
 
 import java.io.PrintStream;
 import java.util.LinkedList;
@@ -16,26 +16,32 @@ import org.glycoinfo.WURCSFramework.util.chemicalgraph.Chemical;
 public class HierarchicalDigraphCreator {
 
 	private ChemicalGraph m_oGraph;
-	private HierarchicalDigraph m_oRootHD;
-	private int m_iDepthLimit = 0;
+	private HierarchicalDigraphNode m_oRootHD;
+	private int m_iDepthLimit = 1;
 	private boolean m_bIsCompletedFullSearch = true;
 
 	/**
 	 * Construct hierarchical digraph from the connection
 	 * @param a_oGraph Target graph
 	 * @param a_oStart Connection of start
-	 * @param a_iDepth Depth limit of depth search
+	 * @param a_iDepth Depth limit of depth search, which must be an integer 1 or more
 	 */
 	public HierarchicalDigraphCreator( ChemicalGraph a_oGraph, Connection a_oStart, int a_iDepth ) {
 		this.m_oGraph = a_oGraph;
-		this.m_oRootHD = new HierarchicalDigraph( null, a_oStart, Chemical.getAtomicNumber(a_oStart.endAtom().getSymbol()) );
+		this.m_oRootHD = new HierarchicalDigraphNode( a_oStart, Chemical.getAtomicNumber(a_oStart.endAtom().getSymbol()) );
 		this.m_iDepthLimit = a_iDepth;
-		this.m_bIsCompletedFullSearch = this.depthSearch( this.m_oRootHD, new LinkedList<Atom>() );
+
+		// Set start atom
+		LinkedList<Atom> t_aAncestors = new LinkedList<Atom>();
+		t_aAncestors.add(a_oStart.startAtom());
+
+		// Do IDDFS
+		this.m_bIsCompletedFullSearch = this.depthSearch( this.m_oRootHD, t_aAncestors );
 		// XXX: Test print
-		this.print(System.err);
+//		this.print(System.err);
 	}
 
-	public HierarchicalDigraph getHierarchicalDigraph() {
+	public HierarchicalDigraphNode getHierarchicalDigraph() {
 		return this.m_oRootHD;
 	}
 
@@ -50,13 +56,13 @@ public class HierarchicalDigraphCreator {
 	 * @param a_aAncestors list of ancestor atoms
 	 * @return false if the search reachs depth limit.
 	 */
-	private boolean depthSearch( HierarchicalDigraph a_oHD, LinkedList<Atom> a_aAncestors ) {
+	private boolean depthSearch( HierarchicalDigraphNode a_oHD, LinkedList<Atom> a_aAncestors ) {
 		Atom t_oAtom = a_oHD.getConnection().endAtom();
 		if ( !t_oAtom.getSymbol().equals("H") && !this.m_oGraph.contains(t_oAtom) ) return true;
 		if ( a_aAncestors.contains( t_oAtom ) ) return true;
+		if ( a_aAncestors.size() > this.m_iDepthLimit ) return false;
 
 		a_aAncestors.addLast(t_oAtom);
-		if ( a_aAncestors.size() >= this.m_iDepthLimit ) return false;
 
 		boolean t_bIsCompletedFullSearch = true;
 
@@ -78,21 +84,22 @@ public class HierarchicalDigraphCreator {
 			// Add child digraph as duplicated atoms for multiple connection
 			int t_iBondType = t_oConn.getBond().getType();
 			if ( t_iBondType == 3 || t_iBondType == 2 ) {
-				a_oHD.addChild( new HierarchicalDigraph( a_oHD, null, t_iAtomicNumber ) );
+				a_oHD.addChild( new HierarchicalDigraphNode( null, t_iAtomicNumber ) );
 				if ( t_iBondType == 3 )
-					a_oHD.addChild( new HierarchicalDigraph( a_oHD, null, t_iAtomicNumber ) );
+					a_oHD.addChild( new HierarchicalDigraphNode( null, t_iAtomicNumber ) );
 			}
 
 			// Depth search for child digraph except for reverse connection
 			if ( t_oConn.equals( a_oHD.getConnection().getReverse() ) ) continue;
-			HierarchicalDigraph t_oChildHD = new HierarchicalDigraph( a_oHD, t_oConn, t_iAtomicNumber );
+			HierarchicalDigraphNode t_oChildHD = new HierarchicalDigraphNode( t_oConn, t_iAtomicNumber );
+			a_oHD.addChild( t_oChildHD );
 			// Set false to full search flag reaching depth limit
 			if ( !this.depthSearch(t_oChildHD, a_aAncestors) )
 				t_bIsCompletedFullSearch = false;
 		}
 		// Add duplicated atom for aromatic bond
 		if ( t_nAromaticConnection != 0 )
-			a_oHD.addChild( new HierarchicalDigraph( a_oHD, null, t_nSumAtomicNumber/(double)t_nAromaticConnection ) );
+			a_oHD.addChild( new HierarchicalDigraphNode( null, t_nSumAtomicNumber/(double)t_nAromaticConnection ) );
 
 		a_aAncestors.removeLast();
 
@@ -108,7 +115,7 @@ public class HierarchicalDigraphCreator {
 		ps.print( this.print( this.m_oRootHD, new LinkedList<Boolean>() ) );
 	}
 
-	private String print( HierarchicalDigraph a_oHD, LinkedList<Boolean> a_oHistories ) {
+	private String print( HierarchicalDigraphNode a_oHD, LinkedList<Boolean> a_oHistories ) {
 		String t_strHistory = "";
 		int ii=0;
 		for ( Boolean t_bHistory : a_oHistories ) {
@@ -126,12 +133,12 @@ public class HierarchicalDigraphCreator {
 		}
 		t_strHistory += "-" + t_strAtom + "(" + a_oHD.getAverageAtomicNumber() + ")" + " : ";
 
-		if ( a_oHD.getChildren() == null ) return t_strHistory + "\n";
+		if ( a_oHD.getChildren().isEmpty() ) return t_strHistory + "\n";
 
 		String t_strChildren = "";
 		String t_strChildHistories = "";
 		int i=0;
-		for ( HierarchicalDigraph t_oChild : a_oHD.getChildren() ) {
+		for ( HierarchicalDigraphNode t_oChild : a_oHD.getChildren() ) {
 			i++;
 			if ( !t_strChildren.equals("") ) t_strChildren += ", ";
 			t_strAtom = "null";
@@ -139,7 +146,7 @@ public class HierarchicalDigraphCreator {
 				Atom t_oAtom = t_oChild.getConnection().endAtom();
 				t_strAtom = t_oAtom.getSymbol() + "(" + t_oAtom.getAtomID() + ")";
 			}
-			t_strChildren += i + "-" + t_strAtom + "(" + a_oHD.getAverageAtomicNumber() + ")";
+			t_strChildren += i + "-" + t_strAtom + "(" + t_oChild.getAverageAtomicNumber() + ")";
 
 			// Print child's histories
 			a_oHistories.addLast( a_oHD.getChildren().getLast() != t_oChild );
