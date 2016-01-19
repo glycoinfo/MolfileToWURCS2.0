@@ -3,6 +3,7 @@ package org.glycoinfo.WURCSFramework.io.MDLMOL;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.TreeMap;
 
 import org.glycoinfo.WURCSFramework.chemicalgraph.Molecule;
@@ -13,6 +14,7 @@ import org.glycoinfo.WURCSFramework.util.WURCSFileWriter;
 import org.glycoinfo.WURCSFramework.util.exchange.WURCSGraphImporterMolecule;
 import org.glycoinfo.WURCSFramework.util.graph.WURCSGraphNormalizer;
 import org.glycoinfo.WURCSFramework.util.graph.visitor.WURCSVisitorSeparateWURCSGraphByAglycone;
+import org.glycoinfo.WURCSFramework.wurcs.graph.Modification;
 import org.glycoinfo.WURCSFramework.wurcs.graph.WURCSGraph;
 
 public class MOLToWURCSFromFile {
@@ -47,6 +49,13 @@ public class MOLToWURCSFromFile {
 
 		WURCSConversionLogger t_oLogger = new WURCSConversionLogger();
 
+		// Set skip IDs
+		LinkedList<String> t_aSkipIDs = new LinkedList<String>();
+//		t_aSkipIDs.add("CHEBI:52917");
+//		t_aSkipIDs.add("CHEBI:51385");
+//		t_aSkipIDs.add("CHEBI:51386");
+//		t_aSkipIDs.add("CHEBI:51399");
+
 		while(true){
 			// read a record from CTFile
 			Molecule mol = t_objCTReader.getMolecule();
@@ -57,9 +66,14 @@ public class MOLToWURCSFromFile {
 				ID = String.format("%1$05d", Integer.parseInt(ID) );
 			} catch (NumberFormatException e) {
 			}
-//			if ( !ID.equals("G92964ZO") ) continue;
+			if ( t_aSkipIDs.contains(ID) ) {
+				System.err.println(ID + " is skipped.");
+				continue;
+			}
+//			if ( !ID.equals("3u2w_G_5") ) continue;
+//			if ( !ID.equals("G00513YN") ) continue;
 //			if ( !ID.equals("23373") ) continue;
-//			if ( !ID.equals("CHEBI:87003") ) continue;
+//			if ( !ID.equals("CHEBI:15692") ) continue;
 //			if(!t_objParam.m_sdfileOutput){
 //				System.err.print( ID+":" );
 //			}
@@ -95,14 +109,22 @@ public class MOLToWURCSFromFile {
 					t_objGraphNormalizer.start(t_oSepGraph);
 					WURCSFactory t_oSepFactory = new WURCSFactory(t_oSepGraph);
 					String t_strSepWURCS = t_oSepFactory.getWURCS();
-//					String t_strAglycone = t_oSeparateGraph.getMapAglyconeToSeparatedGraph().get(t_oSepGraph).getMAPCode();
-//					System.err.println("Sep"+i+": "+t_strSepWURCS+"\tAglycone: "+t_strAglycone);
-//					t_mapIDtoWURCS.put(ID+"("+i+")", t_strSepWURCS+"\t@:"+t_strAglycone);
-					t_mapIDtoWURCS.put(ID+"("+i+")", t_strSepWURCS);
+
+					// For aglycone
+					LinkedList<String> t_aUniqueAbbrs = new LinkedList<String>();
+					String t_strAglycone = "";
+					for ( Modification t_oAglycone : t_oSeparateGraph.getMapSeparatedGraphToAglycones().get(t_oSepGraph) ) {
+						String t_strAbbr = t_oSeparateGraph.getMapAglyconeToAbbr().get(t_oAglycone);
+						if ( t_aUniqueAbbrs.contains(t_strAbbr) ) continue;
+						t_aUniqueAbbrs.add(t_strAbbr);
+						t_strAglycone += "\t"+t_strAbbr+": "+t_oAglycone.getMAPCode();
+					}
+					System.err.println("Sep"+i+": "+t_strSepWURCS+t_strAglycone);
+					t_mapIDtoWURCS.put(ID+"("+i+")", t_strSepWURCS+t_strAglycone);
 				}
 
 			} catch (WURCSException e) {
-				t_mapIDtoWURCS.put(ID, e.getErrorMessage());
+//				t_mapIDtoWURCS.put(ID, e.getErrorMessage());
 				System.err.println(ID+"\t"+e.getErrorMessage());
 				t_oLogger.addMessage(ID, e.getErrorMessage(), "");
 				e.printStackTrace();
@@ -115,7 +137,7 @@ public class MOLToWURCSFromFile {
 		// Output results
 		String t_strFileName = t_objCTReader.getFileName();
 		String t_strDirName = t_objCTReader.getDirectoryName() + File.separator;
-		System.err.println(t_strDirName);
+		System.err.println("Output result to "+t_strDirName);
 		WURCSFileWriter.printWURCSList(t_mapIDtoWURCS, t_strDirName, t_strFileName+"_result.txt").close();
 		try {
 			t_oLogger.printLog(  WURCSFileWriter.getResultFilePath(t_strDirName, t_strFileName+"_result.log") );
