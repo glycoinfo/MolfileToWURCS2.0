@@ -24,6 +24,17 @@ public class StereochemistryAnalysis {
 		return this.m_mapBondToStereo.get(a_oBond);
 	}
 
+	public void setStereoTo(ChemicalGraph a_oGraph) {
+		// Set stereo for atoms
+		for ( Atom t_oAtom : a_oGraph.getAtoms() ) {
+			t_oAtom.setChirality( this.m_mapAtomToStereo.get(t_oAtom) );
+		}
+		// Set cis-trans for bonds
+		for ( Bond t_oBond : a_oGraph.getBonds() ) {
+			t_oBond.setGeometric( this.m_mapBondToStereo.get(t_oBond) );
+		}
+	}
+
 	public void start(ChemicalGraph a_oGraph) {
 		HashMap<Atom, String> t_mapAtomToStereo = new HashMap<Atom, String>();
 		LinkedList<Atom> t_aCandidateStereoAtoms = new LinkedList<Atom>();
@@ -37,7 +48,7 @@ public class StereochemistryAnalysis {
 		// Calculate RS
 		HierarchicalDigraphComparator t_oHDComp = new HierarchicalDigraphComparator();
 		for ( Atom t_oAtom : t_aCandidateStereoAtoms ) {
-			this.m_mapAtomToStereo.put(t_oAtom, this.calcChirality(t_oAtom, a_oGraph, t_oHDComp) );
+			this.m_mapAtomToStereo.put(t_oAtom, this.calcChirality(t_oAtom, t_oHDComp) );
 			System.err.println( t_oAtom.getSymbol()+"("+t_oAtom.getAtomID()+"): "+this.m_mapAtomToStereo.get(t_oAtom) );
 		}
 
@@ -47,7 +58,7 @@ public class StereochemistryAnalysis {
 		for ( Bond t_oBond : a_oGraph.getBonds() ) {
 			if ( t_oBond.getType() != 2 ) continue;
 			t_aCandidateIsomerismBond.add(t_oBond);
-			this.m_mapBondToStereo.put(t_oBond, this.calcIsomerism(t_oBond, a_oGraph, t_oHDComp) );
+			this.m_mapBondToStereo.put(t_oBond, this.calcIsomerism(t_oBond, t_oHDComp) );
 			System.err.println( t_oBond.getAtom1().getSymbol()+"("+t_oBond.getAtom1().getAtomID()+")="+t_oBond.getAtom2().getSymbol()+"("+t_oBond.getAtom2().getAtomID()+"): "+this.m_mapBondToStereo.get(t_oBond) );
 		}
 
@@ -57,24 +68,26 @@ public class StereochemistryAnalysis {
 		t_oHDComp2.setBondStereos(t_mapBondToStereo);
 		for ( Atom t_oAtom : t_aCandidateStereoAtoms ) {
 			if ( this.m_mapAtomToStereo.get(t_oAtom) != null ) continue;
-			String t_strStereo = this.calcChirality(t_oAtom, a_oGraph, t_oHDComp2);
+			String t_strStereo = this.calcChirality(t_oAtom, t_oHDComp2);
 			if ( t_strStereo != null ) t_strStereo = t_strStereo.toLowerCase();
 			this.m_mapAtomToStereo.put(t_oAtom, t_strStereo );
 			System.err.println( t_oAtom.getSymbol()+"("+t_oAtom.getAtomID()+"): "+this.m_mapAtomToStereo.get(t_oAtom) );
 		}
+	}
 
+	protected HierarchicalDigraphCreator getHierarchicalDigraphCreator( Connection a_oConnection, int a_iDepth ) {
+		return new HierarchicalDigraphCreator( a_oConnection, a_iDepth );
 	}
 
 	/**
 	 * Calc and get chirality of target atom
 	 * @param a_oAtom Target atom
-	 * @param a_oGraph Chemicalgraph containing target atom
 	 * @param a_oHDComp Comparator for HierarchicalDigraph
 	 * @return String of chirarity ("S" or "R", null if no chirality)
 	 */
-	private String calcChirality(Atom a_oAtom, ChemicalGraph a_oGraph, HierarchicalDigraphComparator a_oHDComp) {
+	private String calcChirality(Atom a_oAtom, HierarchicalDigraphComparator a_oHDComp) {
 		// Sort connections on atom
-		LinkedList<Connection> t_aSortedConnections = this.sortConnectionsByCIPOrder(a_oAtom.getConnections(), a_oGraph, a_oHDComp);
+		LinkedList<Connection> t_aSortedConnections = this.sortConnectionsByCIPOrder(a_oAtom.getConnections(), a_oHDComp);
 		if ( t_aSortedConnections == null ) return null;
 		return Chemical.sp3stereo(
 				t_aSortedConnections.get(0),
@@ -87,11 +100,10 @@ public class StereochemistryAnalysis {
 	/**
 	 * Calc and get geometrical isomerism of target double bond
 	 * @param a_oBond Target double bond
-	 * @param a_oGraph Chemicalgraph containing target double bond
 	 * @param a_oHDComp Comparator for HierarchicalDigraph
 	 * @return String of isomerism ("E" or "Z", null if no isomerism)
 	 */
-	private String calcIsomerism(Bond a_oBond, ChemicalGraph a_oGraph, HierarchicalDigraphComparator a_oHDComp) {
+	private String calcIsomerism(Bond a_oBond, HierarchicalDigraphComparator a_oHDComp) {
 		Atom t_oA0 = a_oBond.getAtom1();
 		Atom t_oB0 = a_oBond.getAtom2();
 
@@ -105,7 +117,7 @@ public class StereochemistryAnalysis {
 		Atom t_oA1 = t_aConnections1.getFirst().endAtom();
 		if ( t_aConnections1.size() == 1 && t_oA1.getSymbol().equals("H") ) return null;
 		if ( t_aConnections1.size() > 1 ) {
-			LinkedList<Connection> t_aSortedConnections =  this.sortConnectionsByCIPOrder(t_aConnections1, a_oGraph, a_oHDComp);
+			LinkedList<Connection> t_aSortedConnections =  this.sortConnectionsByCIPOrder(t_aConnections1, a_oHDComp);
 			if ( t_aSortedConnections == null ) return null;
 			t_oA1 = t_aSortedConnections.getFirst().endAtom();
 		}
@@ -120,7 +132,7 @@ public class StereochemistryAnalysis {
 		Atom t_oB1 = t_aConnections2.getFirst().endAtom();
 		if ( t_aConnections2.size() == 1 &&  t_oB1.getSymbol().equals("H") ) return null;
 		if ( t_aConnections2.size() > 1 ) {
-			LinkedList<Connection> t_aSortedConnections =  this.sortConnectionsByCIPOrder(t_aConnections2, a_oGraph, a_oHDComp);
+			LinkedList<Connection> t_aSortedConnections =  this.sortConnectionsByCIPOrder(t_aConnections2, a_oHDComp);
 			if ( t_aSortedConnections == null ) return null;
 			t_oB1 = t_aSortedConnections.getFirst().endAtom();
 		}
@@ -130,11 +142,10 @@ public class StereochemistryAnalysis {
 	/**
 	 * Sort connections by CIP order using hierarchical digraph
 	 * @param a_aConns Target connections
-	 * @param a_oGraph Chemicalgraph containing target connections
 	 * @param a_oHDComp Comparator for HierarchicalDigraph
 	 * @return Sorted connections (null if connections are not unique order)
 	 */
-	private LinkedList<Connection> sortConnectionsByCIPOrder( LinkedList<Connection> a_aConns, ChemicalGraph a_oGraph, HierarchicalDigraphComparator a_oHDComp ) {
+	private LinkedList<Connection> sortConnectionsByCIPOrder( LinkedList<Connection> a_aConns, HierarchicalDigraphComparator a_oHDComp ) {
 		int t_iDepth = 1;
 		while ( true ) {
 			// Calcurate CIP orders for each connection using HierarchicalDigraph
@@ -144,7 +155,7 @@ public class StereochemistryAnalysis {
 			LinkedList<HierarchicalDigraphNode> t_aChildHDs = new LinkedList<HierarchicalDigraphNode>();
 			HashMap<HierarchicalDigraphNode, Boolean> t_mapIsCompletedFullSearch = new HashMap<HierarchicalDigraphNode, Boolean>();
 			for ( Connection t_oConn : a_aConns ) {
-				HierarchicalDigraphCreator t_oHDCreate = new HierarchicalDigraphCreator(a_oGraph, t_oConn, t_iDepth);
+				HierarchicalDigraphCreator t_oHDCreate = this.getHierarchicalDigraphCreator(t_oConn, t_iDepth);
 				t_mapIsCompletedFullSearch.put(t_oHDCreate.getHierarchicalDigraph(), t_oHDCreate.isCompletedFullSearch());
 				if ( !t_oHDCreate.isCompletedFullSearch() )
 					t_bIsCompletedFullSearch = false;

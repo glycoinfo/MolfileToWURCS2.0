@@ -4,7 +4,6 @@ import java.io.PrintStream;
 import java.util.LinkedList;
 
 import org.glycoinfo.WURCSFramework.chemicalgraph.Atom;
-import org.glycoinfo.WURCSFramework.chemicalgraph.ChemicalGraph;
 import org.glycoinfo.WURCSFramework.chemicalgraph.Connection;
 import org.glycoinfo.WURCSFramework.util.chemicalgraph.Chemical;
 
@@ -15,7 +14,6 @@ import org.glycoinfo.WURCSFramework.util.chemicalgraph.Chemical;
  */
 public class HierarchicalDigraphCreator {
 
-	private ChemicalGraph m_oGraph;
 	private HierarchicalDigraphNode m_oRootHD;
 	private int m_iDepthLimit = 1;
 	private boolean m_bIsCompletedFullSearch = true;
@@ -26,8 +24,7 @@ public class HierarchicalDigraphCreator {
 	 * @param a_oStart Connection of start
 	 * @param a_iDepth Depth limit of depth search, which must be an integer 1 or more
 	 */
-	public HierarchicalDigraphCreator( ChemicalGraph a_oGraph, Connection a_oStart, int a_iDepth ) {
-		this.m_oGraph = a_oGraph;
+	public HierarchicalDigraphCreator( Connection a_oStart, int a_iDepth ) {
 		this.m_oRootHD = new HierarchicalDigraphNode( a_oStart, Chemical.getAtomicNumber(a_oStart.endAtom().getSymbol()) );
 		this.m_iDepthLimit = a_iDepth;
 
@@ -49,6 +46,10 @@ public class HierarchicalDigraphCreator {
 		return this.m_bIsCompletedFullSearch;
 	}
 
+	protected boolean isIgnoreAtom(Atom a_oAtom) {
+		return false;
+	}
+
 	/**
 	 * Construct HierarchicalDigraph using depth-limited search
 	 * @param a_oHD Current node of HierarchicalDigraph
@@ -58,7 +59,7 @@ public class HierarchicalDigraphCreator {
 	 */
 	private boolean depthSearch( HierarchicalDigraphNode a_oHD, LinkedList<Atom> a_aAncestors ) {
 		Atom t_oAtom = a_oHD.getConnection().endAtom();
-		if ( !t_oAtom.getSymbol().equals("H") && !this.m_oGraph.contains(t_oAtom) ) return true;
+		if ( this.isIgnoreAtom(t_oAtom) ) return true;
 		if ( a_aAncestors.contains( t_oAtom ) ) return true;
 		if ( a_aAncestors.size() > this.m_iDepthLimit ) return false;
 
@@ -71,11 +72,11 @@ public class HierarchicalDigraphCreator {
 		double t_nSumAtomicNumber = 0;
 		for ( Connection t_oConn : t_oAtom.getConnections() ) {
 			// Ignore out of subgraph except for hydrogen
-			if ( !t_oConn.endAtom().getSymbol().equals("H") && !this.m_oGraph.contains( t_oConn.endAtom() ) ) return true;
+			if ( this.isIgnoreAtom( t_oConn.endAtom() ) ) continue;
 
 			double t_iAtomicNumber = (double)Chemical.getAtomicNumber(t_oConn.endAtom().getSymbol());
 
-			// For aromatic atoms
+			// Count aromatic connections and sum atomic number of naighbor aromatic atom
 			if ( t_oAtom.isAromatic() || t_oConn.endAtom().isAromatic() ) {
 				t_nAromaticConnection++;
 				t_nSumAtomicNumber += t_iAtomicNumber;
