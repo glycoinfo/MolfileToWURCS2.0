@@ -56,10 +56,9 @@ public class MOLToWURCS {
 //		t_aSkipIDs.add("CHEBI:51386");
 //		t_aSkipIDs.add("CHEBI:51399");
 
-		while(true){
+		while ( t_objCTReader.readNext() ) {
 			// read a record from CTFile
 			Molecule mol = t_objCTReader.getMolecule();
-			if(mol==null) break;
 			String ID = t_objCTReader.getFieldData(a_strFieldID);
 
 			try {

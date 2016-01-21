@@ -30,6 +30,7 @@ public class CTFileReader {
 	private boolean m_bOutputToSDFile;
 	private int m_iRecordNo; //record number of ctfile
 	private HashMap<String, LinkedList<String>> m_mapIDToData = new HashMap<String, LinkedList<String>>();
+	private Molecule m_oMolecule;
 
 	//----------------------------
 	// Constructor
@@ -88,11 +89,20 @@ public class CTFileReader {
 		this.m_brOutput.close();
 	}
 
+	public boolean readNext() {
+		this.m_oMolecule = this.readMolecule();
+		return this.m_oMolecule != null;
+	}
+
+	public Molecule getMolecule() {
+		return this.m_oMolecule;
+	}
+
 	/**
 	 * read a record from ctfile and store Molecule
 	 * @return Molecule (or null if file has no more molecule)
 	 */
-	public Molecule getMolecule() {
+	public Molecule readMolecule() {
 		Molecule t_oMol = new Molecule();
 		this.m_strMOLString = "";
 
