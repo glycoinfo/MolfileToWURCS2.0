@@ -28,14 +28,14 @@ public class MOLToWURCS {
 	public static void main(String[] args) {
 		// read argument and files using SelectFileDialog
 		ParameterReader t_objParam = new ParameterReader(args, true);
-		minNOS = t_objParam.m_minNOS;
-		minO   = t_objParam.m_minO;
-		minBackboneLength = t_objParam.m_minBackboneLength;
-		maxBackboneLength = t_objParam.m_maxBackboneLength;
-		ratioBackboneNOS = t_objParam.m_ratioBackboneNOS;
+		minNOS = t_objParam.m_nMinNOS;
+		minO   = t_objParam.m_nMinO;
+		minBackboneLength = t_objParam.m_iMinBackboneLength;
+		maxBackboneLength = t_objParam.m_iMaxBackboneLength;
+		ratioBackboneNOS = t_objParam.m_fRatioBackboneNOS;
 
 		for ( String t_strFilepath : t_objParam.getCTfileList() ){
-			readCTFile(t_strFilepath, t_objParam.m_ID, t_objParam.m_sdfileOutput);
+			readCTFile(t_strFilepath, t_objParam.m_strID, t_objParam.m_bOutputSDFile);
 		}
 
 	}
