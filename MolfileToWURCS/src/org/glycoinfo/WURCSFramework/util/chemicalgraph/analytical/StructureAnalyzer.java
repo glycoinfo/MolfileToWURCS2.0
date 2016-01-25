@@ -16,9 +16,6 @@ import org.glycoinfo.WURCSFramework.util.chemicalgraph.analytical.cyclization.Pi
  */
 public class StructureAnalyzer {
 
-	//----------------------------
-	// Member variable
-	//----------------------------
 	/** Aromatic atoms. The member of an aromatic ring,
 	 *  which all atoms have pi electorn(s) and total number of pi electorons is 4n+2.
 	 */
@@ -30,9 +27,7 @@ public class StructureAnalyzer {
 	/** Terminal carbons. Not contained aromatic, pi cyclic and carbon cyclic atoms. */
 	private HashSet<Atom> m_aTerminalCarbons   = new HashSet<Atom>();
 
-	//----------------------------
-	// Accessor
-	//----------------------------
+
 	public void clear() {
 		this.m_aAromaticAtoms.clear();
 		this.m_aPiCyclicAtoms.clear();
@@ -56,9 +51,18 @@ public class StructureAnalyzer {
 		return this.m_aTerminalCarbons;
 	}
 
-	//----------------------------
-	// Public method (void)
-	//----------------------------
+	/**
+	 *
+	 * @param a_oMol Target Molecule
+	 * @return true if there is one or more carbon
+	 */
+	public boolean findCarbonIn(Molecule a_oMol) {
+		for ( Atom t_oAtom : a_oMol.getAtoms() ) {
+			if ( t_oAtom.getSymbol().equals("C") ) return true;
+		}
+		return false;
+	}
+
 	/**
 	 * Structure analyze for molecule.
 	 * Search and collect atoms of aromatic ring, pi ring, carbon ring and terminal carbons.

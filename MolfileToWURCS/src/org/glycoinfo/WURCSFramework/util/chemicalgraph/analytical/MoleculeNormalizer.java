@@ -49,7 +49,7 @@ public class MoleculeNormalizer {
 	}
 
 	/**
-	 * Set isotope information of all atoms to 0.
+	 * Set isotope information (mass value) of all atoms to 0.
 	 */
 	private void omitIsotope(){
 		for(Atom atom : this.m_objMolecule.getAtoms()){
