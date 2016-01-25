@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 
 import org.glycoinfo.WURCSFramework.chemicalgraph.Atom;
+import org.glycoinfo.WURCSFramework.chemicalgraph.Connection;
 import org.glycoinfo.WURCSFramework.chemicalgraph.Molecule;
 import org.glycoinfo.WURCSFramework.chemicalgraph.SubGraph;
 import org.glycoinfo.WURCSFramework.chemicalgraph.SubGraphCreator;
@@ -63,7 +64,6 @@ public class TestStereo {
 
 			// Calculate stereo for original molecule
 			StereochemistryAnalysis t_oStereo = new StereochemistryAnalysis();
-			t_oStereo.start(t_oMol);
 			t_oStereo.setStereoTo(t_oMol);
 
 			CarbonChainFinder t_oCCFinder = new CarbonChainFinder();
@@ -91,10 +91,15 @@ public class TestStereo {
 				if ( t_oCreateSub.isHydrogen() ) continue;
 				t_aSubGraphs.add( t_oCreateSub.getSubGraph() );
 				t_aSubAtoms.addAll( t_oCreateSub.getOriginalAtoms() );
+
+				// Add backbone carbon
+				for ( Connection t_oExConn : t_oCreateSub.getExternalOriginalConnections() ) {
+					if ( !t_aBackboneCarbons.contains( t_oExConn.endAtom() ) ) continue;
+					t_oCreateSub.addExternalConnection( t_oExConn );
+				}
 			}
 
 			for ( SubGraph t_oSub : t_aSubGraphs ) {
-				t_oStereo.start(t_oSub);
 				t_oStereo.setStereoTo(t_oSub);
 			}
 

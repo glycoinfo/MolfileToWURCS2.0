@@ -14,17 +14,12 @@ public class MoleculeReader {
 		// Read argument and files using SelectFileDialog
 		this.m_oParam = a_oParam;
 		this.m_itFilePath = a_oParam.m_aCTFilePaths.iterator();
-		this.updateCTFileReader();
-	}
-
-	private void updateCTFileReader() {
-		this.m_oCTReader = new CTFileReader(this.m_itFilePath.next(), this.m_oParam.m_bOutputSDFile);
 	}
 
 	public boolean readNext() {
-		if ( this.m_oCTReader.readNext() ) return true;
+		if ( this.m_oCTReader != null && this.m_oCTReader.readNext() ) return true;
 		if ( !this.m_itFilePath.hasNext() ) return false;
-		this.updateCTFileReader();
+		this.m_oCTReader = new CTFileReader(this.m_itFilePath.next(), this.m_oParam.m_bOutputSDFile);
 		return this.m_oCTReader.readNext();
 	}
 

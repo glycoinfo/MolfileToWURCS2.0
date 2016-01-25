@@ -4,10 +4,10 @@ import java.util.LinkedList;
 
 public class BuildingBlock {
 
-	private LinkedList<CarbonChain> m_aChains = new LinkedList<CarbonChain>();
+	private LinkedList<BackCarbonChain> m_aChains = new LinkedList<BackCarbonChain>();
 	private LinkedList<ModGraph> m_aGraphs = new LinkedList<ModGraph>();
 
-	public void addCarbonChain(CarbonChain a_oChain) {
+	public void addCarbonChain(BackCarbonChain a_oChain) {
 		this.m_aChains.add(a_oChain);
 	}
 
@@ -15,7 +15,7 @@ public class BuildingBlock {
 		this.m_aGraphs.add(a_oGraph);
 	}
 
-	public LinkedList<CarbonChain> getCarbonChains() {
+	public LinkedList<BackCarbonChain> getCarbonChains() {
 		return this.m_aChains;
 	}
 

@@ -1,7 +1,7 @@
 package org.glycoinfo.WURCSFramework.buildingblock.carbon;
 
-import org.glycoinfo.WURCSFramework.buildingblock.Carbon;
-import org.glycoinfo.WURCSFramework.buildingblock.CarbonChain;
+import org.glycoinfo.WURCSFramework.buildingblock.BackCarbon;
+import org.glycoinfo.WURCSFramework.buildingblock.BackCarbonChain;
 import org.glycoinfo.WURCSFramework.chemicalgraph.Atom;
 import org.glycoinfo.WURCSFramework.chemicalgraph.Connection;
 
@@ -29,7 +29,7 @@ import org.glycoinfo.WURCSFramework.chemicalgraph.Connection;
  * and 3 is lowest modification if modification is not same.
  * </pre>
  */
-public class CarbonSP3 extends Carbon {
+public class CarbonSP3 extends BackCarbon {
 
 	private Connection m_oPrevCon = null;
 	private Connection m_oNextCon = null;
@@ -37,7 +37,7 @@ public class CarbonSP3 extends Carbon {
 	private Connection m_oMod2Con = null; // 'd' second / downside
 	private Connection m_oMod3Con = null; // 't' third
 
-	public CarbonSP3(Atom a_oAtom, CarbonChain a_oChain) {
+	public CarbonSP3(Atom a_oAtom, BackCarbonChain a_oChain) {
 		super(a_oAtom, a_oChain);
 		// TODO 自動生成されたコンストラクター・スタブ
 	}

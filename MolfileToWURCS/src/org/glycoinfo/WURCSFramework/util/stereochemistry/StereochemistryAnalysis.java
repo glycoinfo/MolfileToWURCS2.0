@@ -25,6 +25,9 @@ public class StereochemistryAnalysis {
 	}
 
 	public void setStereoTo(ChemicalGraph a_oGraph) {
+		// Calculate stereochemistry
+		this.start(a_oGraph);
+
 		// Set stereo for atoms
 		for ( Atom t_oAtom : a_oGraph.getAtoms() ) {
 			t_oAtom.setChirality( this.m_mapAtomToStereo.get(t_oAtom) );

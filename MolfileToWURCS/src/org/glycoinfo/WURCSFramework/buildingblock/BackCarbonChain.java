@@ -9,12 +9,12 @@ import org.glycoinfo.WURCSFramework.chemicalgraph.Atom;
  * @author MasaakiMatsubara
  *
  */
-public class CarbonChain {
+public class BackCarbonChain {
 
-	private LinkedList<Carbon> m_aCarbons       = new LinkedList<Carbon>();
+	private LinkedList<BackCarbon> m_aCarbons       = new LinkedList<BackCarbon>();
 	private LinkedList<Atom>   m_aOriginalChain = new LinkedList<Atom>();
 
-	public CarbonChain(LinkedList<Atom> a_aChain) {
+	public BackCarbonChain(LinkedList<Atom> a_aChain) {
 		this.m_aOriginalChain = a_aChain;
 	}
 
@@ -22,7 +22,7 @@ public class CarbonChain {
 		return this.m_aOriginalChain;
 	}
 
-	public void add(Carbon a_oCarbon) throws BuildingBlockException {
+	public void add(BackCarbon a_oCarbon) throws BuildingBlockException {
 		if ( this.m_aCarbons.contains(a_oCarbon) )
 			throw new BuildingBlockException("Already exist in the carbon chain.");
 

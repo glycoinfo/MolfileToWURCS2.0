@@ -14,9 +14,9 @@ public class SubGraphCreator {
 	private SubGraph m_oSubGraph;
 	private ChemicalGraph m_oOriginalGraph;
 	private HashMap<Atom, Atom> m_mapAtomToOriginal;
-//	private HashMap<Atom, Atom> m_mapOriginalToAtom;
 	private HashMap<Bond, Bond> m_mapBondToOriginal;
 	private HashMap<Connection, Connection> m_mapConnectionToOriginal;
+	private HashSet<Atom> m_aAddedExternalAtoms;
 
 	public SubGraphCreator(ChemicalGraph a_oOriginal) {
 		this.m_oOriginalGraph = a_oOriginal;
@@ -27,6 +27,7 @@ public class SubGraphCreator {
 		this.m_mapAtomToOriginal = new HashMap<Atom, Atom>();
 		this.m_mapBondToOriginal = new HashMap<Bond, Bond>();
 		this.m_mapConnectionToOriginal = new HashMap<Connection, Connection>();
+		this.m_aAddedExternalAtoms = new HashSet<Atom>();
 	}
 
 	public SubGraph getSubGraph() {
@@ -103,9 +104,9 @@ public class SubGraphCreator {
 			if ( !t_strAtoms.equals("") ) t_strAtoms += ",";
 			t_strAtoms += t_oAtom.getSymbol()+"("+t_oAtom.getAtomID()+")";
 
+			this.m_oSubGraph.add(t_oSubAtom);
 			this.m_mapAtomToOriginal.put(t_oSubAtom, t_oAtom);
 			t_mapOriginalToAtom.put(t_oAtom, t_oSubAtom);
-			this.m_oSubGraph.add(t_oSubAtom);
 		}
 		System.err.println(t_strAtoms);
 		for ( Bond t_oBond : t_aConnectedBonds ){
@@ -113,8 +114,20 @@ public class SubGraphCreator {
 			Atom t_oSubAtom2 = t_mapOriginalToAtom.get( t_oBond.getAtom2() );
 
 			Bond t_oSubBond = new Bond( t_oSubAtom1, t_oSubAtom2, t_oBond.getType(), t_oBond.getStereo() );
-			this.m_mapBondToOriginal.put(t_oSubBond, t_oBond);
 			this.m_oSubGraph.add(t_oSubBond);
+			this.m_mapBondToOriginal.put(t_oSubBond, t_oBond);
+		}
+		// Map connections
+		for ( Atom t_oSubStart : this.m_oSubGraph.getAtoms() ) {
+			Atom t_oStart = this.m_mapAtomToOriginal.get(t_oSubStart);
+			for ( Connection t_oSubConn : t_oSubStart.getConnections() ) {
+				Atom t_oEnd = this.m_mapAtomToOriginal.get( t_oSubConn.endAtom() );
+				for ( Connection t_oConn : t_oStart.getConnections() ) {
+					if ( !t_oEnd.equals(t_oConn.endAtom()) ) continue;
+					this.m_mapConnectionToOriginal.put(t_oSubConn , t_oConn);
+					break;
+				}
+			}
 		}
 
 	}
@@ -128,13 +141,55 @@ public class SubGraphCreator {
 		for ( Atom t_oAtom : this.m_oSubGraph.getAtoms() ) {
 			Atom t_oOriginalAtom = this.m_mapAtomToOriginal.get(t_oAtom);
 			for ( Connection t_oOriginalConn : t_oOriginalAtom.getConnections() ) {
-				Atom t_oOriginalConnAtom = t_oOriginalConn.endAtom();
-				if ( this.m_mapAtomToOriginal.containsValue(t_oOriginalConnAtom) ) continue;
+				if ( this.m_mapConnectionToOriginal.containsValue(t_oOriginalConn) ) continue;
 
 				t_oExternalConnections.add(t_oOriginalConn);
 			}
 		}
 		return t_oExternalConnections;
+	}
+
+	public void addExternalConnection( Connection a_oConn ) {
+		if ( !this.getExternalOriginalConnections().contains(a_oConn) ) return;
+
+		// Return if the bond already exists in subgraph
+		if ( this.m_mapBondToOriginal.containsValue(a_oConn.getBond()) ) return;
+
+		// Get start atom in subgraph
+		Atom t_oStartAtom = null;
+		for ( Atom t_oAtom : this.m_mapAtomToOriginal.keySet() ) {
+			if ( !this.m_mapAtomToOriginal.get(t_oAtom).equals(a_oConn.startAtom()) ) continue;
+			t_oStartAtom = t_oAtom;
+			break;
+		}
+		// Return if the atom is not found in subgraph
+		if ( t_oStartAtom == null ) return;
+
+
+		// Create and map end atom in subgraph (Do not add to subgraph)
+		Atom t_oEndAtom = a_oConn.endAtom().copy();
+//		this.m_oSubGraph.add(t_oEndAtom);
+		this.m_mapAtomToOriginal.put(t_oEndAtom, a_oConn.endAtom());
+		this.m_aAddedExternalAtoms.add(t_oEndAtom);
+
+		// Create and map bond in subgraph (Do not add to subgraph)
+		Bond t_oExBond = a_oConn.getBond();
+		Atom t_oSubAtom1 = t_oStartAtom;
+		Atom t_oSubAtom2 = t_oEndAtom;
+		if ( t_oExBond.getAtom1().equals( a_oConn.endAtom() ) ) {
+			t_oSubAtom1 = t_oEndAtom;
+			t_oSubAtom2 = t_oStartAtom;
+		}
+		Bond t_oSubBond = new Bond( t_oSubAtom1, t_oSubAtom2, t_oExBond.getType(), t_oExBond.getStereo() );
+//		this.m_oSubGraph.add(t_oSubBond);
+		this.m_mapBondToOriginal.put(t_oSubBond, t_oExBond);
+
+		// Map connections
+		for ( Connection t_oConn : t_oStartAtom.getConnections() ) {
+			if ( !t_oConn.endAtom().equals( t_oEndAtom ) ) continue;
+			this.m_mapConnectionToOriginal.put(t_oConn, a_oConn);
+			this.m_mapConnectionToOriginal.put(t_oConn.getReverse(), a_oConn.getReverse());
+		}
 	}
 
 	public ChemicalGraph getOriginalGraph() {

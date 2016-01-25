@@ -13,6 +13,7 @@ import org.glycoinfo.WURCSFramework.util.WURCSException;
 import org.glycoinfo.WURCSFramework.util.chemicalgraph.analytical.CarbonChainAnalyzer;
 import org.glycoinfo.WURCSFramework.util.chemicalgraph.analytical.MoleculeNormalizer;
 import org.glycoinfo.WURCSFramework.util.chemicalgraph.analytical.StructureAnalyzer;
+import org.glycoinfo.WURCSFramework.util.stereochemistry.StereochemistryAnalysis;
 import org.glycoinfo.WURCSFramework.wurcs.graph.Backbone;
 import org.glycoinfo.WURCSFramework.wurcs.graph.BackboneCarbon;
 import org.glycoinfo.WURCSFramework.wurcs.graph.LinkagePosition;
@@ -101,7 +102,9 @@ public class WURCSGraphImporterMolecule {
 		t_setIgnoreAtoms.addAll( t_oStAnal.getCarbonCyclicAtoms() );
 
 		// Stereochemical analyze
-		this.m_objMolecule.setStereo();
+//		this.m_objMolecule.setStereo();
+		StereochemistryAnalysis t_oStereo = new StereochemistryAnalysis();
+		t_oStereo.setStereoTo(a_objMolecule);
 //		this.m_objStereochemicalAnalyzer.analyze(this.m_objMolecule);
 /*
 		for ( Atom atom : this.m_objMolecule.getAtoms() ) {

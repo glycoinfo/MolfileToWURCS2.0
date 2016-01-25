@@ -141,7 +141,7 @@ public class SubGraphToModification {
 		Atom t_oStartAtom = t_aBackboneCarbonsInMAP.getFirst();
 //		Atom t_oStartAtom = graph.getAtoms().getFirst();
 
-		final HashSet<Atom> aromaticAtoms = this.m_aAromaticAtoms;
+//		final HashSet<Atom> aromaticAtoms = this.m_aAromaticAtoms;
 
 		// TODO: remove print
 //		System.err.println("Print EC number : "+graph);
@@ -202,11 +202,17 @@ public class SubGraphToModification {
 
 					// １．繋がっている芳香環はまとめて出したい
 					// 1. Get together connecting aromatic atoms
-					if ( aromaticAtoms.contains(t_oTailAtom) ){
+/*					if ( aromaticAtoms.contains(t_oTailAtom) ){
 						if(  aromaticAtoms.contains(end1)   && !aromaticAtoms.contains(end2)   ) return -1;
 						if( !aromaticAtoms.contains(end1)   &&  aromaticAtoms.contains(end2)   ) return 1;
 						if(  aromaticAtoms.contains(start1) && !aromaticAtoms.contains(start2) ) return -1;
 						if( !aromaticAtoms.contains(start1) &&  aromaticAtoms.contains(start2) ) return 1;
+					}
+*/					if ( t_oTailAtom.isAromatic() ){
+						if(  end1.isAromatic()   && !end2.isAromatic()   ) return -1;
+						if( !end1.isAromatic()   &&  end2.isAromatic()   ) return 1;
+						if(  start1.isAromatic() && !start2.isAromatic() ) return -1;
+						if( !start1.isAromatic() &&  start2.isAromatic() ) return 1;
 					}
 
 					// ２．後半に探索した修飾原子から伸びている結合を優先
