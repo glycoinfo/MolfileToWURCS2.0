@@ -1,6 +1,5 @@
 package org.glycoinfo.WURCSFramework.chemicalgraph;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 
 import org.glycoinfo.WURCSFramework.util.chemicalgraph.analytical.StereochemicalAnalyzer;
@@ -20,9 +19,6 @@ public abstract class ChemicalGraph {
 
 	/** Analyzer for stereochemistry */
 	protected StereochemicalAnalyzer m_objAnalyzer = new StereochemicalAnalyzer();
-
-//	private HashMap<Atom, Integer>       m_hashAtomToTmp                = new HashMap<Atom, Integer>();
-	private HashMap<Atom, Integer>       m_hashAtomToSubgraphECNumber   = new HashMap<Atom, Integer>();
 
 	//----------------------------
 	// Accessor
