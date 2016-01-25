@@ -1,6 +1,7 @@
 package org.glycoinfo.WURCSFramework.util.stereochemistry;
 
 import java.io.PrintStream;
+import java.util.Collections;
 import java.util.LinkedList;
 
 import org.glycoinfo.WURCSFramework.chemicalgraph.Atom;
@@ -136,10 +137,13 @@ public class HierarchicalDigraphCreator {
 
 		if ( a_oHD.getChildren().isEmpty() ) return t_strHistory + "\n";
 
+		// Sort children
+		LinkedList<HierarchicalDigraphNode> t_oChildren = a_oHD.getChildren();
+		Collections.sort( t_oChildren, new HierarchicalDigraphComparator() );
 		String t_strChildren = "";
 		String t_strChildHistories = "";
 		int i=0;
-		for ( HierarchicalDigraphNode t_oChild : a_oHD.getChildren() ) {
+		for ( HierarchicalDigraphNode t_oChild : t_oChildren ) {
 			i++;
 			if ( !t_strChildren.equals("") ) t_strChildren += ", ";
 			t_strAtom = "null";

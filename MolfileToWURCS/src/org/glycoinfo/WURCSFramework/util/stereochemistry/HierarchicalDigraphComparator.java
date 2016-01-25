@@ -44,6 +44,10 @@ public class HierarchicalDigraphComparator implements Comparator<HierarchicalDig
 				return (t_oNode1.getAverageAtomicNumber() > t_oNode2.getAverageAtomicNumber()) ? -1 : 1;
 			}
 
+			// Prioritize exist atom
+			if ( t_oNode1.getConnection() != null && t_oNode2.getConnection() == null ) return -1;
+			if ( t_oNode1.getConnection() == null && t_oNode2.getConnection() != null ) return 1;
+
 			// Check for comaparing same branch
 			Connection t_oConn1 = t_oNode1.getConnection();
 			Connection t_oConn2 = t_oNode2.getConnection();

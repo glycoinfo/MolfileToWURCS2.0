@@ -28,11 +28,17 @@ public class StereochemistryAnalysis {
 		// Set stereo for atoms
 		for ( Atom t_oAtom : a_oGraph.getAtoms() ) {
 			t_oAtom.setChirality( this.m_mapAtomToStereo.get(t_oAtom) );
+			if ( this.m_mapAtomToStereo.get(t_oAtom) == null ) continue;
+			System.err.println( t_oAtom.getSymbol()+"("+t_oAtom.getAtomID()+"): "+this.m_mapAtomToStereo.get(t_oAtom) );
 		}
 		// Set cis-trans for bonds
 		for ( Bond t_oBond : a_oGraph.getBonds() ) {
 			t_oBond.setGeometric( this.m_mapBondToStereo.get(t_oBond) );
+			if ( this.m_mapBondToStereo.get(t_oBond) == null ) continue;
+			System.err.println( t_oBond.getAtom1().getSymbol()+"("+t_oBond.getAtom1().getAtomID()+")="+t_oBond.getAtom2().getSymbol()+"("+t_oBond.getAtom2().getAtomID()+"): "+this.m_mapBondToStereo.get(t_oBond) );
 		}
+		// XXX: remove print
+		System.err.println();
 	}
 
 	public void start(ChemicalGraph a_oGraph) {
@@ -49,7 +55,6 @@ public class StereochemistryAnalysis {
 		HierarchicalDigraphComparator t_oHDComp = new HierarchicalDigraphComparator();
 		for ( Atom t_oAtom : t_aCandidateStereoAtoms ) {
 			this.m_mapAtomToStereo.put(t_oAtom, this.calcChirality(t_oAtom, t_oHDComp) );
-			System.err.println( t_oAtom.getSymbol()+"("+t_oAtom.getAtomID()+"): "+this.m_mapAtomToStereo.get(t_oAtom) );
 		}
 
 		// Calculate EZ for double bonds
@@ -59,7 +64,6 @@ public class StereochemistryAnalysis {
 			if ( t_oBond.getType() != 2 ) continue;
 			t_aCandidateIsomerismBond.add(t_oBond);
 			this.m_mapBondToStereo.put(t_oBond, this.calcIsomerism(t_oBond, t_oHDComp) );
-			System.err.println( t_oBond.getAtom1().getSymbol()+"("+t_oBond.getAtom1().getAtomID()+")="+t_oBond.getAtom2().getSymbol()+"("+t_oBond.getAtom2().getAtomID()+"): "+this.m_mapBondToStereo.get(t_oBond) );
 		}
 
 		// Calculate rs
@@ -71,7 +75,6 @@ public class StereochemistryAnalysis {
 			String t_strStereo = this.calcChirality(t_oAtom, t_oHDComp2);
 			if ( t_strStereo != null ) t_strStereo = t_strStereo.toLowerCase();
 			this.m_mapAtomToStereo.put(t_oAtom, t_strStereo );
-			System.err.println( t_oAtom.getSymbol()+"("+t_oAtom.getAtomID()+"): "+this.m_mapAtomToStereo.get(t_oAtom) );
 		}
 	}
 
