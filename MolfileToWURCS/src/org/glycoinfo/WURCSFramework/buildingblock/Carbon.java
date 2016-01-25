@@ -3,16 +3,20 @@ package org.glycoinfo.WURCSFramework.buildingblock;
 import org.glycoinfo.WURCSFramework.chemicalgraph.Atom;
 import org.glycoinfo.WURCSFramework.util.chemicalgraph.analytical.CarbonIdentifier;
 
-public class Carbon {
+public class Carbon extends Atom {
 
-	public static final int UNKNOWN = 0;
-	public static final int SP  = 1;
-	public static final int SP2 = 2;
-	public static final int SP3 = 3;
+	public static final int TYPE_UNKNOWN = 0;
+	public static final int TYPE_SP  = 1;
+	public static final int TYPE_SP2 = 2;
+	public static final int TYPE_SP3 = 3;
 
+	private Atom m_oOriginal;
 	private CarbonChain m_oParentChain;
 	private Carbon m_oPrevCarbon = null;
 	private Carbon m_oNextCarbon = null;
+	private ModGraph m_oMod1 = null;
+	private ModGraph m_oMod2 = null;
+	private ModGraph m_oMod3 = null;
 
 	/**
 	 * Connection around the carbon<br>
@@ -23,19 +27,12 @@ public class Carbon {
 	 * 1-C-2 or 1-C-2 or 1-C-2
 	 *   |        |        |
 	 *   N        N        3
+	 * middle    head     tail
+	 *
 	 * P: Previous carbon
 	 * N: Next carbon
-	 * 1: Left side atom in Fisher projection
-	 *    (Direction is 'u')
-	 * 2: Right side atom in Fisher projection
-	 *    (Direction is 'd')
-	 * 3: An atom which behave as next or previous carbon if the carbon is start or end of chain
-	 *    (Direction is 't')
+	 * 1, 2, 3: Orderd modifications
 	 *
-	 * For asymmetric carbon, 3 is lower order than 1 and 2.
-	 * For symmetric carbon with two same atom, 1 and 2 is same atom and 3 is remain atom (Direction is needed to 1 and 2).
-	 * For symmetric carbon with three same atom, direction of all atom is 'n' if exactry same.
-	 * and 3 is lowest modification if modification is not same.
 	 * </pre>
 	 * For SP2 carbon:
 	 * <pre>
@@ -44,29 +41,56 @@ public class Carbon {
 	 *   C-1 or   C   or   C
 	 *   |        |       / \
 	 *   N        N      1   2
+	 * middle    head     tail
+	 *
 	 * P: Previous carbon
 	 * N: Next carbon
-	 * 1: Highest order modification (prioritize higher bond order)
-	 * 2: Lowest order modification
+	 * 1, 2: Orderd modifications
+	 * </pre>
+	 * For SP carbon:
+	 * <pre>
+	 *   P        1        P
+	 *   |        |        |
+	 *   C   or   C   or   C
+	 *   |        |        |
+	 *   N        N        1
+	 * middle    head     tail
+	 *
+	 * P: Previous carbon
+	 * N: Next carbon
+	 * 1: Modification
 	 * </pre>
 	 */
-	private Atom m_oCarbonAtom;
 
-	public Carbon(Atom a_oCarbon) {
+	public Carbon(Atom a_oAtom, CarbonChain a_oChain) {
+		super(a_oAtom.getSymbol());
+		this.m_oOriginal = a_oAtom;
+		this.m_oParentChain = a_oChain;
 		CarbonIdentifier t_oCI = new CarbonIdentifier();
-		t_oCI.setAtom(a_oCarbon);
-		this.m_oCarbonAtom = a_oCarbon;
+		t_oCI.setAtom(a_oAtom);
 	}
 
-	public Atom getAtom() {
-		return this.m_oCarbonAtom;
+	public Atom getOriginal() {
+		return this.m_oOriginal;
 	}
 
-	public void setNext(Carbon a_oNext) {
-		this.m_oNextCarbon = a_oNext;
+	public CarbonChain getChain() {
+		return this.m_oParentChain;
+	}
+
+	public Carbon getPrev() {
+		return this.m_oPrevCarbon;
+	}
+
+	public Carbon getNext() {
+		return this.m_oNextCarbon;
 	}
 
 	public void setPrev(Carbon a_oPrev) {
 		this.m_oPrevCarbon = a_oPrev;
+	}
+
+	public void setNext(Carbon a_oNext) {
+		this.m_oNextCarbon = a_oNext;
 	}
 }

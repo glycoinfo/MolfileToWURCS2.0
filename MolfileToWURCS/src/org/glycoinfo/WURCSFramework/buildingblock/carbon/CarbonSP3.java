@@ -1,6 +1,7 @@
 package org.glycoinfo.WURCSFramework.buildingblock.carbon;
 
 import org.glycoinfo.WURCSFramework.buildingblock.Carbon;
+import org.glycoinfo.WURCSFramework.buildingblock.CarbonChain;
 import org.glycoinfo.WURCSFramework.chemicalgraph.Atom;
 import org.glycoinfo.WURCSFramework.chemicalgraph.Connection;
 
@@ -36,8 +37,8 @@ public class CarbonSP3 extends Carbon {
 	private Connection m_oMod2Con = null; // 'd' second / downside
 	private Connection m_oMod3Con = null; // 't' third
 
-	public CarbonSP3(Atom a_oCarbon) {
-		super(a_oCarbon);
+	public CarbonSP3(Atom a_oAtom, CarbonChain a_oChain) {
+		super(a_oAtom, a_oChain);
 		// TODO 自動生成されたコンストラクター・スタブ
 	}
 

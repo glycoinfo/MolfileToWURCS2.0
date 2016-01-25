@@ -11,56 +11,22 @@ import org.glycoinfo.WURCSFramework.chemicalgraph.Atom;
  */
 public class CarbonChain {
 
-//	private LinkedList<Carbon> m_aCarbons = new LinkedList<Carbon>();
-	private LinkedList<Atom> m_aCarbons = new LinkedList<Atom>();
+	private LinkedList<Carbon> m_aCarbons       = new LinkedList<Carbon>();
+	private LinkedList<Atom>   m_aOriginalChain = new LinkedList<Atom>();
 
-	public LinkedList<Atom> getCarbons() {
-		return this.m_aCarbons;
+	public CarbonChain(LinkedList<Atom> a_aChain) {
+		this.m_aOriginalChain = a_aChain;
 	}
 
-	public void add(Atom a_oCarbon) throws BuildingBlockException {
+	public LinkedList<Atom> getOriginalCarbonChain() {
+		return this.m_aOriginalChain;
+	}
+
+	public void add(Carbon a_oCarbon) throws BuildingBlockException {
 		if ( this.m_aCarbons.contains(a_oCarbon) )
 			throw new BuildingBlockException("Already exist in the carbon chain.");
 
 		this.m_aCarbons.addLast(a_oCarbon);
-	}
-
-	public void remove(Atom a_oCarbon) throws BuildingBlockException {
-		this.checkCarbon(a_oCarbon);
-
-		this.m_aCarbons.remove(a_oCarbon);
-	}
-
-	/**
-	 * Get previous carbon of target carbon in the carbon chain
-	 * @param a_oCarbon A target carbon
-	 * @return Previous carbon atom in the carbon chain (null if target carbon is first or not exist)
-	 */
-	public Atom getPrevCarbonOf(Atom a_oCarbon) {
-		int index = this.indexOf(a_oCarbon);
-		if (index == -1)
-			return null;
-
-		if ( a_oCarbon.equals( this.m_aCarbons.getFirst() ) )
-			return null;
-
-		return this.m_aCarbons.get( index - 1 );
-	}
-
-	/**
-	 * Get next carbon of target carbon in the carbon chain
-	 * @param a_oCarbon A target carbon
-	 * @return Next carbon atom in the carbon chain (null if target carbon is last or not exist)
-	 */
-	public Atom getNextCarbonOf(Atom a_oCarbon) {
-		int index = this.indexOf(a_oCarbon);
-		if (index == -1)
-			return null;
-
-		if ( a_oCarbon.equals( this.m_aCarbons.getLast() ) )
-			return null;
-
-		return this.m_aCarbons.get( this.indexOf(a_oCarbon) + 1 );
 	}
 
 	/**
@@ -76,18 +42,5 @@ public class CarbonChain {
 			index = i;
 		}
 		return index;
-	}
-
-	/**
-	 * Check target carbon
-	 * @param a_oCarbon A target carbon
-	 * @throws BuildingBlockException
-	 */
-	private void checkCarbon(Atom a_oCarbon) throws BuildingBlockException {
-		if ( a_oCarbon == null )
-			throw new BuildingBlockException("Invalid object.");
-
-		if ( !this.m_aCarbons.contains(a_oCarbon) )
-			throw new BuildingBlockException("Not exist in the carbon chain.");
 	}
 }
