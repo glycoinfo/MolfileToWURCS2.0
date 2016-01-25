@@ -2,9 +2,25 @@ package org.glycoinfo.WURCSFramework.util.chemicalgraph.analytical.NOC;
 
 import java.util.LinkedList;
 
-import org.glycoinfo.WURCSFramework.util.chemicalgraph.analytical.CarbonChainAnalyzer;
+import org.glycoinfo.WURCSFramework.chemicalgraph.Atom;
+import org.glycoinfo.WURCSFramework.util.chemicalgraph.analytical.CarbonIdentifier;
 
-public class NeighboringOxygenCounting extends CarbonChainAnalyzer{
+/**
+ * Class for NOC Approach test
+ * @author matsubara
+ *
+ */
+public class NeighboringOxygenCounting {
+
+	private LinkedList<Atom> m_aCarbonChain = new LinkedList<Atom>();
+
+	public LinkedList<Integer> getOxygenCountSequence() {
+		CarbonIdentifier t_oIdentC = new CarbonIdentifier();
+		LinkedList<Integer> t_aOxygenCount = new LinkedList<Integer>();
+		for ( Atom atom : this.m_aCarbonChain )
+			t_aOxygenCount.add( t_oIdentC.setAtom(atom).countConnectedO() );
+		return t_aOxygenCount;
+	}
 
 	public String getNOCPass1() {
 		String t_strNOCPass1 = "";

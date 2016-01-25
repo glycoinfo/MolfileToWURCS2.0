@@ -47,10 +47,9 @@ public class TestNOC {
 		CTFileReader t_objCTReader = new CTFileReader(a_strFilePath, false);
 
 		int t_nMol = 0;
-		while(true){
+		while ( t_objCTReader.readNext() ) {
 			// read a record from CTFile
 			Molecule mol = t_objCTReader.getMolecule();
-			if(mol==null) break;
 			t_nMol++;
 			String ID = t_objCTReader.getFieldData("ChEBI_ID");
 			System.out.println(t_nMol+":"+ID);

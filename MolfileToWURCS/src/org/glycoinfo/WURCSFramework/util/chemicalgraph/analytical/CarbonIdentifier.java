@@ -47,6 +47,7 @@ public class CarbonIdentifier extends AtomIdentifier {
 	}
 
 	/**
+	 * TODO: Remove or move
 	 * Whether or not the atom is oxygen of hydroxy group(R-OH).
 	 * @return true if the atom is oxygen of hydroxy group(R-OH). false otherwise.
 	 */
@@ -65,6 +66,7 @@ public class CarbonIdentifier extends AtomIdentifier {
 	}
 
 	/**
+	 * TODO: Remove or move
 	 * Whether or not the atom is nitrogen of (R-NHn).
 	 * @return true if the atom is nitrogen of (R-NHn). false otherwise.
 	 */
