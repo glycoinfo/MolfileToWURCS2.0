@@ -149,4 +149,18 @@ public class Atom implements AtomicVisitable {
 	public void accept(AtomicVisitor a_objVisitor) throws AtomicVisitorException {
 		a_objVisitor.visit(this);
 	}
+
+	/**
+	 * Copy this atom
+	 * @return Copied atom
+	 */
+	public Atom copy() {
+		Atom t_oCopy = new Atom(this.m_strSymbol);
+		t_oCopy.setCoordinate(this.m_dCoordinate);
+		t_oCopy.setCharge(this.m_iCharge);
+		t_oCopy.setMass(this.m_iMass);
+		t_oCopy.setAliasName(this.m_strAliasName);
+		t_oCopy.setAtomID(this.m_iAtomID);
+		return t_oCopy;
+	}
 }
