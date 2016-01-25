@@ -59,7 +59,9 @@ public class MorganAlgorithm {
 				for ( Connection con : atom.getConnections() ) {
 					if ( ignoreBonds != null && ignoreBonds.contains(con.getBond()) ) continue;
 					if ( ignoreAtoms != null && ignoreAtoms.contains(con.endAtom()) ) continue;
-					t_iNum += this.m_mapAtomToMorganNumber.get(con.endAtom());
+					Integer t_iConnNum = this.m_mapAtomToMorganNumber.get(con.endAtom());
+					if ( t_iConnNum == null ) continue;
+					t_iNum += t_iConnNum;
 				}
 				t_mapAtomToMorganNum.put(atom, t_iNum);
 			}

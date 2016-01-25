@@ -11,6 +11,7 @@ import org.glycoinfo.WURCSFramework.chemicalgraph.Bond;
 import org.glycoinfo.WURCSFramework.chemicalgraph.Connection;
 import org.glycoinfo.WURCSFramework.chemicalgraph.SubGraph;
 import org.glycoinfo.WURCSFramework.util.chemicalgraph.Chemical;
+import org.glycoinfo.WURCSFramework.util.chemicalgraph.MorganAlgorithm;
 import org.glycoinfo.WURCSFramework.wurcs.graph.Modification;
 
 /**
@@ -74,10 +75,13 @@ public class SubGraphToModification {
 	public Path findCanonicalPaths(final SubGraph graph) {
 		// EC番号を付加
 		// Set initial EC number
-		graph.updateECnumber(null, null);
+		MorganAlgorithm t_oMA = new MorganAlgorithm(graph);
+		t_oMA.calcMorganNumber(null, null);
+//		graph.updateECnumber(null, null);
 		// 初期EC番号を保存
 		// Store initial EC numbers
-		final HashMap<Atom, Integer> t_mapAtomToInitECNum = graph.getAtomToECNumber();
+//		final HashMap<Atom, Integer> t_mapAtomToInitECNum = graph.getAtomToECNumber();
+		final HashMap<Atom, Integer> t_mapAtomToInitECNum = t_oMA.getAtomToMorganNumber();
 //		for ( Atom atom : graph.getAtoms() ) {
 //			atom.initialECnumber = atom.subgraphECnumber;
 //		}
@@ -181,8 +185,10 @@ public class SubGraphToModification {
 
 			// EC番号再計算
 			// Recalculation EC numbers
-			graph.updateECnumber(t_oPath.bonds(), t_oPath.atoms());
-			final HashMap<Atom, Integer> subgraphECNumber = graph.getAtomToECNumber();
+			t_oMA.calcMorganNumber(t_oPath.bonds(), t_oPath.atoms());
+//			graph.updateECnumber(t_oPath.bonds(), t_oPath.atoms());
+//			final HashMap<Atom, Integer> subgraphECNumber = graph.getAtomToECNumber();
+			final HashMap<Atom, Integer> subgraphECNumber = t_oMA.getAtomToMorganNumber();
 
 			// 隣接Connectをソート
 			// Sort vicinal connections
