@@ -2,7 +2,7 @@ package org.glycoinfo.WURCSFramework.util.exchange;
 
 import java.util.Comparator;
 
-import org.glycoinfo.WURCSFramework.chemicalgraph.Connection;
+import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Connection;
 
 public class ConnectionComparatorForPath implements Comparator<Connection> {
 

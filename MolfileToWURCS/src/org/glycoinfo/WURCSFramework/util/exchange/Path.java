@@ -2,9 +2,9 @@ package org.glycoinfo.WURCSFramework.util.exchange;
 
 import java.util.LinkedList;
 
-import org.glycoinfo.WURCSFramework.chemicalgraph.Atom;
-import org.glycoinfo.WURCSFramework.chemicalgraph.Bond;
-import org.glycoinfo.WURCSFramework.chemicalgraph.ChemicalGraph;
+import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Atom;
+import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Bond;
+import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.ChemicalGraph;
 
 /**
  * Class for atomic path in modification to generate MAP code

@@ -1,8 +1,8 @@
 package org.glycoinfo.WURCSFramework.util.exchange;
 
-import org.glycoinfo.WURCSFramework.chemicalgraph.Atom;
-import org.glycoinfo.WURCSFramework.chemicalgraph.Bond;
-import org.glycoinfo.WURCSFramework.chemicalgraph.Connection;
+import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Atom;
+import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Bond;
+import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Connection;
 
 /**
  * 修飾に含まれる部分構造を探索し、修飾文字列を生成する際、探索した原子の情報を格納するクラス

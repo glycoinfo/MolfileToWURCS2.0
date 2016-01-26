@@ -6,11 +6,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 
-import org.glycoinfo.WURCSFramework.chemicalgraph.Atom;
-import org.glycoinfo.WURCSFramework.chemicalgraph.Connection;
-import org.glycoinfo.WURCSFramework.util.chemicalgraph.Chemical;
-import org.glycoinfo.WURCSFramework.util.chemicalgraph.analytical.CarbonChainAnalyzer;
-import org.glycoinfo.WURCSFramework.util.chemicalgraph.analytical.CarbonIdentifier;
+import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Atom;
+import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Connection;
+import org.glycoinfo.ChemicalStructureUtility.util.Chemical;
+import org.glycoinfo.ChemicalStructureUtility.util.analytical.CarbonChainAnalyzer;
+import org.glycoinfo.ChemicalStructureUtility.util.analytical.CarbonIdentifier;
 import org.glycoinfo.WURCSFramework.wurcs.graph.Backbone;
 import org.glycoinfo.WURCSFramework.wurcs.graph.BackboneCarbon;
 import org.glycoinfo.WURCSFramework.wurcs.graph.Backbone_TBD;
@@ -44,7 +44,8 @@ public class CarbonChainToBackbone_TBD {
 		Backbone_TBD backbone = new Backbone_TBD();
 		int anomPos = 0;
 		Atom t_oAnomericCarbon = new CarbonChainAnalyzer().setCarbonChain(chain).getAnomericCarbon();
-		System.err.println( t_oAnomericCarbon );
+		// XXX: remove print
+//		System.err.println( t_oAnomericCarbon );
 		BackboneCarbon anomCarbon = null;
 		for ( Atom carbon : chain ) {
 			CarbonDescriptor_TBD cd = this.convertCarbonToDescriptor(carbon, chain);

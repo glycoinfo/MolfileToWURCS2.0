@@ -6,11 +6,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 
-import org.glycoinfo.WURCSFramework.chemicalgraph.Atom;
-import org.glycoinfo.WURCSFramework.chemicalgraph.Bond;
-import org.glycoinfo.WURCSFramework.chemicalgraph.Connection;
-import org.glycoinfo.WURCSFramework.chemicalgraph.SubGraph;
-import org.glycoinfo.WURCSFramework.util.chemicalgraph.Chemical;
+import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Atom;
+import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Bond;
+import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Connection;
+import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.SubGraphOld;
+import org.glycoinfo.ChemicalStructureUtility.util.Chemical;
+import org.glycoinfo.ChemicalStructureUtility.util.MorganAlgorithm;
 import org.glycoinfo.WURCSFramework.wurcs.graph.Modification;
 
 /**
@@ -28,7 +29,7 @@ public class SubGraphToModification {
 	private HashMap<Atom, LinkedList<Atom>> m_hashAtomToCarbonChain = new HashMap<Atom, LinkedList<Atom>>();
 	private HashMap<Atom, Integer> m_mapBacboneCarbonToMAPPos = new HashMap<Atom, Integer>();
 
-	private SubGraph m_objModificationGraph;
+	private SubGraphOld m_objModificationGraph;
 	private LinkedList<Atom> m_aBackboneAtomsInModification = new LinkedList<Atom>();
 	/** List of backbones which connect with this modification. */
 //	public BackboneList connectedBackbones;
@@ -56,7 +57,7 @@ public class SubGraphToModification {
 		}
 	}
 
-	public Modification convert(SubGraph graph) {
+	public Modification convert(SubGraphOld graph) {
 		this.m_mapBacboneCarbonToMAPPos = new HashMap<Atom, Integer>();
 		if(this.path != null) this.path.clear();
 
@@ -71,13 +72,16 @@ public class SubGraphToModification {
 	//----------------------------
 	// Public method (void)
 	//----------------------------
-	public Path findCanonicalPaths(final SubGraph graph) {
+	public Path findCanonicalPaths(final SubGraphOld graph) {
 		// EC番号を付加
 		// Set initial EC number
-		graph.updateECnumber(null, null);
+		MorganAlgorithm t_oMA = new MorganAlgorithm(graph);
+		t_oMA.calcMorganNumber(null, null);
+//		graph.updateECnumber(null, null);
 		// 初期EC番号を保存
 		// Store initial EC numbers
-		final HashMap<Atom, Integer> t_mapAtomToInitECNum = graph.getAtomToECNumber();
+//		final HashMap<Atom, Integer> t_mapAtomToInitECNum = graph.getAtomToECNumber();
+		final HashMap<Atom, Integer> t_mapAtomToInitECNum = t_oMA.getAtomToMorganNumber();
 //		for ( Atom atom : graph.getAtoms() ) {
 //			atom.initialECnumber = atom.subgraphECnumber;
 //		}
@@ -137,7 +141,7 @@ public class SubGraphToModification {
 		Atom t_oStartAtom = t_aBackboneCarbonsInMAP.getFirst();
 //		Atom t_oStartAtom = graph.getAtoms().getFirst();
 
-		final HashSet<Atom> aromaticAtoms = this.m_aAromaticAtoms;
+//		final HashSet<Atom> aromaticAtoms = this.m_aAromaticAtoms;
 
 		// TODO: remove print
 //		System.err.println("Print EC number : "+graph);
@@ -181,8 +185,10 @@ public class SubGraphToModification {
 
 			// EC番号再計算
 			// Recalculation EC numbers
-			graph.updateECnumber(t_oPath.bonds(), t_oPath.atoms());
-			final HashMap<Atom, Integer> subgraphECNumber = graph.getAtomToECNumber();
+			t_oMA.calcMorganNumber(t_oPath.bonds(), t_oPath.atoms());
+//			graph.updateECnumber(t_oPath.bonds(), t_oPath.atoms());
+//			final HashMap<Atom, Integer> subgraphECNumber = graph.getAtomToECNumber();
+			final HashMap<Atom, Integer> subgraphECNumber = t_oMA.getAtomToMorganNumber();
 
 			// 隣接Connectをソート
 			// Sort vicinal connections
@@ -196,11 +202,17 @@ public class SubGraphToModification {
 
 					// １．繋がっている芳香環はまとめて出したい
 					// 1. Get together connecting aromatic atoms
-					if ( aromaticAtoms.contains(t_oTailAtom) ){
+/*					if ( aromaticAtoms.contains(t_oTailAtom) ){
 						if(  aromaticAtoms.contains(end1)   && !aromaticAtoms.contains(end2)   ) return -1;
 						if( !aromaticAtoms.contains(end1)   &&  aromaticAtoms.contains(end2)   ) return 1;
 						if(  aromaticAtoms.contains(start1) && !aromaticAtoms.contains(start2) ) return -1;
 						if( !aromaticAtoms.contains(start1) &&  aromaticAtoms.contains(start2) ) return 1;
+					}
+*/					if ( t_oTailAtom.isAromatic() ){
+						if(  end1.isAromatic()   && !end2.isAromatic()   ) return -1;
+						if( !end1.isAromatic()   &&  end2.isAromatic()   ) return 1;
+						if(  start1.isAromatic() && !start2.isAromatic() ) return -1;
+						if( !start1.isAromatic() &&  start2.isAromatic() ) return 1;
 					}
 
 					// ２．後半に探索した修飾原子から伸びている結合を優先
@@ -265,7 +277,7 @@ public class SubGraphToModification {
 		return t_oPath;
 	}
 
-	public String makeMAPCode(final SubGraph graph, final Path path) {
+	public String makeMAPCode(final SubGraphOld graph, final Path path) {
 		// Set stereo for graph
 		graph.setStereo();
 		String t_strMAP = "";
