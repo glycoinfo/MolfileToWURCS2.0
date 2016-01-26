@@ -47,6 +47,24 @@ public class HierarchicalDigraphCreator {
 		return this.m_bIsCompletedFullSearch;
 	}
 
+	public LinkedList<Atom> getSortedContainedAtoms( HierarchicalDigraphComparator a_oHDComp ) {
+		LinkedList<Atom> t_aAtoms = new LinkedList<Atom>();
+		LinkedList<HierarchicalDigraphNode> t_aDigraphs = new LinkedList<HierarchicalDigraphNode>();
+		t_aDigraphs.add(this.m_oRootHD);
+		while ( !t_aDigraphs.isEmpty() ) {
+			HierarchicalDigraphNode t_oGraph = t_aDigraphs.removeFirst();
+			if ( t_oGraph.getConnection() == null ) continue;
+			t_aAtoms.addLast( t_oGraph.getConnection().endAtom() );
+
+			if ( t_oGraph.getChildren().isEmpty() ) continue;
+			LinkedList<HierarchicalDigraphNode> t_aChildren = t_oGraph.getChildren();
+			Collections.sort(t_aChildren, a_oHDComp);
+			for ( HierarchicalDigraphNode t_oChild : t_aChildren )
+				t_aDigraphs.addLast(t_oChild);
+		}
+		return t_aAtoms;
+	}
+
 	protected boolean isIgnoreAtom(Atom a_oAtom) {
 		return false;
 	}
