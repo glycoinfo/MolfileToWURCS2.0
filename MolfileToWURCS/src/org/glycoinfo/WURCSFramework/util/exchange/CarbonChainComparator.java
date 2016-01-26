@@ -3,10 +3,10 @@ package org.glycoinfo.WURCSFramework.util.exchange;
 import java.util.Comparator;
 import java.util.LinkedList;
 
-import org.glycoinfo.WURCSFramework.chemicalgraph.Atom;
-import org.glycoinfo.WURCSFramework.chemicalgraph.Connection;
-import org.glycoinfo.WURCSFramework.util.chemicalgraph.Chemical;
-import org.glycoinfo.WURCSFramework.util.chemicalgraph.analytical.CarbonChainAnalyzer;
+import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Atom;
+import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Connection;
+import org.glycoinfo.ChemicalStructureUtility.util.Chemical;
+import org.glycoinfo.ChemicalStructureUtility.util.analytical.CarbonChainAnalyzer;
 import org.glycoinfo.WURCSFramework.util.graph.comparator.BackboneComparator;
 import org.glycoinfo.WURCSFramework.wurcs.graph.Backbone;
 
