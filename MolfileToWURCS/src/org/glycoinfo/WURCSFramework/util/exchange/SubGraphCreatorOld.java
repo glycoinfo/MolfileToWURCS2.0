@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Atom;
 import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.SubGraph;
 
-public class SubGraphCreator {
+public class SubGraphCreatorOld {
 	/** Start atom list to make subgraph */
 	private HashSet<Atom> m_aStartAtoms;
 	/** Ignore atom list */
@@ -19,7 +19,7 @@ public class SubGraphCreator {
 	 * @param aStartAtoms Start atoms for subgraph
 	 * @param aIgnoreAtoms Ignore atoms for subgraph
 	 */
-	public SubGraphCreator( HashSet<Atom> aStartAtoms, HashSet<Atom> aIgnoreAtoms ) {
+	public SubGraphCreatorOld( HashSet<Atom> aStartAtoms, HashSet<Atom> aIgnoreAtoms ) {
 		this.m_aStartAtoms  = aStartAtoms;
 		this.m_aIgnoreAtoms = aIgnoreAtoms;
 	}

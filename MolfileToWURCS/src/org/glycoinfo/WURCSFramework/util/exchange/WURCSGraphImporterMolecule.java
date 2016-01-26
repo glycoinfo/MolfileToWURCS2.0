@@ -335,7 +335,7 @@ public class WURCSGraphImporterMolecule {
 		}
 
 		// Create sub graph for candidate modifications
-		SubGraphCreator creator = new SubGraphCreator(startAtoms, t_aBackboneCarbons);
+		SubGraphCreatorOld creator = new SubGraphCreatorOld(startAtoms, t_aBackboneCarbons);
 		LinkedList<SubGraph> candidateModifications = creator.create();
 
 		// Find aglycons from the candidate modifications

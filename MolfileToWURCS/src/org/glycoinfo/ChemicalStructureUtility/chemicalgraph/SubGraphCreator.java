@@ -64,7 +64,7 @@ public class SubGraphCreator {
 	}
 
 	/**
-	 * Start to create subgraph by recursively expanding from start atom and ignore atoms are not contained.
+	 * Start to create subgraph by recursively expanding from start atom in original chemical graph except for ignore atoms.
 	 * @param a_oStart Start atom of this chemical graph
 	 * @param a_aIgnoreAtoms HashSet of ignore Atoms
 	 */
