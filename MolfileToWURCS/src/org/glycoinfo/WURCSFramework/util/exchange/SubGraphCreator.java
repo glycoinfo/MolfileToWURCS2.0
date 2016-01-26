@@ -3,8 +3,8 @@ package org.glycoinfo.WURCSFramework.util.exchange;
 import java.util.HashSet;
 import java.util.LinkedList;
 
-import org.glycoinfo.WURCSFramework.chemicalgraph.Atom;
-import org.glycoinfo.WURCSFramework.chemicalgraph.SubGraph;
+import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Atom;
+import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.SubGraph;
 
 public class SubGraphCreator {
 	/** Start atom list to make subgraph */

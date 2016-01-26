@@ -2,11 +2,11 @@ package org.glycoinfo.WURCSFramework.util.exchange;
 
 import java.util.HashSet;
 
-import org.glycoinfo.WURCSFramework.chemicalgraph.Atom;
-import org.glycoinfo.WURCSFramework.chemicalgraph.Molecule;
+import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Atom;
+import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Molecule;
+import org.glycoinfo.ChemicalStructureUtility.util.analytical.MoleculeNormalizer;
+import org.glycoinfo.ChemicalStructureUtility.util.analytical.StructureAnalyzer;
 import org.glycoinfo.WURCSFramework.util.WURCSException;
-import org.glycoinfo.WURCSFramework.util.chemicalgraph.analytical.MoleculeNormalizer;
-import org.glycoinfo.WURCSFramework.util.chemicalgraph.analytical.StructureAnalyzer;
 import org.glycoinfo.WURCSFramework.wurcs.graph.WURCSGraph;
 
 public class MoleculeToWURCSGraph {

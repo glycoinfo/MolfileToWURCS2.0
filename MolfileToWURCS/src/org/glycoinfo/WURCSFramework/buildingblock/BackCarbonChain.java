@@ -2,7 +2,7 @@ package org.glycoinfo.WURCSFramework.buildingblock;
 
 import java.util.LinkedList;
 
-import org.glycoinfo.WURCSFramework.chemicalgraph.Atom;
+import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Atom;
 
 /**
  * Class for carbon chain

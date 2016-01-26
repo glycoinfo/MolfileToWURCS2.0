@@ -1,9 +1,9 @@
 package org.glycoinfo.WURCSFramework.buildingblock.carbon;
 
+import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Atom;
+import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Connection;
 import org.glycoinfo.WURCSFramework.buildingblock.BackCarbon;
 import org.glycoinfo.WURCSFramework.buildingblock.BackCarbonChain;
-import org.glycoinfo.WURCSFramework.chemicalgraph.Atom;
-import org.glycoinfo.WURCSFramework.chemicalgraph.Connection;
 
 /**
  * Class for SP3 carbon<br>

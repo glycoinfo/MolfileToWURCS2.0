@@ -1,7 +1,7 @@
 package org.glycoinfo.WURCSFramework.buildingblock;
 
-import org.glycoinfo.WURCSFramework.chemicalgraph.Atom;
-import org.glycoinfo.WURCSFramework.chemicalgraph.ChemicalGraph;
+import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Atom;
+import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.ChemicalGraph;
 
 public class ModGraph extends ChemicalGraph {
 

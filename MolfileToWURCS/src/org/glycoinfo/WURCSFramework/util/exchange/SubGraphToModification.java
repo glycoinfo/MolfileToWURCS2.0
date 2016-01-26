@@ -6,12 +6,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 
-import org.glycoinfo.WURCSFramework.chemicalgraph.Atom;
-import org.glycoinfo.WURCSFramework.chemicalgraph.Bond;
-import org.glycoinfo.WURCSFramework.chemicalgraph.Connection;
-import org.glycoinfo.WURCSFramework.chemicalgraph.SubGraph;
-import org.glycoinfo.WURCSFramework.util.chemicalgraph.Chemical;
-import org.glycoinfo.WURCSFramework.util.chemicalgraph.MorganAlgorithm;
+import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Atom;
+import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Bond;
+import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Connection;
+import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.SubGraph;
+import org.glycoinfo.ChemicalStructureUtility.util.Chemical;
+import org.glycoinfo.ChemicalStructureUtility.util.MorganAlgorithm;
 import org.glycoinfo.WURCSFramework.wurcs.graph.Modification;
 
 /**
