@@ -4,7 +4,7 @@ import java.util.Iterator;
 
 import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Atom;
 import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Connection;
-import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.SubGraph;
+import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.SubGraphOld;
 
 public class AtomicTraverserConnection extends AtomicTraverser {
 
@@ -40,10 +40,10 @@ public class AtomicTraverserConnection extends AtomicTraverser {
 	}
 
 	/**
-	 * @see AtomicTraverser.SubGraphTraverser#traverseGraph(org.glycoinfo.ChemicalStructureUtility.chemicalgraph.SubGraph)
+	 * @see AtomicTraverser.SubGraphTraverser#traverseGraph(org.glycoinfo.ChemicalStructureUtility.chemicalgraph.SubGraphOld)
 	 */
 	@Override
-	public void traverseGraph(SubGraph a_objGraph) throws AtomicVisitorException {
+	public void traverseGraph(SubGraphOld a_objGraph) throws AtomicVisitorException {
 		Iterator<Atom> t_iterAtoms = a_objGraph.getAtoms().iterator();
 		while ( t_iterAtoms.hasNext() )
 		{

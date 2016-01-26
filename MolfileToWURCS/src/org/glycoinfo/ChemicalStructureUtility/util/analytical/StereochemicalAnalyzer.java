@@ -156,8 +156,8 @@ public class StereochemicalAnalyzer {
 				// XXX: remove print
 				for ( Connection connection : atom.getConnections() ) {
 					if ( connection.getBond().getType() != 2 ) continue;
-					System.err.println(t_strAtoms);
-					t_oHD.print(System.err);
+//					System.err.println(t_strAtoms);
+//					t_oHD.print(System.err);
 				}
 				// Set CIP order
 				this.m_mapAtomToOrderIsUnique.put(atom, true);

@@ -32,16 +32,16 @@ public class StereochemistryAnalysis {
 		for ( Atom t_oAtom : a_oGraph.getAtoms() ) {
 			t_oAtom.setChirality( this.m_mapAtomToStereo.get(t_oAtom) );
 			if ( this.m_mapAtomToStereo.get(t_oAtom) == null ) continue;
-			System.err.println( t_oAtom.getSymbol()+"("+t_oAtom.getAtomID()+"): "+this.m_mapAtomToStereo.get(t_oAtom) );
+//			System.err.println( t_oAtom.getSymbol()+"("+t_oAtom.getAtomID()+"): "+this.m_mapAtomToStereo.get(t_oAtom) );
 		}
 		// Set cis-trans for bonds
 		for ( Bond t_oBond : a_oGraph.getBonds() ) {
 			t_oBond.setGeometric( this.m_mapBondToStereo.get(t_oBond) );
 			if ( this.m_mapBondToStereo.get(t_oBond) == null ) continue;
-			System.err.println( t_oBond.getAtom1().getSymbol()+"("+t_oBond.getAtom1().getAtomID()+")="+t_oBond.getAtom2().getSymbol()+"("+t_oBond.getAtom2().getAtomID()+"): "+this.m_mapBondToStereo.get(t_oBond) );
+//			System.err.println( t_oBond.getAtom1().getSymbol()+"("+t_oBond.getAtom1().getAtomID()+")="+t_oBond.getAtom2().getSymbol()+"("+t_oBond.getAtom2().getAtomID()+"): "+this.m_mapBondToStereo.get(t_oBond) );
 		}
 		// XXX: remove print
-		System.err.println();
+//		System.err.println();
 	}
 
 	public void start(ChemicalGraph a_oGraph) {

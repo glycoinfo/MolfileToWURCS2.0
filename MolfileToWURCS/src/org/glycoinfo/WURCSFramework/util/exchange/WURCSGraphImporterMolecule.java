@@ -8,7 +8,7 @@ import java.util.LinkedList;
 import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Atom;
 import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Connection;
 import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Molecule;
-import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.SubGraph;
+import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.SubGraphOld;
 import org.glycoinfo.ChemicalStructureUtility.util.analytical.CarbonChainAnalyzer;
 import org.glycoinfo.ChemicalStructureUtility.util.analytical.MoleculeNormalizer;
 import org.glycoinfo.ChemicalStructureUtility.util.analytical.StructureAnalyzer;
@@ -34,11 +34,11 @@ public class WURCSGraphImporterMolecule {
 	private CarbonChainFinder  m_objCCFinder  = new CarbonChainFinder();
 
 //	private LinkedList<LinkedList<Atom>>  m_aBackboneChains      = new LinkedList<LinkedList<Atom>>();
-	private LinkedList<SubGraph>          m_aAglyconGraphs       = new LinkedList<SubGraph>();
-	private LinkedList<SubGraph>          m_aModificationGraphs  = new LinkedList<SubGraph>();
+	private LinkedList<SubGraphOld>          m_aAglyconGraphs       = new LinkedList<SubGraphOld>();
+	private LinkedList<SubGraphOld>          m_aModificationGraphs  = new LinkedList<SubGraphOld>();
 
 	private HashMap<Connection, LinkedList<Atom>> m_hashConnectionToBackboneChain     = new HashMap<Connection, LinkedList<Atom>>();
-	private HashMap<Connection, SubGraph>         m_hashConnectionToModificationGraph = new HashMap<Connection, SubGraph>();
+	private HashMap<Connection, SubGraphOld>         m_hashConnectionToModificationGraph = new HashMap<Connection, SubGraphOld>();
 //	private HashSet<Atom> m_aAnomericCarbons   = new HashSet<Atom>();
 //	private HashSet<Atom> m_aBackboneCarbons   = new HashSet<Atom>();
 //	private HashSet<Atom> m_aModificationAtoms = new HashSet<Atom>();
@@ -125,7 +125,7 @@ public class WURCSGraphImporterMolecule {
 
 		// Find components for carbohydrate
 		LinkedList<LinkedList<Atom>> t_aBackboneChains     = this.findCarbonChainsForBackbones(t_aCandidateBackbones);
-		LinkedList<SubGraph>         t_aModificationGraphs = this.findModificationGraphs(t_aBackboneChains);
+		LinkedList<SubGraphOld>         t_aModificationGraphs = this.findModificationGraphs(t_aBackboneChains);
 		HashSet<Connection>       t_aLinkageConnections = this.findLinkageConnections(t_aBackboneChains, t_aModificationGraphs);
 
 //		this.printCarbonChains(aBackboneChains);
@@ -151,11 +151,11 @@ public class WURCSGraphImporterMolecule {
 
 		// Make Modifications
 		LinkedList<Modification> modifications = new LinkedList<Modification>();
-		HashMap<SubGraph, Modification> hashGraphToModification = new HashMap<SubGraph, Modification>();
-		HashMap<SubGraph, LinkedList<Atom>> hashGraphToModificationCarbons = new HashMap<SubGraph, LinkedList<Atom>>();
-		HashMap<SubGraph, HashMap<Atom, Integer>> t_mapGraphToModificationCarbonsMap = new HashMap<SubGraph, HashMap<Atom, Integer>>();
+		HashMap<SubGraphOld, Modification> hashGraphToModification = new HashMap<SubGraphOld, Modification>();
+		HashMap<SubGraphOld, LinkedList<Atom>> hashGraphToModificationCarbons = new HashMap<SubGraphOld, LinkedList<Atom>>();
+		HashMap<SubGraphOld, HashMap<Atom, Integer>> t_mapGraphToModificationCarbonsMap = new HashMap<SubGraphOld, HashMap<Atom, Integer>>();
 		SubGraphToModification SG2M = new SubGraphToModification(t_oStAnal.getAromaticAtoms(), t_aBackboneChains);
-		for ( SubGraph graph : t_aModificationGraphs ) {
+		for ( SubGraphOld graph : t_aModificationGraphs ) {
 			Modification modification = SG2M.convert(graph);
 			// TODO: remove print
 //			System.err.println(modification.getMAPCode());
@@ -180,7 +180,7 @@ public class WURCSGraphImporterMolecule {
 		for ( Connection con : t_aLinkageConnections ) {
 			// Make linkage
 			LinkedList<Atom> chain = this.m_hashConnectionToBackboneChain.get(con);
-			SubGraph graph         = this.m_hashConnectionToModificationGraph.get(con);
+			SubGraphOld graph         = this.m_hashConnectionToModificationGraph.get(con);
 
 			LinkagePosition link = C2L.convert(con, chain, graph);
 
@@ -311,7 +311,7 @@ public class WURCSGraphImporterMolecule {
 	/**
 	 * Find and collect SubGraphs for Modifications
 	 */
-	private LinkedList<SubGraph> findModificationGraphs(final LinkedList<LinkedList<Atom>> a_aBackboneChains) {
+	private LinkedList<SubGraphOld> findModificationGraphs(final LinkedList<LinkedList<Atom>> a_aBackboneChains) {
 		// Collect carbons of backbones
 		CarbonChainAnalyzer analCC = new CarbonChainAnalyzer();
 		HashSet<Atom> t_aBackboneCarbons = new HashSet<Atom>();
@@ -336,10 +336,10 @@ public class WURCSGraphImporterMolecule {
 
 		// Create sub graph for candidate modifications
 		SubGraphCreatorOld creator = new SubGraphCreatorOld(startAtoms, t_aBackboneCarbons);
-		LinkedList<SubGraph> candidateModifications = creator.create();
+		LinkedList<SubGraphOld> candidateModifications = creator.create();
 
 		// Find aglycons from the candidate modifications
-		for ( SubGraph graph : candidateModifications ) {
+		for ( SubGraphOld graph : candidateModifications ) {
 			boolean isAglycon = true;
 			for ( Connection con : graph.getExternalConnections() ) {
 				Atom conatom = con.endAtom();
@@ -351,7 +351,7 @@ public class WURCSGraphImporterMolecule {
 		}
 
 		// Add backbone atoms to candidate modifications
-		for ( SubGraph graph : candidateModifications ) {
+		for ( SubGraphOld graph : candidateModifications ) {
 			for ( Connection con : graph.getExternalConnections() ) {
 				Atom conatom = con.endAtom();
 				if ( !t_aBackboneCarbons.contains( conatom ) ) continue;
@@ -364,13 +364,13 @@ public class WURCSGraphImporterMolecule {
 
 		// Remove aglycons from candidate modifications
 		// and add modifications which remade from removed aglycons
-		for ( SubGraph aglycon : this.m_aAglyconGraphs ) {
+		for ( SubGraphOld aglycon : this.m_aAglyconGraphs ) {
 			candidateModifications.remove( aglycon );
 
 			for ( Connection con : aglycon.getExternalConnections() ) {
 				Atom conatom = con.endAtom();
 				if ( !t_aBackboneCarbons.contains( conatom ) ) continue;
-				SubGraph newMod = new SubGraph();
+				SubGraphOld newMod = new SubGraphOld();
 				newMod.add(con.startAtom());
 				newMod.add(conatom);
 				newMod.add( con.getBond() );
@@ -387,7 +387,7 @@ public class WURCSGraphImporterMolecule {
 	 * @param graphs Modification subgraphs
 	 * @return List of connections linked from backbone to modification
 	 */
-	private HashSet<Connection> findLinkageConnections(LinkedList<LinkedList<Atom>> chains, LinkedList<SubGraph> graphs) {
+	private HashSet<Connection> findLinkageConnections(LinkedList<LinkedList<Atom>> chains, LinkedList<SubGraphOld> graphs) {
 		// Collect connections from backbone to modification
 		HashSet<Connection> aConB2M = new HashSet<Connection>();
 		for ( LinkedList<Atom> chain : chains ) {
@@ -395,7 +395,7 @@ public class WURCSGraphImporterMolecule {
 				for ( Connection con : atom.getConnections() ) {
 					Atom conatom = con.endAtom();
 					if ( chain.contains(conatom) ) continue;
-					for ( SubGraph graph : graphs ) {
+					for ( SubGraphOld graph : graphs ) {
 						if ( !graph.contains(conatom) ) continue;
 						// TODO: remove print
 //						System.err.print(conatom.getSymbol());

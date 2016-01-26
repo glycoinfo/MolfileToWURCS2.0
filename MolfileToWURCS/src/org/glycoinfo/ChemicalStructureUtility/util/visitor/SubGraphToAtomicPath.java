@@ -5,7 +5,7 @@ import java.util.LinkedList;
 
 import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Atom;
 import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Connection;
-import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.SubGraph;
+import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.SubGraphOld;
 
 /**
  * Class for ALIN code generator from SubGraph using visitor pattern
@@ -13,7 +13,7 @@ import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.SubGraph;
  *
  */
 public class SubGraphToAtomicPath implements AtomicVisitor {
-	private SubGraph m_objGraph;
+	private SubGraphOld m_objGraph;
 	private LinkedList<Connection> m_aConnections = new LinkedList<Connection>();
 
 	private HashSet<Atom> m_aBackboneCarbons;
@@ -43,7 +43,7 @@ public class SubGraphToAtomicPath implements AtomicVisitor {
 	}
 
 	@Override
-	public void start(SubGraph a_objGraph) throws AtomicVisitorException {
+	public void start(SubGraphOld a_objGraph) throws AtomicVisitorException {
 		this.clear();
 
 		this.m_objGraph = a_objGraph;

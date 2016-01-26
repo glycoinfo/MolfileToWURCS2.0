@@ -1,109 +1,92 @@
 package org.glycoinfo.ChemicalStructureUtility.chemicalgraph;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.HashMap;
+import java.util.LinkedList;
 
-import org.glycoinfo.ChemicalStructureUtility.util.analytical.StereochemicalAnalyzer;
-
-/**
- * Class for sub chemical graph
- * @author MasaakiMatsubara
- *
- */
 public class SubGraph extends ChemicalGraph {
 
-	/** Analyzer for stereochemistry */
-	private StereochemicalAnalyzer m_objAnalyzer = new StereochemicalAnalyzer();
+	private ChemicalGraph m_oOriginalGraph;
+	private HashMap<Atom, Atom> m_mapAtomToOriginal = new HashMap<Atom, Atom>();
+	private HashMap<Atom, Atom> m_mapOriginalToAtom = new HashMap<Atom, Atom>();
+	private HashMap<Bond, Bond> m_mapBondToOriginal = new HashMap<Bond, Bond>();
+	private HashMap<Bond, Bond> m_mapOriginalToBond = new HashMap<Bond, Bond>();
+	private HashMap<Connection, Connection> m_mapConnectionToOriginal = new HashMap<Connection, Connection>();
 
-	/**
-	 * Remove atom and bonds which connect with input atom from this subgraph.
-	 * @param atom Remove Atom
-	 * @return true if this chemical graph contains input atom.
-	 */
-	public boolean remove(final Atom atom){
-		if ( !this.contains(atom) ) return false;
-		ArrayList<Bond> removeBonds = new ArrayList<Bond>();
-		for(Connection connection : atom.getConnections()){
-			removeBonds.add(connection.getBond());
-		}
-		for(Bond bond : removeBonds){
-			if ( !this.contains(bond) ) continue;
-			this.m_aBonds.remove(bond);
-		}
-		return this.m_aAtoms.remove(atom);
+	public SubGraph(ChemicalGraph a_oOriginalGraph) {
+		this.m_oOriginalGraph = a_oOriginalGraph;
 	}
 
-	public void setStereo() {
-		this.m_objAnalyzer.analyze(this);
+	@Override
+	public void add(Atom a_oAtom) {
+		// Do nothing
+	}
+	@Override
+	public void add(Bond a_oBond) {
+		// Do nothing
 	}
 
-	public String getStereo(Atom atom) {
-		return this.m_objAnalyzer.getStereo(atom);
+	public boolean addByOriginal( Atom a_oOriginal ) {
+		// Return false if original graph does not have the atom
+		if ( !this.m_oOriginalGraph.contains(a_oOriginal) ) return false;
+		// Return false if already added
+		if ( this.m_mapOriginalToAtom.containsKey(a_oOriginal) ) return false;
+
+		Atom t_oAtom = a_oOriginal.copy();
+		this.m_aAtoms.addLast(t_oAtom);
+		this.m_mapAtomToOriginal.put(t_oAtom, a_oOriginal);
+		this.m_mapOriginalToAtom.put(a_oOriginal, t_oAtom);
+		return true;
 	}
 
-	public String getStereo(Bond bond) {
-		return this.m_objAnalyzer.getStereo(bond);
-	}
+	public boolean addByOriginal( Bond a_oOriginal ) {
+		// Return false if original graph does not have the bond
+		if ( !this.m_oOriginalGraph.contains(a_oOriginal) ) return false;
+		// Return false if already added
+		if ( this.m_mapOriginalToBond.containsKey(a_oOriginal) ) return false;
+		// Return false if this graph does not have connecting atoms
+		if ( !this.m_mapOriginalToAtom.containsKey( a_oOriginal.getAtom1() ) ) return false;
+		if ( !this.m_mapOriginalToAtom.containsKey( a_oOriginal.getAtom2() ) ) return false;
 
-	public Integer getCIPOrder(Connection con) {
-		return this.m_objAnalyzer.getCIPOrder(con);
-	}
+		Atom t_oAtom1 = this.m_mapOriginalToAtom.get( a_oOriginal.getAtom1() );
+		Atom t_oAtom2 = this.m_mapOriginalToAtom.get( a_oOriginal.getAtom2() );
+		Bond t_oBond = new Bond( t_oAtom1, t_oAtom2, a_oOriginal.getType(), a_oOriginal.getStereo() );
+		this.m_aBonds.addLast(t_oBond);
+		this.m_mapBondToOriginal.put(t_oBond, a_oOriginal);
+		this.m_mapOriginalToBond.put(a_oOriginal, t_oBond);
 
-	/**
-	 * Recursively expand this chemical graph without ignoreAtoms and hydrogen.
-	 * TODO: Must ignore hydrogens?
-	 * @param startAtom Start atom of this chemical graph
-	 * @param ignoreAtoms HashSet of ignore Atoms
-	 * @author MasaakiMatsubara
-	 */
-	public void expand(Atom startAtom, HashSet<Atom> ignoreAtoms) {
-		this.clear();
-		this.add(startAtom);
-//		for ( Iterator<Atom> it = this.m_aAtoms.iterator(); it.hasNext(); ) {
-//			Atom atom = it.next();
-		for ( int i=0; i<this.m_aAtoms.size(); i++ ) {
-			Atom atom = this.m_aAtoms.get(i);
-			for ( Connection con : atom.getConnections() ){
-				Atom conAtom = con.endAtom();
-				if ( ignoreAtoms.contains(conAtom) ) continue;
-				if ( conAtom.getSymbol().equals("H") ) continue;
-				if ( !this.contains(conAtom) ){
-					this.add(conAtom);
-				}
-				if ( !this.contains(con.getBond()) ){
-					this.add(con.getBond());
-				}
+		for ( Connection t_oConn : t_oAtom1.getConnections() ) {
+			if ( !t_oConn.getBond().equals(t_oBond) ) continue;
+			for ( Connection t_oConnOriginal : a_oOriginal.getAtom1().getConnections() ) {
+				if ( !t_oConnOriginal.getBond().equals(a_oOriginal) ) continue;
+				this.m_mapConnectionToOriginal.put(t_oConn, t_oConnOriginal);
+				this.m_mapConnectionToOriginal.put(t_oConn.getReverse(), t_oConnOriginal.getReverse());
 			}
 		}
+		return true;
 	}
 
-	/**
-	 * Get connections which connect from this chemical graph to external atoms without hydrogen.
-	 * TODO: Must ignore hydrogens?
-	 * @return HashSet of connections from this chemical graph
-	 * @author MasaakiMatsubara
-	 */
-	public HashSet<Connection> getExternalConnections() {
-		HashSet<Connection> connections = new HashSet<Connection>();
-		for ( Iterator<Atom> it = this.m_aAtoms.iterator(); it.hasNext(); ) {
-			Atom atom = it.next();
-			for ( Connection con : atom.getConnections() ) {
-				if ( this.m_aAtoms.contains(con.endAtom()) ) continue;
-				if ( atom.getSymbol().equals("H") ) continue;
-				connections.add(con);
-			}
+	public ChemicalGraph getOriginalGraph() {
+		return this.m_oOriginalGraph;
+	}
+
+	public LinkedList<Atom> getOriginalAtoms() {
+		LinkedList<Atom> t_oOriginals = new LinkedList<Atom>();
+		for ( Atom t_oSubAtom : this.m_aAtoms ) {
+			t_oOriginals.add( this.m_mapAtomToOriginal.get(t_oSubAtom) );
 		}
-		return connections;
+		return t_oOriginals;
 	}
 
-	/**
-	 * Sort atoms by comparator
-	 * @param comparator Atom comparator
-	 */
-	public void sortAtoms(Comparator<Atom> comparator) {
-		Collections.sort(this.m_aAtoms, comparator);
+	public Atom getOriginal(Atom a_oAtom) {
+		return this.m_mapAtomToOriginal.get(a_oAtom);
 	}
+
+	public Bond getOriginal(Bond a_oBond) {
+		return this.m_mapBondToOriginal.get(a_oBond);
+	}
+
+	public Connection getOriginal(Connection a_oConn) {
+		return this.m_mapConnectionToOriginal.get(a_oConn);
+	}
+
 }

@@ -9,7 +9,7 @@ import java.util.LinkedList;
 import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Atom;
 import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Bond;
 import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Connection;
-import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.SubGraph;
+import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.SubGraphOld;
 import org.glycoinfo.ChemicalStructureUtility.util.Chemical;
 import org.glycoinfo.ChemicalStructureUtility.util.MorganAlgorithm;
 import org.glycoinfo.WURCSFramework.wurcs.graph.Modification;
@@ -29,7 +29,7 @@ public class SubGraphToModification {
 	private HashMap<Atom, LinkedList<Atom>> m_hashAtomToCarbonChain = new HashMap<Atom, LinkedList<Atom>>();
 	private HashMap<Atom, Integer> m_mapBacboneCarbonToMAPPos = new HashMap<Atom, Integer>();
 
-	private SubGraph m_objModificationGraph;
+	private SubGraphOld m_objModificationGraph;
 	private LinkedList<Atom> m_aBackboneAtomsInModification = new LinkedList<Atom>();
 	/** List of backbones which connect with this modification. */
 //	public BackboneList connectedBackbones;
@@ -57,7 +57,7 @@ public class SubGraphToModification {
 		}
 	}
 
-	public Modification convert(SubGraph graph) {
+	public Modification convert(SubGraphOld graph) {
 		this.m_mapBacboneCarbonToMAPPos = new HashMap<Atom, Integer>();
 		if(this.path != null) this.path.clear();
 
@@ -72,7 +72,7 @@ public class SubGraphToModification {
 	//----------------------------
 	// Public method (void)
 	//----------------------------
-	public Path findCanonicalPaths(final SubGraph graph) {
+	public Path findCanonicalPaths(final SubGraphOld graph) {
 		// EC番号を付加
 		// Set initial EC number
 		MorganAlgorithm t_oMA = new MorganAlgorithm(graph);
@@ -277,7 +277,7 @@ public class SubGraphToModification {
 		return t_oPath;
 	}
 
-	public String makeMAPCode(final SubGraph graph, final Path path) {
+	public String makeMAPCode(final SubGraphOld graph, final Path path) {
 		// Set stereo for graph
 		graph.setStereo();
 		String t_strMAP = "";

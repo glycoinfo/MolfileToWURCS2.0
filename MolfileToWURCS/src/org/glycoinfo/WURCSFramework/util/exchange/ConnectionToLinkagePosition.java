@@ -6,7 +6,7 @@ import java.util.LinkedList;
 
 import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Atom;
 import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Connection;
-import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.SubGraph;
+import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.SubGraphOld;
 import org.glycoinfo.ChemicalStructureUtility.util.Chemical;
 import org.glycoinfo.ChemicalStructureUtility.util.analytical.AtomIdentifier;
 import org.glycoinfo.ChemicalStructureUtility.util.analytical.CarbonChainAnalyzer;
@@ -21,15 +21,15 @@ import org.glycoinfo.WURCSFramework.wurcs.graph.LinkagePosition;
 public class ConnectionToLinkagePosition {
 
 	private HashMap<Connection, LinkedList<Atom>> m_hashConnectionToBackboneChain;
-	private HashMap<SubGraph, LinkedList<Atom>> m_hashGraphToModificationCarbons = new HashMap<SubGraph, LinkedList<Atom>>();
-	private HashMap<SubGraph, HashMap<Atom, Integer>> m_hashGraphToModificationCarbonsMap;
+	private HashMap<SubGraphOld, LinkedList<Atom>> m_hashGraphToModificationCarbons = new HashMap<SubGraphOld, LinkedList<Atom>>();
+	private HashMap<SubGraphOld, HashMap<Atom, Integer>> m_hashGraphToModificationCarbonsMap;
 	private AtomIdentifier m_objIdent = new AtomIdentifier();
 /*
 	public ConnectionToLinkagePosition( HashMap<SubGraph, LinkedList<Atom>> hashGraphToModificationCarbons ) {
 		this.m_hashGraphToModificationCarbons = hashGraphToModificationCarbons;
 	}
 */
-	public ConnectionToLinkagePosition( HashMap<SubGraph, HashMap<Atom, Integer>> a_mapGraphToModificationCarbonsMap ) {
+	public ConnectionToLinkagePosition( HashMap<SubGraphOld, HashMap<Atom, Integer>> a_mapGraphToModificationCarbonsMap ) {
 		this.m_hashGraphToModificationCarbonsMap = a_mapGraphToModificationCarbonsMap;
 	}
 
@@ -40,7 +40,7 @@ public class ConnectionToLinkagePosition {
 	 * @param graph SubGraph of modification
 	 * @return Linkage converted from the connection
 	 */
-	public LinkagePosition convert( Connection con, LinkedList<Atom> chain, SubGraph graph ) {
+	public LinkagePosition convert( Connection con, LinkedList<Atom> chain, SubGraphOld graph ) {
 //		if ( !this.m_hashConnectionToBackboneChain.containsKey(con) ) return null;
 		// PCB: Get carbon position in the backbone
 		int t_iBPos = chain.indexOf( con.startAtom() )+1;

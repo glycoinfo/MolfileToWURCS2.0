@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 
 import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Atom;
-import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.SubGraph;
+import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.SubGraphOld;
 
 public class SubGraphCreatorOld {
 	/** Start atom list to make subgraph */
@@ -50,12 +50,12 @@ public class SubGraphCreatorOld {
 	/**
 	 * Create subgraphs
 	 */
-	public LinkedList<SubGraph> create() {
-		LinkedList<SubGraph> t_hashGraphs = new LinkedList<SubGraph>();
+	public LinkedList<SubGraphOld> create() {
+		LinkedList<SubGraphOld> t_hashGraphs = new LinkedList<SubGraphOld>();
 		for(Atom startAtom : this.m_aStartAtoms) {
 			if ( this.m_aIgnoreAtoms.contains(startAtom) ) continue;
 			// Set start atom to candidate subgraph and expand
-			SubGraph candidate = new SubGraph();
+			SubGraphOld candidate = new SubGraphOld();
 			candidate.expand(startAtom, this.m_aIgnoreAtoms);
 
 			// Add atoms of the candidate subgraph to ignore list

@@ -2,7 +2,7 @@ package org.glycoinfo.ChemicalStructureUtility.util.visitor;
 
 import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Atom;
 import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Connection;
-import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.SubGraph;
+import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.SubGraphOld;
 
 /**
  * Abstract class for traverser of SubGraph
@@ -30,7 +30,7 @@ public abstract class AtomicTraverser {
 	public abstract void traverse( Atom a_objAtom ) throws AtomicVisitorException;
 	public abstract void traverse( Connection a_objConnection ) throws AtomicVisitorException;
 
-	public abstract void traverseGraph( SubGraph a_objGraph ) throws AtomicVisitorException;
+	public abstract void traverseGraph( SubGraphOld a_objGraph ) throws AtomicVisitorException;
 
 	public int getState()
 	{

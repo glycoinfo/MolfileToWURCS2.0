@@ -44,7 +44,8 @@ public class CarbonChainToBackbone_TBD {
 		Backbone_TBD backbone = new Backbone_TBD();
 		int anomPos = 0;
 		Atom t_oAnomericCarbon = new CarbonChainAnalyzer().setCarbonChain(chain).getAnomericCarbon();
-		System.err.println( t_oAnomericCarbon );
+		// XXX: remove print
+//		System.err.println( t_oAnomericCarbon );
 		BackboneCarbon anomCarbon = null;
 		for ( Atom carbon : chain ) {
 			CarbonDescriptor_TBD cd = this.convertCarbonToDescriptor(carbon, chain);

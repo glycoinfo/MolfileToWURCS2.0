@@ -90,12 +90,12 @@ public class TestStereo {
 				// Ignore subgraph which contained only one hydrogen
 				if ( t_oCreateSub.isHydrogen() ) continue;
 				t_aSubGraphs.add( t_oCreateSub.getSubGraph() );
-				t_aSubAtoms.addAll( t_oCreateSub.getOriginalAtoms() );
+				t_aSubAtoms.addAll( t_oCreateSub.getSubGraph().getOriginalAtoms() );
 
 				// Add backbone carbon
 				for ( Connection t_oExConn : t_oCreateSub.getExternalOriginalConnections() ) {
 					if ( !t_aBackboneCarbons.contains( t_oExConn.endAtom() ) ) continue;
-					t_oCreateSub.addExternalConnection( t_oExConn );
+//					t_oCreateSub.addExternalConnection( t_oExConn );
 				}
 			}
 

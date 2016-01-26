@@ -66,7 +66,8 @@ public class MorganAlgorithm {
 				t_mapAtomToMorganNum.put(atom, t_iNum);
 			}
 			int t_iUniqCount = this.countUniq(t_mapAtomToMorganNum);
-			System.err.println( t_iUniqCount );
+			// XXX: remove print
+//			System.err.println( t_iUniqCount );
 			if ( t_iUniqCount <= t_iUniqCountPrev ) break;
 			t_iUniqCountPrev = t_iUniqCount;
 		}

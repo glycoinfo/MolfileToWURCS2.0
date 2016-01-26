@@ -2,7 +2,7 @@ package org.glycoinfo.ChemicalStructureUtility.util.visitor;
 
 import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Atom;
 import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Connection;
-import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.SubGraph;
+import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.SubGraphOld;
 
 public class AtomicVisitorStereoAnalyze implements AtomicVisitor {
 
@@ -17,7 +17,7 @@ public class AtomicVisitorStereoAnalyze implements AtomicVisitor {
 	}
 
 	@Override
-	public void start(SubGraph a_objGraph) throws AtomicVisitorException {
+	public void start(SubGraphOld a_objGraph) throws AtomicVisitorException {
 
 	}
 

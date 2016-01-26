@@ -1,13 +1,13 @@
 package org.glycoinfo.ChemicalStructureUtility.util.stereochemistry;
 
 import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Connection;
-import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.SubGraph;
+import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.SubGraphOld;
 
 public class StereochemistryAnalysisForSubGraph extends StereochemistryAnalysis {
 
-	private SubGraph m_bSubGraph;
+	private SubGraphOld m_bSubGraph;
 
-	public void start( SubGraph a_oGraph ) {
+	public void start( SubGraphOld a_oGraph ) {
 		this.m_bSubGraph = a_oGraph;
 		super.start(a_oGraph);
 	}

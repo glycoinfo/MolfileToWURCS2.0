@@ -1,6 +1,5 @@
 package org.glycoinfo.ChemicalStructureUtility.chemicalgraph;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 
@@ -13,20 +12,14 @@ public class SubGraphCreator {
 
 	private SubGraph m_oSubGraph;
 	private ChemicalGraph m_oOriginalGraph;
-	private HashMap<Atom, Atom> m_mapAtomToOriginal;
-	private HashMap<Bond, Bond> m_mapBondToOriginal;
-	private HashMap<Connection, Connection> m_mapConnectionToOriginal;
 	private HashSet<Atom> m_aAddedExternalAtoms;
 
 	public SubGraphCreator(ChemicalGraph a_oOriginal) {
 		this.m_oOriginalGraph = a_oOriginal;
+		this.m_oSubGraph = new SubGraph(a_oOriginal);
 	}
 
 	private void clear() {
-		this.m_oSubGraph = new SubGraph();
-		this.m_mapAtomToOriginal = new HashMap<Atom, Atom>();
-		this.m_mapBondToOriginal = new HashMap<Bond, Bond>();
-		this.m_mapConnectionToOriginal = new HashMap<Connection, Connection>();
 		this.m_aAddedExternalAtoms = new HashSet<Atom>();
 	}
 
@@ -95,41 +88,10 @@ public class SubGraphCreator {
 		}
 
 		// Build subgraph
-		String t_strAtoms = "";
-		HashMap<Atom, Atom> t_mapOriginalToAtom = new HashMap<Atom, Atom>();
-		for ( Atom t_oAtom : t_aConnectedAtoms ) {
-			Atom t_oSubAtom = t_oAtom.copy();
-
-			// XXX: remove print;
-			if ( !t_strAtoms.equals("") ) t_strAtoms += ",";
-			t_strAtoms += t_oAtom.getSymbol()+"("+t_oAtom.getAtomID()+")";
-
-			this.m_oSubGraph.add(t_oSubAtom);
-			this.m_mapAtomToOriginal.put(t_oSubAtom, t_oAtom);
-			t_mapOriginalToAtom.put(t_oAtom, t_oSubAtom);
-		}
-		System.err.println(t_strAtoms);
-		for ( Bond t_oBond : t_aConnectedBonds ){
-			Atom t_oSubAtom1 = t_mapOriginalToAtom.get( t_oBond.getAtom1() );
-			Atom t_oSubAtom2 = t_mapOriginalToAtom.get( t_oBond.getAtom2() );
-
-			Bond t_oSubBond = new Bond( t_oSubAtom1, t_oSubAtom2, t_oBond.getType(), t_oBond.getStereo() );
-			this.m_oSubGraph.add(t_oSubBond);
-			this.m_mapBondToOriginal.put(t_oSubBond, t_oBond);
-		}
-		// Map connections
-		for ( Atom t_oSubStart : this.m_oSubGraph.getAtoms() ) {
-			Atom t_oStart = this.m_mapAtomToOriginal.get(t_oSubStart);
-			for ( Connection t_oSubConn : t_oSubStart.getConnections() ) {
-				Atom t_oEnd = this.m_mapAtomToOriginal.get( t_oSubConn.endAtom() );
-				for ( Connection t_oConn : t_oStart.getConnections() ) {
-					if ( !t_oEnd.equals(t_oConn.endAtom()) ) continue;
-					this.m_mapConnectionToOriginal.put(t_oSubConn , t_oConn);
-					break;
-				}
-			}
-		}
-
+		for ( Atom t_oAtom : t_aConnectedAtoms )
+			this.m_oSubGraph.addByOriginal(t_oAtom);
+		for ( Bond t_oBond : t_aConnectedBonds )
+			this.m_oSubGraph.addByOriginal(t_oBond);
 	}
 
 	/**
@@ -137,18 +99,23 @@ public class SubGraphCreator {
 	 * @return HashSet of original connections directed from subgraph to external atoms
 	 */
 	public HashSet<Connection> getExternalOriginalConnections() {
+		// Collect original atoms
+		HashSet<Atom> t_oOriginalAtoms = new HashSet<Atom>();
+		for ( Atom t_oAtom : this.m_oSubGraph.getAtoms() )
+			t_oOriginalAtoms.add(this.m_oSubGraph.getOriginal(t_oAtom));
+
+		// Collect external connections
 		HashSet<Connection> t_oExternalConnections = new HashSet<Connection>();
-		for ( Atom t_oAtom : this.m_oSubGraph.getAtoms() ) {
-			Atom t_oOriginalAtom = this.m_mapAtomToOriginal.get(t_oAtom);
+		for ( Atom t_oOriginalAtom : t_oOriginalAtoms ) {
 			for ( Connection t_oOriginalConn : t_oOriginalAtom.getConnections() ) {
-				if ( this.m_mapConnectionToOriginal.containsValue(t_oOriginalConn) ) continue;
+				if ( t_oOriginalAtoms.contains(t_oOriginalConn.endAtom()) ) continue;
 
 				t_oExternalConnections.add(t_oOriginalConn);
 			}
 		}
 		return t_oExternalConnections;
 	}
-
+/*
 	public void addExternalConnection( Connection a_oConn ) {
 		if ( !this.getExternalOriginalConnections().contains(a_oConn) ) return;
 
@@ -191,28 +158,5 @@ public class SubGraphCreator {
 			this.m_mapConnectionToOriginal.put(t_oConn.getReverse(), a_oConn.getReverse());
 		}
 	}
-
-	public ChemicalGraph getOriginalGraph() {
-		return this.m_oOriginalGraph;
-	}
-
-	public LinkedList<Atom> getOriginalAtoms() {
-		LinkedList<Atom> t_oOriginals = new LinkedList<Atom>();
-		for ( Atom t_oSubAtom : this.m_oSubGraph.m_aAtoms ) {
-			t_oOriginals.add( this.m_mapAtomToOriginal.get(t_oSubAtom) );
-		}
-		return t_oOriginals;
-	}
-
-	public Atom getOriginal(Atom a_oAtom) {
-		return this.m_mapAtomToOriginal.get(a_oAtom);
-	}
-
-	public Bond getOriginal(Bond a_oBond) {
-		return this.m_mapBondToOriginal.get(a_oBond);
-	}
-
-	public Connection getOriginal(Connection a_oConn) {
-		return this.m_mapConnectionToOriginal.get(a_oConn);
-	}
+*/
 }
