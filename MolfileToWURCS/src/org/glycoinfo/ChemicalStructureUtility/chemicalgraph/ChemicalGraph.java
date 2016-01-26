@@ -2,8 +2,6 @@ package org.glycoinfo.ChemicalStructureUtility.chemicalgraph;
 
 import java.util.LinkedList;
 
-import org.glycoinfo.ChemicalStructureUtility.util.analytical.StereochemicalAnalyzer;
-
 /**
  * Class for chemical graph
  * @author MasaakiMatsubara
@@ -16,9 +14,6 @@ public abstract class ChemicalGraph {
 	protected LinkedList<Atom> m_aAtoms = new LinkedList<Atom>();
 	/** List of bonds */
 	protected LinkedList<Bond> m_aBonds = new LinkedList<Bond>();
-
-	/** Analyzer for stereochemistry */
-	protected StereochemicalAnalyzer m_objAnalyzer = new StereochemicalAnalyzer();
 
 	//----------------------------
 	// Accessor
@@ -72,17 +67,4 @@ public abstract class ChemicalGraph {
 	 */
 	public abstract boolean remove(final Atom atom);
 
-	/**
-	 * Calculate the stereo chemistry for each atom. target is whole molecule.
-	 */
-	public void setStereo() {
-		this.m_objAnalyzer.analyze(this);
-//		this.setStereo();
-		for(Atom atom : this.getAtoms()){
-			atom.setChirality( this.m_objAnalyzer.getStereo(atom) );
-		}
-		for(Bond bond : this.getBonds()){
-			bond.setGeometric( this.m_objAnalyzer.getStereo(bond) );
-		}
-	}
 }

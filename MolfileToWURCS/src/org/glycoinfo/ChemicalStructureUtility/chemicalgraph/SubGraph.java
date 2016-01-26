@@ -6,12 +6,18 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 
+import org.glycoinfo.ChemicalStructureUtility.util.analytical.StereochemicalAnalyzer;
+
 /**
  * Class for sub chemical graph
  * @author MasaakiMatsubara
  *
  */
 public class SubGraph extends ChemicalGraph {
+
+	/** Analyzer for stereochemistry */
+	private StereochemicalAnalyzer m_objAnalyzer = new StereochemicalAnalyzer();
+
 	/**
 	 * Remove atom and bonds which connect with input atom from this subgraph.
 	 * @param atom Remove Atom
@@ -30,7 +36,6 @@ public class SubGraph extends ChemicalGraph {
 		return this.m_aAtoms.remove(atom);
 	}
 
-	@Override
 	public void setStereo() {
 		this.m_objAnalyzer.analyze(this);
 	}
