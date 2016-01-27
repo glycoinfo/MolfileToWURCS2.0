@@ -91,7 +91,8 @@ public class CarbonChainFinder {
 			if ( numNOS < this.m_iMinNOS ) continue;
 
 			// Screen by number of connected O with single bond
-			if(this.countCarbonsConnectedSingleBondOxygen(candidateChain) < this.m_iMinO) continue;
+//			if(this.countCarbonsConnectedSingleBondOxygen(candidateChain) < this.m_iMinO) continue;
+			if(this.countCarbonsConnectedOxygen(candidateChain) < this.m_iMinO) continue;
 
 			// Screen by ratio of N, O, and S which connected carbon chain
 			if (candidateChain.size() / numNOS  > this.m_fRatioNOS) continue;
@@ -182,6 +183,23 @@ public class CarbonChainFinder {
 			if ( ident.setAtom(atom).countConnectedNOS() > 0 ) NOSNum++;
 		}
 		return NOSNum;
+	}
+
+	private int countCarbonsConnectedOxygen(LinkedList<Atom> chain) {
+		// Using CarbonIdentifier
+		CarbonIdentifier ident = this.m_objIdentifier;
+		int num = 0;
+		for ( Atom atom : chain ) {
+			if ( ident.setAtom(atom).isCarboxyLike() ) continue;
+			for ( Connection connect : atom.getConnections() ) {
+				if ( chain.contains(connect.endAtom()) ) continue;
+				if ( connect.endAtom().getSymbol().equals("O") ) {
+					num++;
+					break;
+				}
+			}
+		}
+		return num;
 	}
 
 	private int countCarbonsConnectedSingleBondOxygen(LinkedList<Atom> chain) {
