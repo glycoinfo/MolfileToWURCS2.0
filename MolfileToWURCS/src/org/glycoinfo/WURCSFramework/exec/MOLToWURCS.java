@@ -91,12 +91,23 @@ public class MOLToWURCS {
 
 				WURCSFactory t_oFactory = new WURCSFactory(t_objGlycan);
 				String t_strWURCS = t_oFactory.getWURCS();
+				System.err.println(t_strWURCS);
 //				t_objGraphToArray.start(t_objGlycan);
+
+				// TODO: Temporary repairs for MAP
+				if ( t_strWURCS.contains("*OCO*/3CO/6=O/3C") ) {
+					t_strWURCS = t_strWURCS.replaceAll("\\*OCO\\*/3CO/6=O/3C", "*OC^XO*/3CO/6=O/3C");
+					System.err.println(t_strWURCS);
+				}
+				if ( t_strWURCS.contains("*OP^XO*/3O/3=O") ) {
+					t_strWURCS = t_strWURCS.replaceAll("\\*OP\\^XO\\*/3O/3=O", "*OPO*/3O/3=O");
+					System.err.println(t_strWURCS);
+				}
+
 				System.err.println(t_objCTReader.getFieldData(a_strFieldID));
 				t_mapIDtoWURCS.put(ID, t_strWURCS);
 
 				t_oLogger.addWURCS(ID, t_strWURCS);
-				System.err.println(t_strWURCS);
 //				System.exit(0);
 
 				// For separated graph
