@@ -152,6 +152,17 @@ public class StereochemistryAnalysis {
 	 * @return Sorted connections (null if connections are not unique order)
 	 */
 	private LinkedList<Connection> sortConnectionsByCIPOrder( LinkedList<Connection> a_aConns, HierarchicalDigraphComparator a_oHDComp ) {
+		ConnectionComparatorByCIPOrder t_oConnComp = new ConnectionComparatorByCIPOrder(a_oHDComp);
+		Collections.sort(a_aConns, t_oConnComp);
+		Connection t_oPreConn = a_aConns.getFirst();
+		for ( Connection t_oConn : a_aConns ) {
+			if ( t_oPreConn.equals(t_oConn) ) continue;
+			if ( t_oConnComp.compare(t_oPreConn, t_oConn) == 0 ) return null;
+			t_oPreConn = t_oConn;
+		}
+		return a_aConns;
+
+/*
 		int t_iDepth = 1;
 		while ( true ) {
 			// Calcurate CIP orders for each connection using HierarchicalDigraph
@@ -190,6 +201,6 @@ public class StereochemistryAnalysis {
 
 			t_iDepth++;
 		}
-
+*/
 	}
 }
