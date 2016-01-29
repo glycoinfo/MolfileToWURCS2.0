@@ -30,7 +30,8 @@ public class Chemical {
 		"A", "Q", "X", "?", "R"                                                                                     // 104 - 108
 	};
 	private static String[] MetalAtoms = {"Li", "Na", "K", "Rb", "Cs", "Be", "Mg", "Ca", "Sr", "Ba", "Ra"};
-	private static String[] NonMetalAtoms = {"H", "B", "C", "N", "O", "F", "P", "S", "Cl", "As", "Se", "Br", "Te", "I", "At"};
+	private static String[] NonMetalAtoms = {"H", "B", "C", "N", "O", "F", "P", "S", "Cl", "As", "Se", "Br", "Te", "I", "At",
+											 "A", "Q", "X", "?", "R"};
 
 	/**
 	 * Don't let anyone instantiate this class.
