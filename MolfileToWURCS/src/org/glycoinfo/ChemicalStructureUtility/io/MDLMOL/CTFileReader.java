@@ -26,10 +26,8 @@ public class CTFileReader {
 	private String m_strFileName;
 	private String m_strDirName;
 	private int m_nTotalRecode;
-//	private BufferedReaderWithStdout m_brOutput;
 	private BufferedReader m_brOutput;
 	private String m_strMOLString;
-//	private boolean m_bOutputToSDFile;
 	private int m_iRecordNo; //record number of ctfile
 	private HashMap<String, LinkedList<String>> m_mapIDToData = new HashMap<String, LinkedList<String>>();
 	private Molecule m_oMolecule;
@@ -37,13 +35,10 @@ public class CTFileReader {
 	//----------------------------
 	// Constructor
 	//----------------------------
-//	public CTFileReader(final String a_objFilepath, final boolean a_bSdfileOutput) {
 	public CTFileReader(final String a_objFilepath) {
 		this.m_strfilePath = a_objFilepath;
 		try{
 			File file = new File(this.m_strfilePath);
-//			FileReader fr = new FileReader(file);
-//			this.m_brOutput = new BufferedReaderWithStdout(new FileReader(file));
 			this.m_brOutput = new BufferedReader(new FileReader(file));
 			this.m_strFileName = file.getName();
 			this.m_strDirName = file.getParent();
@@ -51,7 +46,6 @@ public class CTFileReader {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-//		this.m_bOutputToSDFile = a_bSdfileOutput;
 		this.m_iRecordNo = 1;
 	}
 
@@ -146,45 +140,31 @@ public class CTFileReader {
 			for(int i = 0; i<t_nAtom; i++){
 				t_strLine = this.readLine();
 
-//				Atom atom = new Atom();
-//				atom.molfileAtomNo = AtomNo + 1;
 				double[] crd = new double[3];
 				crd[0] = Double.parseDouble(t_strLine.substring(0, 10).trim());
 				crd[1] = Double.parseDouble(t_strLine.substring(10, 20).trim());
 				crd[2] = Double.parseDouble(t_strLine.substring(20, 30).trim());
-//				atom.coordinate = crd;
-//				atom.symbol = line.substring(31, 34).trim();
-				// TODO:
 				String symbol = t_strLine.substring(31, 34).trim();
 
-				// TODO:
 				Atom t_oAtom = new Atom(symbol);
 				t_oAtom.setAtomID(i+1);
 				t_oAtom.setCoordinate(crd);
 
 				// mass difference -3, -2, -1, 0, 1, 2, 3, 4
 				int massdiff = Integer.parseInt(t_strLine.substring(34, 36).trim());
-//				atom.mass = atom.atomicNumber() + massdiff;
-				// TODO:
 				t_oAtom.setMass( Chemical.getAtomicNumber(symbol) + massdiff );
 
 				// 0 = uncharged or value other than these, 1 = +3, 2 = +2, 3 = +1, 4 = doublet radical, 5 = -1, 6 = -2, 7 = -3
 				int charge = Integer.parseInt(t_strLine.substring(36, 39).trim());
-//				atom.charge = (charge==0) ? 0 : 4-charge;
-				// TODO:
 				t_oAtom.setCharge( (charge==0) ? 0 : 4-charge );
 
-//				mol.atoms.add(atom);
-				// TODO:
 				t_oMol.add(t_oAtom);
 			}
 
 			// Bond Block
 			for(int i = 0; i<t_nBond; i++){
 				t_strLine = this.readLine();
-//				Atom atom0 = mol.atoms.get(Integer.parseInt(line.substring(0, 3).trim()) - 1);
-//				Atom atom1 = mol.atoms.get(Integer.parseInt(line.substring(3, 6).trim()) - 1);
-				// TODO:
+
 				Atom atom0 = t_oMol.getAtoms().get(Integer.parseInt(t_strLine.substring(0, 3).trim()) - 1);
 				Atom atom1 = t_oMol.getAtoms().get(Integer.parseInt(t_strLine.substring(3, 6).trim()) - 1);
 				int type = Integer.parseInt(t_strLine.substring(6, 9).trim());
@@ -199,13 +179,9 @@ public class CTFileReader {
 
 				Bond bond = new Bond(atom0, atom1, type, stereo);
 
-//				mol.bonds.addLast(bond);
-				// TODO:
 				t_oMol.add(bond);
 			}
 
-//			LinkedList<Atom> atomlist = mol.atoms;
-			// TODO:
 			LinkedList<Atom> t_aAtomList = t_oMol.getAtoms();
 			// Properties Block
 			// "M  CHG", "M  RAD", "M  ISO" and "A  " are readable
@@ -221,8 +197,6 @@ public class CTFileReader {
 					for(int No=0; No<Num; No++){
 						int atomNo = Integer.parseInt(t_strLine.substring(10+No*8, 13+No*8).trim()) - 1;
 						int value  = Integer.parseInt(t_strLine.substring(14+No*8, 17+No*8).trim());
-//						atomlist.get(atomNo).charge = value;
-						// TODO:
 						t_aAtomList.get(atomNo).setCharge(value);
 					}
 				}else if(t_strLine.substring(0, 6).trim().equals("M  RAD")){
@@ -233,8 +207,6 @@ public class CTFileReader {
 					for(int No=0; No<Num; No++){
 						int atomNo = Integer.parseInt(t_strLine.substring(10+No*8, 13+No*8).trim()) - 1;
 						int value  = Integer.parseInt(t_strLine.substring(14+No*8, 17+No*8).trim());
-//						atomlist.get(atomNo).radical = value;
-						//TODO:
 						t_aAtomList.get(atomNo).setRadical(value);
 					}
 				}else if(t_strLine.substring(0, 6).trim().equals("M  ISO")){
@@ -245,8 +217,6 @@ public class CTFileReader {
 					for(int No=0; No<Num; No++){
 						int atomNo = Integer.parseInt(t_strLine.substring(10+No*8, 13+No*8).trim()) - 1;
 						int value  = Integer.parseInt(t_strLine.substring(14+No*8, 17+No*8).trim());
-//						atomlist.get(atomNo).mass = value;
-						// TODO:
 						t_aAtomList.get(atomNo).setMass(value);
 					}
 				}else if(t_strLine.substring(0, 3).equals("A  ")){
@@ -263,29 +233,19 @@ public class CTFileReader {
 			// Count pi electron
 			for(Atom t_oAtom : t_aAtomList){
 				int pi = 0;
-//				String symbol = atom.symbol;
-				// TODO:
 				String symbol = t_oAtom.getSymbol();
 				if(     symbol.equals("N")){ pi = 2; }
 				else if(symbol.equals("O")){ pi = 2; }
 				else if(symbol.equals("S")){ pi = 2; }
 				int t_nPi = 0;
-//				for(Connection connection : atom.connections){
-				// TODO:
 				for(Connection t_oCon : t_oAtom.getConnections()){
-//					int type = connection.bond.type;
-					// TODO:
 					int type = t_oCon.getBond().getType();
 					if(     type == 2){ t_nPi += 1; }
 					else if(type == 3){ t_nPi += 2; }
 					else if(type == 4){ t_nPi =  1; }
 				}
 				if(t_nPi!=0) pi = t_nPi;
-//				if(atom.charge < 0) pi -= atom.charge * 2;
-				// TODO:
 				if(t_oAtom.getCharge() < 0) pi -= t_oAtom.getCharge() * 2;
-//				atom.pi = pi;
-				// TODO:
 				t_oAtom.setNumberOfPiElectron(pi);
 			}
 
@@ -307,9 +267,7 @@ public class CTFileReader {
 					// line.split("<")[0] = "> 25 ", line.split("<")[1] = "ALTERNATE.NAMES>"
 					// line.split("<")[1].split(">")[0] = "ALTERNATE.NAMES"
 					key = t_strLine.split("<")[1].split(">")[0];
-//					if(!this.data.containsKey(key)){
-						this.m_mapIDToData.put(key, new LinkedList<String>());
-//					}
+					this.m_mapIDToData.put(key, new LinkedList<String>());
 				}else{
 					// Data
 					if(key.equals("")) continue;
@@ -322,8 +280,11 @@ public class CTFileReader {
 		}
 	}
 
+	/**
+	 * Read line using BufferedReader and store mol string
+	 * @return A line read
+	 */
 	private String readLine() {
-//		String t_strLine = this.m_brOutput.readLine(this.m_bOutputToSDFile);
 		String t_strLine = null;
 		try {
 			t_strLine = this.m_brOutput.readLine();
