@@ -47,7 +47,8 @@ public class MOLToWURCS {
 
 		// read CTFiles
 		ArrayList<Molecule> mols = new ArrayList<Molecule>();
-		CTFileReader t_objCTReader = new CTFileReader(a_strFilePath, a_bOutput);
+//		CTFileReader t_objCTReader = new CTFileReader(a_strFilePath, a_bOutput);
+		CTFileReader t_objCTReader = new CTFileReader(a_strFilePath);
 
 		WURCSConversionLogger t_oLogger = new WURCSConversionLogger();
 
@@ -75,6 +76,7 @@ public class MOLToWURCS {
 //			if ( !ID.equals("G00513YN") ) continue;
 //			if ( !ID.equals("23373") ) continue;
 //			if ( !ID.equals("CHEBI:15692") ) continue;
+			if ( !ID.equals("CHEBI:85715") ) continue;
 //			if(!t_objParam.m_sdfileOutput){
 //				System.err.print( ID+":" );
 //			}

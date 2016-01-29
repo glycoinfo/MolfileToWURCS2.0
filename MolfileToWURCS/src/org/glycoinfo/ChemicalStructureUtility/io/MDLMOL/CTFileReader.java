@@ -1,5 +1,6 @@
 package org.glycoinfo.ChemicalStructureUtility.io.MDLMOL;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -25,9 +26,10 @@ public class CTFileReader {
 	private String m_strFileName;
 	private String m_strDirName;
 	private int m_nTotalRecode;
-	private BufferedReaderWithStdout m_brOutput;
+//	private BufferedReaderWithStdout m_brOutput;
+	private BufferedReader m_brOutput;
 	private String m_strMOLString;
-	private boolean m_bOutputToSDFile;
+//	private boolean m_bOutputToSDFile;
 	private int m_iRecordNo; //record number of ctfile
 	private HashMap<String, LinkedList<String>> m_mapIDToData = new HashMap<String, LinkedList<String>>();
 	private Molecule m_oMolecule;
@@ -35,19 +37,21 @@ public class CTFileReader {
 	//----------------------------
 	// Constructor
 	//----------------------------
-	public CTFileReader(final String a_objFilepath, final boolean a_bSdfileOutput) {
+//	public CTFileReader(final String a_objFilepath, final boolean a_bSdfileOutput) {
+	public CTFileReader(final String a_objFilepath) {
 		this.m_strfilePath = a_objFilepath;
 		try{
 			File file = new File(this.m_strfilePath);
 //			FileReader fr = new FileReader(file);
-			this.m_brOutput = new BufferedReaderWithStdout(new FileReader(file));
+//			this.m_brOutput = new BufferedReaderWithStdout(new FileReader(file));
+			this.m_brOutput = new BufferedReader(new FileReader(file));
 			this.m_strFileName = file.getName();
 			this.m_strDirName = file.getParent();
 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-		this.m_bOutputToSDFile = a_bSdfileOutput;
+//		this.m_bOutputToSDFile = a_bSdfileOutput;
 		this.m_iRecordNo = 1;
 	}
 
@@ -90,6 +94,7 @@ public class CTFileReader {
 	}
 
 	public boolean readNext() {
+		this.m_strMOLString = "";
 		this.m_oMolecule = this.readMolecule();
 		return this.m_oMolecule != null;
 	}
@@ -102,9 +107,8 @@ public class CTFileReader {
 	 * read a record from ctfile and store Molecule
 	 * @return Molecule (or null if file has no more molecule)
 	 */
-	public Molecule readMolecule() {
+	private Molecule readMolecule() {
 		Molecule t_oMol = new Molecule();
-		this.m_strMOLString = "";
 
 		while(true){
 			// Header Block
@@ -319,10 +323,16 @@ public class CTFileReader {
 	}
 
 	private String readLine() {
-		String t_strLine = this.m_brOutput.readLine(this.m_bOutputToSDFile);
-		if ( t_strLine == null ) return null;
-		if ( !t_strLine.equals("$$$$") )
-			this.m_strMOLString += t_strLine+"\n";
+//		String t_strLine = this.m_brOutput.readLine(this.m_bOutputToSDFile);
+		String t_strLine = null;
+		try {
+			t_strLine = this.m_brOutput.readLine();
+			if ( t_strLine == null ) return null;
+			if ( !t_strLine.equals("$$$$") )
+				this.m_strMOLString += t_strLine+"\n";
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		return t_strLine;
 	}
 }
