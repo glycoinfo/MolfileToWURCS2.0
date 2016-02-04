@@ -78,4 +78,7 @@ public class Bond {
 		return Math.sqrt( v[0]*v[0] + v[1]*v[1] + v[2]*v[2] );
 	}
 
+	public Bond copy(Atom a_oAtom1, Atom a_oAtom2) {
+		return new Bond( a_oAtom1, a_oAtom2, this.m_iStereo, this.m_iType );
+	}
 }
