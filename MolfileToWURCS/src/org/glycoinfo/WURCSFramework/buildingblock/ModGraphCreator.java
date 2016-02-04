@@ -1,39 +1,44 @@
-package org.glycoinfo.ChemicalStructureUtility.chemicalgraph;
+package org.glycoinfo.WURCSFramework.buildingblock;
 
 import java.util.HashSet;
 import java.util.LinkedList;
+
+import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Atom;
+import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Bond;
+import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.ChemicalGraph;
+import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Connection;
 
 /**
  * Class for creating subgraph
  * @author MasaakiMatsubara
  *
  */
-public class SubGraphCreator {
+public class ModGraphCreator {
 
-	private SubGraph m_oSubGraph;
+	private ModGraph m_oModGraph;
 	private ChemicalGraph m_oOriginalGraph;
-	private HashSet<Atom> m_aAddedExternalAtoms;
+	private HashSet<Connection> m_aAddedExternalConnections;
 
-	public SubGraphCreator(ChemicalGraph a_oOriginal) {
+	public ModGraphCreator(ChemicalGraph a_oOriginal) {
 		this.m_oOriginalGraph = a_oOriginal;
-		this.m_oSubGraph = new SubGraph(a_oOriginal);
+		this.m_oModGraph = new ModGraph(a_oOriginal);
 	}
 
 	private void clear() {
-		this.m_aAddedExternalAtoms = new HashSet<Atom>();
+		this.m_aAddedExternalConnections = new HashSet<Connection>();
 	}
 
-	public SubGraph getSubGraph() {
-		return this.m_oSubGraph;
+	public ModGraph getSubGraph() {
+		return this.m_oModGraph;
 	}
 
 	/**
 	 * Judge hydrogen
-	 * @return true if created subgraph is hydrogen
+	 * @return true if created modification subgraph is hydrogen
 	 */
 	public boolean isHydrogen() {
-		LinkedList<Atom> t_oAtoms = this.m_oSubGraph.getAtoms();
-		return ( t_oAtoms.size() == 1 && t_oAtoms.getFirst().getSymbol().equals("H") );
+		LinkedList<Atom> t_oAtoms = this.m_oModGraph.getAtoms();
+		return ( t_oAtoms.size() == 2 && t_oAtoms.getFirst().getSymbol().equals("H") );
 	}
 
 	/**
@@ -41,9 +46,9 @@ public class SubGraphCreator {
 	 * @return true if created subgraph is hydroxy
 	 */
 	public boolean isHydroxy() {
-		LinkedList<Atom> t_oAtoms = this.m_oSubGraph.getAtoms();
-		LinkedList<Bond> t_oBonds = this.m_oSubGraph.getBonds();
-		if ( t_oAtoms.size() != 2 && t_oBonds.size() != 1 ) return false;
+		LinkedList<Atom> t_oAtoms = this.m_oModGraph.getAtoms();
+		LinkedList<Bond> t_oBonds = this.m_oModGraph.getBonds();
+		if ( t_oAtoms.size() != 3 && t_oBonds.size() != 2 ) return false;
 		int t_nOHBond = 0;
 		for ( Atom t_oAtom : t_oAtoms ) {
 			if ( !t_oAtom.getSymbol().equals("O") ) continue;
@@ -57,11 +62,11 @@ public class SubGraphCreator {
 	}
 
 	/**
-	 * Start to create subgraph by recursively expanding from start atom in original chemical graph except for ignore atoms.
+	 * Start to create modification subgraph by recursively expanding from start atom in original chemical graph except for backbone carbons.
 	 * @param a_oStart Start atom of this chemical graph
-	 * @param a_aIgnoreAtoms HashSet of ignore Atoms
+	 * @param a_aBackboneCarbons HashSet of Backbone carbons
 	 */
-	public void start(Atom a_oStart, HashSet<Atom> a_aIgnoreAtoms) {
+	public void start(Atom a_oStart, HashSet<Atom> a_aBackboneCarbons) {
 		this.clear();
 
 		// Search and collect atoms and bonds connecting from start atom
@@ -75,7 +80,7 @@ public class SubGraphCreator {
 			t_aConnectedAtoms.add(t_oAtom);
 			for ( Connection t_oConn : t_oAtom.getConnections() ) {
 				Atom t_oConnAtom = t_oConn.endAtom();
-				if ( a_aIgnoreAtoms.contains(t_oConnAtom) ) continue;
+				if ( a_aBackboneCarbons.contains(t_oConnAtom) ) continue;
 
 				// Add bond
 				if ( !t_aConnectedBonds.contains(t_oConn.getBond()) )
@@ -89,20 +94,32 @@ public class SubGraphCreator {
 
 		// Build subgraph
 		for ( Atom t_oAtom : t_aConnectedAtoms )
-			this.m_oSubGraph.addByOriginal(t_oAtom);
+			this.m_oModGraph.copyOriginal(t_oAtom);
 		for ( Bond t_oBond : t_aConnectedBonds )
-			this.m_oSubGraph.addByOriginal(t_oBond);
+			this.m_oModGraph.copyOriginal(t_oBond);
+
+		// Add Backbone carbons
+		this.addBackboneCarbons(a_aBackboneCarbons);
+	}
+
+	private void addBackboneCarbons( HashSet<Atom> t_aBackboneCarbons ) {
+		for ( Connection t_oExConnOrig : this.getExternalOriginalConnections() ) {
+			if ( !t_aBackboneCarbons.contains( t_oExConnOrig.endAtom() ) ) continue;
+
+			// Add connection from backbone carbon
+			this.m_oModGraph.addOriginalConnectionFromBackbone( t_oExConnOrig.getReverse() );
+		}
 	}
 
 	/**
 	 * Get connections directed from subgraph to external atoms in original chemical graph.
 	 * @return HashSet of original connections directed from subgraph to external atoms
 	 */
-	public HashSet<Connection> getExternalOriginalConnections() {
+	private HashSet<Connection> getExternalOriginalConnections() {
 		// Collect original atoms
 		HashSet<Atom> t_oOriginalAtoms = new HashSet<Atom>();
-		for ( Atom t_oAtom : this.m_oSubGraph.getAtoms() )
-			t_oOriginalAtoms.add(this.m_oSubGraph.getOriginal(t_oAtom));
+		for ( Atom t_oAtom : this.m_oModGraph.getAtoms() )
+			t_oOriginalAtoms.add(this.m_oModGraph.getOriginal(t_oAtom));
 
 		// Collect external connections
 		HashSet<Connection> t_oExternalConnections = new HashSet<Connection>();
@@ -115,7 +132,8 @@ public class SubGraphCreator {
 		}
 		return t_oExternalConnections;
 	}
-/*
+
+	/*
 	public void addExternalConnection( Connection a_oConn ) {
 		if ( !this.getExternalOriginalConnections().contains(a_oConn) ) return;
 
