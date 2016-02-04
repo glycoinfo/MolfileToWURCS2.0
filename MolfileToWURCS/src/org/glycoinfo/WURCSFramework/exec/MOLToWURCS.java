@@ -99,11 +99,9 @@ public class MOLToWURCS {
 				// TODO: Temporary repairs for MAP
 				if ( t_strWURCS.contains("*OCO*/3CO/6=O/3C") ) {
 					t_strWURCS = t_strWURCS.replaceAll("\\*OCO\\*/3CO/6=O/3C", "*OC^XO*/3CO/6=O/3C");
-					System.err.println(t_strWURCS);
 				}
 				if ( t_strWURCS.contains("*OP^XO*/3O/3=O") ) {
 					t_strWURCS = t_strWURCS.replaceAll("\\*OP\\^XO\\*/3O/3=O", "*OPO*/3O/3=O");
-					System.err.println(t_strWURCS);
 				}
 
 				System.err.println(t_objCTReader.getFieldData(a_strFieldID));
@@ -112,17 +110,22 @@ public class MOLToWURCS {
 				t_oLogger.addWURCS(ID, t_strWURCS);
 //				System.exit(0);
 
+				System.out.println(" > <WURCS2.0>\n"+t_strWURCS+"\n");
+
 				// For separated graph
 				WURCSVisitorSeparateWURCSGraphByAglycone t_oSeparateGraph = new WURCSVisitorSeparateWURCSGraphByAglycone();
 				t_oSeparateGraph.start(t_objGlycan);
 				if ( t_oSeparateGraph.getAglycones().isEmpty() ) continue;
 
+				String t_strAglycones = "";
+				String t_strSepWURCSs = "";
 				int i=0;
 				for ( WURCSGraph t_oSepGraph : t_oSeparateGraph.getSeparatedGraphs() ) {
 					i++;
 					t_objGraphNormalizer.start(t_oSepGraph);
 					WURCSFactory t_oSepFactory = new WURCSFactory(t_oSepGraph);
 					String t_strSepWURCS = t_oSepFactory.getWURCS();
+					t_strSepWURCSs += t_strSepWURCS+"\n";
 
 					// For aglycone
 					LinkedList<String> t_aUniqueAbbrs = new LinkedList<String>();
@@ -131,17 +134,21 @@ public class MOLToWURCS {
 						String t_strAbbr = t_oSeparateGraph.getMapAglyconeToAbbr().get(t_oAglycone);
 						if ( t_aUniqueAbbrs.contains(t_strAbbr) ) continue;
 						t_aUniqueAbbrs.add(t_strAbbr);
-						t_strAglycone += "\t"+t_strAbbr+": "+t_oAglycone.getMAPCode();
+						String t_strAglyconeAbbr = t_strAbbr+": "+t_oAglycone.getMAPCode();
+						t_strAglycone += "\t"+t_strAglyconeAbbr;
+						if ( t_strAglycones.contains(t_strAglyconeAbbr) ) continue;
+						t_strAglycones += t_strAglyconeAbbr+"\n";
 					}
-					System.err.println("Sep"+i+": "+t_strSepWURCS+t_strAglycone);
 					t_mapIDtoWURCS.put(ID+"("+i+")", t_strSepWURCS+t_strAglycone);
 				}
+				System.out.println(" > <WURCS2.0_SEPARATED>\n"+t_strSepWURCSs);
+				System.out.println(" > <WURCS2.0_AGLYCONES>\n"+t_strAglycones);
 
 			} catch (WURCSException e) {
 //				t_mapIDtoWURCS.put(ID, e.getErrorMessage());
 				System.err.println(ID+"\t"+e.getErrorMessage());
 				t_oLogger.addMessage(ID, e.getErrorMessage(), "");
-				e.printStackTrace();
+//				e.printStackTrace();
 			}
 
 //			if(mols!=null) mols.add(mol);
