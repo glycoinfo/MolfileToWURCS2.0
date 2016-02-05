@@ -1,4 +1,4 @@
-package org.glycoinfo.WURCSFramework.exec;
+package org.glycoinfo.ChemicalStructureUtility.exec;
 
 import java.io.PrintWriter;
 import java.util.HashSet;
