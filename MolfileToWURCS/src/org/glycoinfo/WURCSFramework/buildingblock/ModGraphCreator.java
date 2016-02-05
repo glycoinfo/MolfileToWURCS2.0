@@ -2,11 +2,13 @@ package org.glycoinfo.WURCSFramework.buildingblock;
 
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.TreeMap;
 
 import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Atom;
 import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Bond;
 import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.ChemicalGraph;
 import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Connection;
+import org.glycoinfo.ChemicalStructureUtility.util.MorganAlgorithm;
 
 /**
  * Class for creating subgraph
@@ -21,14 +23,14 @@ public class ModGraphCreator {
 
 	public ModGraphCreator(ChemicalGraph a_oOriginal) {
 		this.m_oOriginalGraph = a_oOriginal;
-		this.m_oModGraph = new ModGraph(a_oOriginal);
 	}
 
 	private void clear() {
+		this.m_oModGraph = new ModGraph(this.m_oOriginalGraph);
 		this.m_aAddedExternalConnections = new HashSet<Connection>();
 	}
 
-	public ModGraph getSubGraph() {
+	public ModGraph getModGraph() {
 		return this.m_oModGraph;
 	}
 
@@ -107,7 +109,7 @@ public class ModGraphCreator {
 			if ( !t_aBackboneCarbons.contains( t_oExConnOrig.endAtom() ) ) continue;
 
 			// Add connection from backbone carbon
-			this.m_oModGraph.addOriginalConnectionFromBackbone( t_oExConnOrig.getReverse() );
+			this.m_oModGraph.addOriginalConnectionToBackbone( t_oExConnOrig.getReverse() );
 		}
 	}
 
@@ -133,48 +135,15 @@ public class ModGraphCreator {
 		return t_oExternalConnections;
 	}
 
-	/*
-	public void addExternalConnection( Connection a_oConn ) {
-		if ( !this.getExternalOriginalConnections().contains(a_oConn) ) return;
-
-		// Return if the bond already exists in subgraph
-		if ( this.m_mapBondToOriginal.containsValue(a_oConn.getBond()) ) return;
-
-		// Get start atom in subgraph
-		Atom t_oStartAtom = null;
-		for ( Atom t_oAtom : this.m_mapAtomToOriginal.keySet() ) {
-			if ( !this.m_mapAtomToOriginal.get(t_oAtom).equals(a_oConn.startAtom()) ) continue;
-			t_oStartAtom = t_oAtom;
-			break;
+	public void printMorganNumbers() {
+		MorganAlgorithm t_oMA = new MorganAlgorithm(this.m_oModGraph);
+		t_oMA.calcMorganNumber(null, null);
+		TreeMap<Integer, String> t_mapIDToResult = new TreeMap<Integer, String>();
+		for ( Atom t_oAtom : this.m_oModGraph.getAtoms() ) {
+			String t_strResult = t_oAtom.getSymbol()+"("+t_oAtom.getAtomID()+"): "+t_oMA.getMorganNumber(t_oAtom);
+			t_mapIDToResult.put(t_oAtom.getAtomID(), t_strResult);
 		}
-		// Return if the atom is not found in subgraph
-		if ( t_oStartAtom == null ) return;
-
-
-		// Create and map end atom in subgraph (Do not add to subgraph)
-		Atom t_oEndAtom = a_oConn.endAtom().copy();
-//		this.m_oSubGraph.add(t_oEndAtom);
-		this.m_mapAtomToOriginal.put(t_oEndAtom, a_oConn.endAtom());
-		this.m_aAddedExternalAtoms.add(t_oEndAtom);
-
-		// Create and map bond in subgraph (Do not add to subgraph)
-		Bond t_oExBond = a_oConn.getBond();
-		Atom t_oSubAtom1 = t_oStartAtom;
-		Atom t_oSubAtom2 = t_oEndAtom;
-		if ( t_oExBond.getAtom1().equals( a_oConn.endAtom() ) ) {
-			t_oSubAtom1 = t_oEndAtom;
-			t_oSubAtom2 = t_oStartAtom;
-		}
-		Bond t_oSubBond = new Bond( t_oSubAtom1, t_oSubAtom2, t_oExBond.getType(), t_oExBond.getStereo() );
-//		this.m_oSubGraph.add(t_oSubBond);
-		this.m_mapBondToOriginal.put(t_oSubBond, t_oExBond);
-
-		// Map connections
-		for ( Connection t_oConn : t_oStartAtom.getConnections() ) {
-			if ( !t_oConn.endAtom().equals( t_oEndAtom ) ) continue;
-			this.m_mapConnectionToOriginal.put(t_oConn, a_oConn);
-			this.m_mapConnectionToOriginal.put(t_oConn.getReverse(), a_oConn.getReverse());
-		}
+		for ( Integer t_iID : t_mapIDToResult.keySet() )
+			System.err.println(t_mapIDToResult.get(t_iID));
 	}
-*/
 }

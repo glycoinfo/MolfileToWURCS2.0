@@ -27,7 +27,7 @@ public class ConnectionComparatorByCIPOrderForModGraph extends ConnectionCompara
 		LinkedList<Connection> t_aHDConns2 = this.getHierarchicalDigraphConnections(a_oHD2);
 
 		// Compare number of backbone carbon
-		LinkedList<Connection> t_aConnsB2M = this.m_oModGraph.getConnectionsFromBackbone();
+		LinkedList<Connection> t_aConnsB2M = this.m_oModGraph.getConnectionsToBackbone();
 		int t_nBackCarbon1 = 0;
 		int t_nBackCarbon2 = 0;
 		for ( Connection t_oConnB2M : t_aConnsB2M ) {

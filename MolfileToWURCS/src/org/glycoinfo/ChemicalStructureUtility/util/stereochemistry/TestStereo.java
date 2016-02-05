@@ -87,10 +87,11 @@ public class TestStereo {
 				}
 				if ( t_aSubAtoms.contains(t_oAtom) ) continue;
 				t_oCreateSub.start(t_oAtom, t_aBackboneCarbons);
+				t_oCreateSub.printMorganNumbers();
 				// Ignore subgraph which contained only one hydrogen
 				if ( t_oCreateSub.isHydrogen() ) continue;
-				t_aSubGraphs.add( t_oCreateSub.getSubGraph() );
-				t_aSubAtoms.addAll( t_oCreateSub.getSubGraph().getOriginalAtoms() );
+				t_aSubGraphs.add( t_oCreateSub.getModGraph() );
+				t_aSubAtoms.addAll( t_oCreateSub.getModGraph().getOriginalAtoms() );
 
 			}
 

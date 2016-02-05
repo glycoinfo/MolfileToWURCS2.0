@@ -10,17 +10,17 @@ import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.SubGraph;
 
 public class ModGraph extends SubGraph {
 
-	private LinkedList<Connection> m_aConnectionsFromBackbone = new LinkedList<Connection>();
+	private LinkedList<Connection> m_aConnectionsToBackbone = new LinkedList<Connection>();
 
 	public ModGraph(ChemicalGraph a_oOriginalGraph) {
 		super(a_oOriginalGraph);
 	}
 
-	public LinkedList<Connection> getConnectionsFromBackbone() {
-		return this.m_aConnectionsFromBackbone;
+	public LinkedList<Connection> getConnectionsToBackbone() {
+		return this.m_aConnectionsToBackbone;
 	}
 
-	public void addOriginalConnectionFromBackbone( Connection a_oConn ) {
+	public void addOriginalConnectionToBackbone( Connection a_oConn ) {
 		if ( !this.m_oOriginalGraph.contains( a_oConn.getBond() ) ) return;
 		if ( !this.m_mapOriginalToAtom.containsKey( a_oConn.endAtom() ) ) return;
 		Atom t_oCopyModAtom = this.m_mapOriginalToAtom.get( a_oConn.endAtom() );
@@ -45,6 +45,6 @@ public class ModGraph extends SubGraph {
 		Connection t_oCopyConnFromBack = t_oCopyBackCarbon.getConnections().getFirst();
 		this.m_mapConnectionToOriginal.put(t_oCopyConnFromBack, a_oConn);
 		this.m_mapConnectionToOriginal.put(t_oCopyConnFromBack.getReverse(), a_oConn.getReverse());
-		this.m_aConnectionsFromBackbone.addLast(t_oCopyConnFromBack);
+		this.m_aConnectionsToBackbone.addLast(t_oCopyConnFromBack);
 	}
 }
