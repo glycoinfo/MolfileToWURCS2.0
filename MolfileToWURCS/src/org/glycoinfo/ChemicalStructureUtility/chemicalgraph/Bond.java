@@ -79,6 +79,6 @@ public class Bond {
 	}
 
 	public Bond copy(Atom a_oAtom1, Atom a_oAtom2) {
-		return new Bond( a_oAtom1, a_oAtom2, this.m_iStereo, this.m_iType );
+		return new Bond( a_oAtom1, a_oAtom2, this.m_iType, this.m_iStereo );
 	}
 }
