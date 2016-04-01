@@ -47,7 +47,7 @@ public class MOLToWURCSFromFile {
 
 		// read CTFiles
 		ArrayList<Molecule> mols = new ArrayList<Molecule>();
-		CTFileReader t_objCTReader = new CTFileReader(a_strFilePath, a_bOutput);
+		CTFileReader t_objCTReader = new CTFileReader(a_strFilePath);
 
 		WURCSConversionLogger t_oLogger = new WURCSConversionLogger();
 
