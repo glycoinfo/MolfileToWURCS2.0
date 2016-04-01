@@ -192,11 +192,11 @@ public class HierarchicalDigraph {
 //		if(this.m_oAtom == null) return true;
 		if(atom == null) return true;
 		// Return true if terminal atom
-		boolean t_bIsTerminal = true;
+		boolean t_bIsTerminal = false;
 		for ( Connection t_oConn : atom.getConnections() ) {
 			if ( t_oConn.endAtom().getSymbol().equals("H") ) continue;
-			if ( t_oConn.endAtom().equals(atom) ) continue;
-			if ( this.m_oTargetGraph.contains( t_oConn.endAtom() ) ) t_bIsTerminal = false;
+			if ( this.m_oTargetGraph.contains( t_oConn.endAtom() ) ) continue;
+			t_bIsTerminal = true;
 		}
 		if ( t_bIsTerminal ) return true;
 //		if(this.m_aAncestorAtoms.contains(this.m_oAtom)) return true;

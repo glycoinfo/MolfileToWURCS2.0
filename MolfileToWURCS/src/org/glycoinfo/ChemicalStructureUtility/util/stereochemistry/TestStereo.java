@@ -5,14 +5,14 @@ import java.util.HashSet;
 import java.util.LinkedList;
 
 import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Atom;
-import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Connection;
 import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Molecule;
 import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.SubGraph;
-import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.SubGraphCreator;
 import org.glycoinfo.ChemicalStructureUtility.io.MDLMOL.MoleculeReader;
 import org.glycoinfo.ChemicalStructureUtility.io.MDLMOL.ParameterReader;
 import org.glycoinfo.ChemicalStructureUtility.util.analytical.MoleculeNormalizer;
 import org.glycoinfo.ChemicalStructureUtility.util.analytical.StructureAnalyzer;
+import org.glycoinfo.WURCSFramework.buildingblock.ModGraph;
+import org.glycoinfo.WURCSFramework.buildingblock.ModGraphCreator;
 import org.glycoinfo.WURCSFramework.util.exchange.CarbonChainFinder;
 
 public class TestStereo {
@@ -69,16 +69,16 @@ public class TestStereo {
 			CarbonChainFinder t_oCCFinder = new CarbonChainFinder();
 			t_oCCFinder.setParameters(2, 2, 3, 999, 2.0f);
 			t_oCCFinder.find(t_setTerminalCarbons, t_setIgnoreAtoms);
-			t_oCCFinder.getCandidateCarbonChains();
+			LinkedList<LinkedList<Atom>> t_aCandidateCC = t_oCCFinder.getCandidateCarbonChains();
 
 			HashSet<Atom> t_aBackboneCarbons = new HashSet<Atom>();
-			for ( LinkedList<Atom> t_oChain : t_oCCFinder.getCandidateCarbonChains() ) {
+			for ( LinkedList<Atom> t_oChain : t_aCandidateCC ) {
 				t_aBackboneCarbons.addAll(t_oChain);
 			}
 
-			SubGraphCreator t_oCreateSub = new SubGraphCreator(t_oMol);
-			HashMap<SubGraph, SubGraphCreator> t_mapGraphToCreator = new HashMap<SubGraph, SubGraphCreator>();
-			LinkedList<SubGraph> t_aSubGraphs = new LinkedList<SubGraph>();
+			ModGraphCreator t_oCreateSub = new ModGraphCreator(t_oMol);
+			HashMap<ModGraph, ModGraphCreator> t_mapGraphToCreator = new HashMap<ModGraph, ModGraphCreator>();
+			LinkedList<ModGraph> t_aSubGraphs = new LinkedList<ModGraph>();
 			LinkedList<Atom> t_aSubAtoms = new LinkedList<Atom>();
 			for ( Atom t_oAtom : t_oMol.getAtoms() ) {
 				if ( t_aBackboneCarbons.contains(t_oAtom) ){
@@ -87,16 +87,12 @@ public class TestStereo {
 				}
 				if ( t_aSubAtoms.contains(t_oAtom) ) continue;
 				t_oCreateSub.start(t_oAtom, t_aBackboneCarbons);
+				t_oCreateSub.printMorganNumbers();
 				// Ignore subgraph which contained only one hydrogen
 				if ( t_oCreateSub.isHydrogen() ) continue;
-				t_aSubGraphs.add( t_oCreateSub.getSubGraph() );
-				t_aSubAtoms.addAll( t_oCreateSub.getSubGraph().getOriginalAtoms() );
+				t_aSubGraphs.add( t_oCreateSub.getModGraph() );
+				t_aSubAtoms.addAll( t_oCreateSub.getModGraph().getOriginalAtoms() );
 
-				// Add backbone carbon
-				for ( Connection t_oExConn : t_oCreateSub.getExternalOriginalConnections() ) {
-					if ( !t_aBackboneCarbons.contains( t_oExConn.endAtom() ) ) continue;
-//					t_oCreateSub.addExternalConnection( t_oExConn );
-				}
 			}
 
 			for ( SubGraph t_oSub : t_aSubGraphs ) {

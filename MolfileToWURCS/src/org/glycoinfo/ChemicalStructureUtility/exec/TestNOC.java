@@ -1,4 +1,4 @@
-package org.glycoinfo.WURCSFramework.exec;
+package org.glycoinfo.ChemicalStructureUtility.exec;
 
 import java.io.PrintWriter;
 import java.util.HashSet;
@@ -44,7 +44,8 @@ public class TestNOC {
 
 	public static void readCTFile(String a_strFilePath, PrintWriter a_pwOut, int a_iScoringType) {
 		// read CTFiles
-		CTFileReader t_objCTReader = new CTFileReader(a_strFilePath, false);
+//		CTFileReader t_objCTReader = new CTFileReader(a_strFilePath, false);
+		CTFileReader t_objCTReader = new CTFileReader(a_strFilePath);
 
 		int t_nMol = 0;
 		while ( t_objCTReader.readNext() ) {

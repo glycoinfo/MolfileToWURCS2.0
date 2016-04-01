@@ -10,7 +10,7 @@ import org.glycoinfo.ChemicalStructureUtility.util.analytical.CarbonIdentifier;
  * @author matsubara
  *
  */
-public class NeighboringOxygenCounting {
+public class NeighboringOxygenCounting_ToRemove {
 
 	private LinkedList<Atom> m_aCarbonChain = new LinkedList<Atom>();
 

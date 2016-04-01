@@ -145,6 +145,34 @@ public class Atom implements AtomicVisitable {
 		Collections.sort(this.m_aConnections, comparator);
 	}
 
+	public boolean removeConnection(Bond a_oBond) {
+		LinkedList<Connection> t_aRemoveConnections = new LinkedList<Connection>();
+		for ( Connection t_oConn : this.m_aConnections ) {
+			if ( !t_oConn.getBond().equals(a_oBond) ) continue;
+			t_aRemoveConnections.add(t_oConn);
+		}
+		if ( t_aRemoveConnections.isEmpty() ) return false;
+		return this.removeConnection(t_aRemoveConnections);
+	}
+
+	public boolean removeConnection(Atom a_oAtom) {
+		LinkedList<Connection> t_aRemoveConnections = new LinkedList<Connection>();
+		for ( Connection t_oConn : this.m_aConnections ) {
+			if ( !t_oConn.endAtom().equals(a_oAtom) ) continue;
+			t_aRemoveConnections.add(t_oConn);
+		}
+		if ( t_aRemoveConnections.isEmpty() ) return false;
+		return this.removeConnection(t_aRemoveConnections);
+	}
+
+	private boolean removeConnection(LinkedList<Connection> a_aConn) {
+		boolean t_bSuccess = true;
+		for ( Connection t_oConn : a_aConn ) {
+			if ( !this.m_aConnections.remove(t_oConn) )
+				t_bSuccess = false;
+		}
+		return t_bSuccess;
+	}
 	@Override
 	public void accept(AtomicVisitor a_objVisitor) throws AtomicVisitorException {
 		a_objVisitor.visit(this);

@@ -1,6 +1,5 @@
 package org.glycoinfo.ChemicalStructureUtility.util.stereochemistry;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -56,13 +55,11 @@ public class HierarchicalDigraphComparatorWithStereo extends HierarchicalDigraph
 
 			// Compare children
 			LinkedList<HierarchicalDigraphNode> children1 = graph1.getChildren();
-			LinkedList<HierarchicalDigraphNode> children2 = graph1.getChildren();
-			Collections.sort(children1, this);
-			Collections.sort(children2, this);
+			LinkedList<HierarchicalDigraphNode> children2 = graph2.getChildren();
 			int minChildNum = Math.min(children1.size(), children2.size());
 			for(int ii=0; ii<minChildNum; ii++){
-				HierarchicalDigraphNode child1 = graph1.getChildren().get(ii);
-				HierarchicalDigraphNode child2 = graph2.getChildren().get(ii);
+				HierarchicalDigraphNode child1 = children1.get(ii);
+				HierarchicalDigraphNode child2 = children2.get(ii);
 
 				// Get connection from parent
 				if ( child1.getConnection() == null || child2.getConnection() == null ) continue;

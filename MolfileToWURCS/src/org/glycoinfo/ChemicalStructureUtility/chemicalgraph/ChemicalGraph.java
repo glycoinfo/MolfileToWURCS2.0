@@ -1,6 +1,5 @@
 package org.glycoinfo.ChemicalStructureUtility.chemicalgraph;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 /**
@@ -67,15 +66,18 @@ public abstract class ChemicalGraph {
 	 * @return true if this chemical graph contains input atom.
 	 */
 	public boolean remove(final Atom atom){
-		ArrayList<Bond> removeBonds = new ArrayList<Bond>();
+		LinkedList<Bond> t_aRemoveBonds = new LinkedList<Bond>();
+		LinkedList<Connection> t_aRemoveConnections = new LinkedList<Connection>();
 		for(Connection connection : atom.getConnections()){
-			removeBonds.add(connection.getBond());
+			t_aRemoveBonds.add(connection.getBond());
+			t_aRemoveConnections.add(connection);
+			t_aRemoveConnections.add(connection.getReverse());
 		}
-		for(Bond bond : removeBonds){
+		for(Bond bond : t_aRemoveBonds){
 			Atom atom0 = bond.getAtom1();
 			Atom atom1 = bond.getAtom2();
-			atom0.getConnections().remove(atom1);
-			atom1.getConnections().remove(atom0);
+			atom0.removeConnection(bond);
+			atom1.removeConnection(bond);
 			this.m_aBonds.remove(bond);
 		}
 		return this.m_aAtoms.remove(atom);

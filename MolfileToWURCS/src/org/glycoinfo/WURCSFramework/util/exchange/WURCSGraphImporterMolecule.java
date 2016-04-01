@@ -78,7 +78,7 @@ public class WURCSGraphImporterMolecule {
 
 		// Normalize molecule
 		MoleculeNormalizer t_oMolNorm = new MoleculeNormalizer();
-		t_oMolNorm.normalize(this.m_objMolecule);
+		t_oMolNorm.normalize(a_objMolecule);
 
 		// Throw exeption if there is no carbon
 		int t_nCarbon = 0;
@@ -91,7 +91,7 @@ public class WURCSGraphImporterMolecule {
 		// Structureral analyze for molecule
 		// Collect atoms which membered aromatic, pi cyclic and carbon cyclic rings
 		StructureAnalyzer t_oStAnal = new StructureAnalyzer();
-		t_oStAnal.analyze(this.m_objMolecule);
+		t_oStAnal.analyze(a_objMolecule);
 
 		// Set start atoms for carbon chain finder
 		HashSet<Atom> t_setTerminalCarbons = t_oStAnal.getTerminalCarbons();

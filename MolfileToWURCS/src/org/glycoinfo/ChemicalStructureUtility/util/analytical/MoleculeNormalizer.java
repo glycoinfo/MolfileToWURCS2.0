@@ -1,6 +1,5 @@
 package org.glycoinfo.ChemicalStructureUtility.util.analytical;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Atom;
@@ -37,15 +36,13 @@ public class MoleculeNormalizer {
 	 * Remove metal atoms.
 	 */
 	private void removeMetalAtoms(){
-		ArrayList<Atom> removeAtoms = new ArrayList<Atom>();
-		for(Atom atom : this.m_objMolecule.getAtoms()){
-			if(!Chemical.isNonMetal(atom.getSymbol())){
-				removeAtoms.add(atom);
-			}
+		LinkedList<Atom> t_aMetals = new LinkedList<Atom>();
+		for ( Atom atom : this.m_objMolecule.getAtoms() ) {
+			if ( Chemical.isNonMetal(atom.getSymbol()) ) continue;
+			t_aMetals.add(atom);
 		}
-		for(Atom atom : removeAtoms){
+		for(Atom atom : t_aMetals)
 			this.m_objMolecule.remove(atom);
-		}
 	}
 
 	/**

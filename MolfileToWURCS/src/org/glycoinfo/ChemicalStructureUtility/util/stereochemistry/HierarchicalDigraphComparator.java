@@ -1,6 +1,5 @@
 package org.glycoinfo.ChemicalStructureUtility.util.stereochemistry;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 
@@ -59,9 +58,6 @@ public class HierarchicalDigraphComparator implements Comparator<HierarchicalDig
 			// Compare number of children
 			LinkedList<HierarchicalDigraphNode> t_aChildren1 = t_oNode1.getChildren();
 			LinkedList<HierarchicalDigraphNode> t_aChildren2 = t_oNode2.getChildren();
-			// Sort children of each node
-			Collections.sort(t_aChildren1, this);
-			Collections.sort(t_aChildren2, this);
 
 			// Add children to serch list
 			for ( HierarchicalDigraphNode t_oChild1 : t_aChildren1 ) {

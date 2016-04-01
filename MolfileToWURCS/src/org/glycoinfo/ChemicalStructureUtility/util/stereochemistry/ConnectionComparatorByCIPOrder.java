@@ -26,8 +26,12 @@ public class ConnectionComparatorByCIPOrder implements Comparator<Connection> {
 			HierarchicalDigraphCreator t_oHDCreate1 = new HierarchicalDigraphCreator(a_oConnection1, t_iDepth);
 			HierarchicalDigraphCreator t_oHDCreate2 = new HierarchicalDigraphCreator(a_oConnection2, t_iDepth);
 
+			HierarchicalDigraphNode t_oHD1 = t_oHDCreate1.getHierarchicalDigraph();
+			HierarchicalDigraphNode t_oHD2 = t_oHDCreate2.getHierarchicalDigraph();
+			t_oHD1.sortChildren(this.m_oHDComp);
+			t_oHD2.sortChildren(this.m_oHDComp);
 			// Compare CIP orders using HierarchicalDigraph
-			int t_iComp = this.m_oHDComp.compare(t_oHDCreate1.getHierarchicalDigraph(), t_oHDCreate2.getHierarchicalDigraph());
+			int t_iComp = this.compareHierarchicalDigraph(t_oHD1, t_oHD2);
 			if ( t_iComp != 0 ) return t_iComp;
 			if ( this.m_oHDComp.foundSameBranch() ) return 0;
 
@@ -39,4 +43,7 @@ public class ConnectionComparatorByCIPOrder implements Comparator<Connection> {
 
 	}
 
+	protected int compareHierarchicalDigraph( HierarchicalDigraphNode a_oHD1, HierarchicalDigraphNode a_oHD2 ) {
+		return this.m_oHDComp.compare(a_oHD1, a_oHD1);
+	}
 }

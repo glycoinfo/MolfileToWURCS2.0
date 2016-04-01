@@ -1,5 +1,6 @@
 package org.glycoinfo.ChemicalStructureUtility.util.stereochemistry;
 
+import java.util.Collections;
 import java.util.LinkedList;
 
 import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Connection;
@@ -32,5 +33,13 @@ public class HierarchicalDigraphNode {
 
 	public LinkedList<HierarchicalDigraphNode> getChildren() {
 		return this.m_aChildren;
+	}
+
+	public void sortChildren( HierarchicalDigraphComparator a_oHDComp ) {
+		if ( this.m_aChildren.isEmpty() ) return;
+		for ( HierarchicalDigraphNode t_oChild : this.m_aChildren ) {
+			t_oChild.sortChildren(a_oHDComp);
+		}
+		Collections.sort(this.m_aChildren, a_oHDComp);
 	}
 }

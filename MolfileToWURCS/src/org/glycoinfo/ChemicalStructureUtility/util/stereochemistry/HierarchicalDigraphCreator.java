@@ -96,15 +96,18 @@ public class HierarchicalDigraphCreator {
 			double t_iAtomicNumber = (double)Chemical.getAtomicNumber(t_oConn.endAtom().getSymbol());
 
 			// Count aromatic connections and sum atomic number of naighbor aromatic atom
+			boolean t_bIsAromatic = false;
 			if ( t_oAtom.isAromatic() || t_oConn.endAtom().isAromatic() ) {
 				t_nAromaticConnection++;
 				t_nSumAtomicNumber += t_iAtomicNumber;
+				t_bIsAromatic = true;
 			}
 
 			// Add child digraph as duplicated atoms for multiple connection
 			int t_iBondType = t_oConn.getBond().getType();
 			if ( t_iBondType == 3 || t_iBondType == 2 ) {
-				a_oHD.addChild( new HierarchicalDigraphNode( null, t_iAtomicNumber ) );
+				if ( !t_bIsAromatic )
+					a_oHD.addChild( new HierarchicalDigraphNode( null, t_iAtomicNumber ) );
 				if ( t_iBondType == 3 )
 					a_oHD.addChild( new HierarchicalDigraphNode( null, t_iAtomicNumber ) );
 			}

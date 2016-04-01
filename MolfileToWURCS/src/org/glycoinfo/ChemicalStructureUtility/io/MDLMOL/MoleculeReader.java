@@ -19,7 +19,8 @@ public class MoleculeReader {
 	public boolean readNext() {
 		if ( this.m_oCTReader != null && this.m_oCTReader.readNext() ) return true;
 		if ( !this.m_itFilePath.hasNext() ) return false;
-		this.m_oCTReader = new CTFileReader(this.m_itFilePath.next(), this.m_oParam.m_bOutputSDFile);
+//		this.m_oCTReader = new CTFileReader(this.m_itFilePath.next(), this.m_oParam.m_bOutputSDFile);
+		this.m_oCTReader = new CTFileReader(this.m_itFilePath.next());
 		return this.m_oCTReader.readNext();
 	}
 
