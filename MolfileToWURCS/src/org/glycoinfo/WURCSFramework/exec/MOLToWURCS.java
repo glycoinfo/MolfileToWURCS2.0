@@ -83,6 +83,10 @@ public class MOLToWURCS {
 //			}
 			System.err.println(ID);
 
+			// Output MOL string
+			if ( a_bOutput )
+				System.out.print( t_objCTReader.getMOLString() );
+
 			try {
 				WURCSGraphImporterMolecule t_objImporterMol = new WURCSGraphImporterMolecule();
 				// Set parameters for finding backbone
@@ -161,15 +165,13 @@ public class MOLToWURCS {
 					System.err.println("WURCS2.0_SEPARATED_NO_AGLYCONE:\n"+t_strSepWURCSs2);
 				}
 
-				if ( !a_bOutput ) continue;
-
-				// Output sdfile
-				System.out.print( t_objCTReader.getMOLString() );
-				System.out.print(" > <WURCS2.0_WITH_AGLYCONE>\n"+t_strWURCS+"\n\n");
-				System.out.print(" > <WURCS2.0_SEPARATED>\n"+t_strSepWURCSs+"\n");
-				System.out.print(" > <WURCS2.0_AGLYCONES>\n"+t_strAglycones+"\n");
-				System.out.print(" > <WURCS2.0>\n"+t_strSepWURCSs2+"\n");
-				System.out.print("$$$$\n");
+				// Output WURCS tags
+				if ( a_bOutput ) {
+					System.out.print(" > <WURCS2.0_WITH_AGLYCONE>\n"+t_strWURCS+"\n\n");
+					System.out.print(" > <WURCS2.0_SEPARATED>\n"+t_strSepWURCSs+"\n");
+					System.out.print(" > <WURCS2.0_AGLYCONES>\n"+t_strAglycones+"\n");
+					System.out.print(" > <WURCS2.0>\n"+t_strSepWURCSs2+"\n");
+				}
 
 			} catch (WURCSException e) {
 //				t_mapIDtoWURCS.put(ID, e.getErrorMessage());
@@ -178,7 +180,11 @@ public class MOLToWURCS {
 //				e.printStackTrace();
 			}
 
-//			if(mols!=null) mols.add(mol);
+			// Output separator
+			if ( a_bOutput )
+				System.out.print("$$$$\n");
+
+			//			if(mols!=null) mols.add(mol);
 //			break;
 		}
 
