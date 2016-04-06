@@ -111,13 +111,13 @@ public class MOLToWURCS {
 				t_oLogger.addWURCS(ID, t_strWURCS);
 //				System.exit(0);
 
-				System.err.println("WURCS2.0:\t"+t_strWURCS+"\n");
+				System.err.println("WURCS2.0 WITH AGLYCONE:\t"+t_strWURCS+"\n");
 
-				// For separated graph
 				String t_strAglycones = "\n";
-				String t_strSepWURCSs = "\n";
-				String t_strSepWURCSs2 = "\n";
+				String t_strSepWURCSs = t_strWURCS+"\n";
+				String t_strSepWURCSs2 = t_strWURCS+"\n";
 
+				// Treatment aglycone
 				WURCSVisitorSeparateWURCSGraphByAglycone t_oSeparateGraph = new WURCSVisitorSeparateWURCSGraphByAglycone();
 				t_oSeparateGraph.start(t_objGlycan);
 				if ( !t_oSeparateGraph.getAglycones().isEmpty() ) {
@@ -165,10 +165,10 @@ public class MOLToWURCS {
 
 				// Output sdfile
 				System.out.print( t_objCTReader.getMOLString() );
-				System.out.print(" > <WURCS2.0>\n"+t_strWURCS+"\n\n");
+				System.out.print(" > <WURCS2.0_WITH_AGLYCONE>\n"+t_strWURCS+"\n\n");
 				System.out.print(" > <WURCS2.0_SEPARATED>\n"+t_strSepWURCSs+"\n");
 				System.out.print(" > <WURCS2.0_AGLYCONES>\n"+t_strAglycones+"\n");
-				System.out.print(" > <WURCS2.0_SEPARATED_NO_AGLYCONE>\n"+t_strSepWURCSs2+"\n");
+				System.out.print(" > <WURCS2.0>\n"+t_strSepWURCSs2+"\n");
 				System.out.print("$$$$\n");
 
 			} catch (WURCSException e) {
