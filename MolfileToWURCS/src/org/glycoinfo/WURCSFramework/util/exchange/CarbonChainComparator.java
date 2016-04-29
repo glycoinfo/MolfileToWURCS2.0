@@ -94,7 +94,7 @@ public class CarbonChainComparator implements Comparator<LinkedList<Atom>> {
 
 	/** Compare backbone */
 	private int compareBackbone( LinkedList<Atom> chain1, LinkedList<Atom> chain2 ) {
-		CarbonChainToBackbone t_oCC2B = new CarbonChainToBackbone();
+		CarbonChainToBackbone_TBD t_oCC2B = new CarbonChainToBackbone_TBD();
 		Backbone backbone1 = t_oCC2B.convert(chain1);
 		Backbone backbone2 = t_oCC2B.convert(chain2);
 

@@ -283,31 +283,35 @@ public class SubGraphToModification {
 		String t_strMAP = "";
 		boolean t_bIsInAromatic = false;
 		for(PathSection t_oSection : path){
-			// For atom
+			// For starting brach
+			String t_strBranchStart = "";
+			if ( t_oSection.getLast()!=null && path.indexOf(t_oSection.getLast())!=path.indexOf(t_oSection)-1 ) {
+				t_strBranchStart = "/" + (path.indexOf(t_oSection.getLast()) + 1);
+			}
+
 			Atom t_oAtom = t_oSection.getAtom();
+			// For cyclic
 			if ( t_oAtom==null ) {
+				t_strMAP += t_strBranchStart;
 				t_strMAP += "$" + (path.indexOf(t_oSection.getNext()) + 1);
 				continue;
 			}
 
 			// For aromatic
-			boolean t_bIsAromatic = this.m_aAromaticAtoms.contains(t_oAtom);
+			boolean t_bIsAromatic = t_oAtom.isAromatic();
 //			if(aromatic==false &&  section.pathEnd.atom.isAromatic) ALIN += "(";
 //			if(aromatic==true  && !path.pathEnd.atom.isAromatic) ALIN += ")";
 			if( !t_bIsInAromatic &&  t_bIsAromatic ) t_strMAP += "(";
 			if(  t_bIsInAromatic && !t_bIsAromatic ) t_strMAP += ")";
 			t_bIsInAromatic = t_bIsAromatic;
 
-			// For starting brach
-			if ( t_oSection.getLast()!=null && path.indexOf(t_oSection.getLast())!=path.indexOf(t_oSection)-1 ) {
-				t_strMAP += "/" + (path.indexOf(t_oSection.getLast()) + 1);
-			}
+			t_strMAP += t_strBranchStart;
 
 			// For bond
 			Bond t_oBond = t_oSection.getBond();
 			if ( t_oBond != null ) {
-				Boolean lastIsAromatic = this.m_aAromaticAtoms.contains( t_oSection.getLast().getAtom() );
-				Boolean nextIsAromatic = this.m_aAromaticAtoms.contains( t_oSection.getNext().getAtom() );
+				Boolean lastIsAromatic = t_oSection.getLast().getAtom().isAromatic();
+				Boolean nextIsAromatic = t_oSection.getNext().getAtom().isAromatic();
 				if ( !(lastIsAromatic&&nextIsAromatic) ) {
 					if ( t_oBond.getType() == 2) t_strMAP += "=";
 					if ( t_oBond.getType() == 3) t_strMAP += "#";
@@ -325,7 +329,7 @@ public class SubGraphToModification {
 			if ( graph.getStereo(t_oAtom)!=null ) t_strMAP += "^" + graph.getStereo(t_oAtom);
 		}
 		// For last aromatic atom
-		if ( this.m_aAromaticAtoms.contains( path.getLast().getNext().getAtom() ) ) t_strMAP += ")";
+		if ( path.getLast().getNext().getAtom().isAromatic() ) t_strMAP += ")";
 
 		return t_strMAP;
 	}
