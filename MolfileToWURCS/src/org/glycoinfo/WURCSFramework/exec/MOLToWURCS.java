@@ -171,7 +171,7 @@ public class MOLToWURCS {
 					t_strSepWURCSs2 += t_strSepWURCS+"\n";
 					t_mapIDtoWURCS.put(ID+"\t"+i+"\tSTANDARD\t", t_strSepWURCS);
 				}
-				System.err.println("WURCS2.0_SEPARATED_NO_AGLYCONE:\n"+t_strSepWURCSs2);
+				System.err.println("WURCS2.0_STANDARD:\n"+t_strSepWURCSs2);
 
 				// Output WURCS tags with aglycones
 				if ( a_bOutput ) {
