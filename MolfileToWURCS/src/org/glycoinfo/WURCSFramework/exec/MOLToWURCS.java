@@ -125,8 +125,10 @@ public class MOLToWURCS {
 					t_mapIDtoWURCS.put(ID+"\t1\tSTANDARD\t", t_strWURCS);
 
 					// Output WURCS tags
-					if ( a_bOutput )
-						System.out.print(" > <WURCS2.0>\n"+t_strWURCS+"\n");
+					if ( a_bOutput ) {
+						System.out.print("> <WURCS2.0>\n"+t_strWURCS+"\n");
+						System.out.print("$$$$\n");
+					}
 					continue;
 				}
 
@@ -175,10 +177,11 @@ public class MOLToWURCS {
 
 				// Output WURCS tags with aglycones
 				if ( a_bOutput ) {
-					System.out.print(" > <WURCS2.0_WITH_AGLYCONE>\n"+t_strWURCS+"\n\n");
-					System.out.print(" > <WURCS2.0_SEPARATED>\n"+t_strSepWURCSs+"\n");
-					System.out.print(" > <WURCS2.0_AGLYCONES>\n"+t_strAglycones+"\n");
-					System.out.print(" > <WURCS2.0>\n"+t_strSepWURCSs2+"\n");
+					System.out.print("> <WURCS2.0_WITH_AGLYCONE>\n"+t_strWURCS+"\n\n");
+					System.out.print("> <WURCS2.0_SEPARATED>\n"+t_strSepWURCSs+"\n");
+					System.out.print("> <WURCS2.0_AGLYCONES>\n"+t_strAglycones+"\n");
+					System.out.print("> <WURCS2.0>\n"+t_strSepWURCSs2+"\n");
+					System.out.print("$$$$\n");
 				}
 
 			} catch (WURCSException e) {
@@ -187,10 +190,6 @@ public class MOLToWURCS {
 				t_oLogger.addMessage(ID, e.getErrorMessage(), "");
 //				e.printStackTrace();
 			}
-
-			// Output separator
-			if ( a_bOutput )
-				System.out.print("$$$$\n");
 
 			//			if(mols!=null) mols.add(mol);
 //			break;
