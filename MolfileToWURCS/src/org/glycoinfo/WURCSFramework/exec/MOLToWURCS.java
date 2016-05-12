@@ -126,7 +126,7 @@ public class MOLToWURCS {
 
 					// Output WURCS tags
 					if ( a_bOutput ) {
-						System.out.print("> <WURCS2.0>\n"+t_strWURCS+"\n");
+						System.out.print("> <WURCS2.0>\n"+t_strWURCS+"\n\n");
 						System.out.print("$$$$\n");
 					}
 					continue;
