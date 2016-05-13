@@ -122,7 +122,7 @@ public class MOLToWURCS {
 				// For no aglycone
 				if ( t_oSeparateGraph.getAglycones().isEmpty() ) {
 					// For no aglycone
-					t_mapIDtoWURCS.put(ID+"\t1\tSTANDARD\t", t_strWURCS);
+					t_mapIDtoWURCS.put(ID+"\t1\tSTANDARD", t_strWURCS);
 
 					// Output WURCS tags
 					if ( a_bOutput ) {
@@ -133,7 +133,7 @@ public class MOLToWURCS {
 				}
 
 				// For aglycone
-				t_mapIDtoWURCS.put(ID+"\t1\tWITH_AGLYCONE\t", t_strWURCS);
+				t_mapIDtoWURCS.put(ID+"\t1\tWITH_AGLYCONE", t_strWURCS);
 				System.err.println("WURCS2.0 WITH AGLYCONE:\t"+t_strWURCS+"\n");
 
 				String t_strAglycones = "";
@@ -158,7 +158,7 @@ public class MOLToWURCS {
 						if ( t_strAglycones.contains(t_strAglyconeAbbr) ) continue;
 						t_strAglycones += t_strAglyconeAbbr+"\n";
 					}
-					t_mapIDtoWURCS.put(ID+"\t"+i+"\tSEPARATED\t", t_strSepWURCS+t_strAglycone);
+					t_mapIDtoWURCS.put(ID+"\t"+i+"\tSEPARATED", t_strSepWURCS+t_strAglycone);
 				}
 				System.err.println("WURCS2.0_SEPARATED:\n"+t_strSepWURCSs);
 				System.err.println("WURCS2.0_AGLYCONES:\n"+t_strAglycones);
@@ -171,7 +171,7 @@ public class MOLToWURCS {
 					WURCSFactory t_oSepFactory = new WURCSFactory(t_oSepGraphOneAtom);
 					String t_strSepWURCS = t_oSepFactory.getWURCS();
 					t_strSepWURCSs2 += t_strSepWURCS+"\n";
-					t_mapIDtoWURCS.put(ID+"\t"+i+"\tSTANDARD\t", t_strSepWURCS);
+					t_mapIDtoWURCS.put(ID+"\t"+i+"\tSTANDARD", t_strSepWURCS);
 				}
 				System.err.println("WURCS2.0_STANDARD:\n"+t_strSepWURCSs2);
 
