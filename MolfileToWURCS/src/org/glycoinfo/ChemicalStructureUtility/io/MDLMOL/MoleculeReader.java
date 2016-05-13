@@ -1,8 +1,10 @@
 package org.glycoinfo.ChemicalStructureUtility.io.MDLMOL;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Molecule;
+import org.glycoinfo.WURCSFramework.exec.ParameterReader;
 
 public class MoleculeReader {
 
@@ -10,10 +12,9 @@ public class MoleculeReader {
 	private Iterator<String> m_itFilePath;
 	private CTFileReader m_oCTReader;
 
-	public MoleculeReader(ParameterReader a_oParam) {
+	public MoleculeReader(ArrayList<String> a_aFilePaths) {
 		// Read argument and files using SelectFileDialog
-		this.m_oParam = a_oParam;
-		this.m_itFilePath = a_oParam.m_aCTFilePaths.iterator();
+		this.m_itFilePath = a_aFilePaths.iterator();
 	}
 
 	public boolean readNext() {

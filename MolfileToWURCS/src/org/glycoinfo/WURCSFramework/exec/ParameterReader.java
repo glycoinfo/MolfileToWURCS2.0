@@ -1,4 +1,4 @@
-package org.glycoinfo.ChemicalStructureUtility.io.MDLMOL;
+package org.glycoinfo.WURCSFramework.exec;
 
 import java.awt.FileDialog;
 import java.awt.Frame;
@@ -36,6 +36,9 @@ public class ParameterReader {
 	// ratioBackboneNOS < number of carbon of Backbone / number of NOS connected to Backbone
 	public float m_fRatioBackboneNOS = 2.0f;
 
+	// Program version:
+
+
 	//----------------------------
 	// Constructor
 	//----------------------------
@@ -52,7 +55,6 @@ public class ParameterReader {
 			else if( args[ii].equals("-ID")              ){ ii++; this.m_strID = args[ii]; }
 			else if( args[ii].equals("-dir")             ){ ii++; this.m_strDir = args[ii]; }
 			else if( args[ii].equals("-sdf")             ){ this.m_bOutputSDFile = true; }
-			else if( args[ii].equals("-help")            ){ this.usage(); System.exit(0); }
 			else{  t_aInputFilePaths.add(args[ii]); }
 		}
 
@@ -143,27 +145,6 @@ public class ParameterReader {
 
 	public ArrayList<String> getCTfileList() {
 		return this.m_aCTFilePaths;
-	}
-
-	public void usage() {
-		System.err.println("Usage: java (this program).jar [OPTION]... [FILE]... ");
-		System.err.println();
-		System.err.println("where OPTION include:");
-		System.err.println("\t-minNOS <number of NOS>");
-		System.err.println("\t\t\tto set minimum number of NOS on a monosaccharide");
-		System.err.println("\t-minO <number of O>");
-		System.err.println("\t\t\tto set minimum number of O with single bond on a monosaccharide");
-		System.err.println("\t-minBackboneLength <length of backbone>");
-		System.err.println("\t\t\tto set minimum backbone length of a monosaccharide");
-		System.err.println("\t-maxBackboneLength <length of backbone>");
-		System.err.println("\t\t\tto set maximum backbone length of a monosaccharide");
-		System.err.println("\t-ID <tag ID in sd file>\tto select the tag ID in sd file");
-		System.err.println("\t-dir <directory path>\tto read files in the directory");
-		System.err.println("\t-sdf\t\toutput sd file with WURCS information to stdout");
-		System.err.println("\t-end\t\tto ignore arguments after this option");
-		System.err.println("\t-help\t\tto print this help message");
-		System.err.println();
-		System.err.println("FILE is mol or sd file and must be include filename extension \".mol\" or \".sdf\".");
 	}
 
 	//----------------------------

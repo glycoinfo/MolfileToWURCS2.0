@@ -8,7 +8,6 @@ import java.util.TreeMap;
 
 import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Molecule;
 import org.glycoinfo.ChemicalStructureUtility.io.MDLMOL.CTFileReader;
-import org.glycoinfo.ChemicalStructureUtility.io.MDLMOL.ParameterReader;
 import org.glycoinfo.WURCSFramework.util.WURCSConversionLogger;
 import org.glycoinfo.WURCSFramework.util.WURCSException;
 import org.glycoinfo.WURCSFramework.util.WURCSFactory;
@@ -21,6 +20,9 @@ import org.glycoinfo.WURCSFramework.wurcs.graph.WURCSGraph;
 
 public class MOLToWURCS {
 
+	// Version
+	private static final String VERSION = "2.0.160513";
+
 	private static int minNOS = 0;
 	private static int minO = 0;
 	private static int minBackboneLength = 0;
@@ -28,6 +30,13 @@ public class MOLToWURCS {
 	private static float ratioBackboneNOS = 0;
 
 	public static void main(String[] args) {
+		// usage
+		for ( String arg : args ) {
+			if( !arg.equals("-help") ) continue;
+			usage();
+			System.exit(0);
+		}
+
 		// read argument and files using SelectFileDialog
 		ParameterReader t_objParam = new ParameterReader(args, true);
 		minNOS = t_objParam.m_nMinNOS;
@@ -41,6 +50,31 @@ public class MOLToWURCS {
 		}
 
 	}
+
+	public static void usage() {
+		System.err.println("WURCS2.0 Conversion System from CTFile (Molfile or SDfile)");
+		System.err.println("\tCurrent version: "+VERSION);
+		System.err.println();
+		System.err.println("Usage: java (this program).jar [OPTION]... [FILE]... ");
+		System.err.println();
+		System.err.println("where OPTION include:");
+		System.err.println("\t-minNOS <number of NOS>");
+		System.err.println("\t\t\tto set minimum number of NOS on a monosaccharide");
+		System.err.println("\t-minO <number of O>");
+		System.err.println("\t\t\tto set minimum number of O with single bond on a monosaccharide");
+		System.err.println("\t-minBackboneLength <length of backbone>");
+		System.err.println("\t\t\tto set minimum backbone length of a monosaccharide");
+		System.err.println("\t-maxBackboneLength <length of backbone>");
+		System.err.println("\t\t\tto set maximum backbone length of a monosaccharide");
+		System.err.println("\t-ID <tag ID in sd file>\tto select the tag ID in sd file");
+		System.err.println("\t-dir <directory path>\tto read files in the directory");
+		System.err.println("\t-sdf\t\toutput sd file with WURCS information to stdout");
+		System.err.println("\t-end\t\tto ignore arguments after this option");
+		System.err.println("\t-help\t\tto print this help message");
+		System.err.println();
+		System.err.println("FILE is mol or sd file and must be include filename extension \".mol\" or \".sdf\".");
+	}
+
 
 	public static void readCTFile(String a_strFilePath, String a_strFieldID, boolean a_bOutput) {
 		TreeMap<String, String> t_mapIDtoWURCS = new TreeMap<String, String>();
