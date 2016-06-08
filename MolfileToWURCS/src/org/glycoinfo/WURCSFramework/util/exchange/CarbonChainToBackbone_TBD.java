@@ -192,7 +192,8 @@ public class CarbonChainToBackbone_TBD {
 
 		// Check whether that the carbon is terget of stereo judgement
 		int CType =
-			( strOrbital.equals("sp3") &&  isTerminal && nUniq == 3 && !bridgeCons.isEmpty() )? SP3_TERMINAL    :
+//			( strOrbital.equals("sp3") &&  isTerminal && nUniq == 3 && !bridgeCons.isEmpty() )? SP3_TERMINAL    :
+			( strOrbital.equals("sp3") &&  isTerminal && nUniq == 3                          )? SP3_TERMINAL    :
 			( strOrbital.equals("sp3") && !isTerminal && nUniq == 2                          )? SP3_NONTERMINAL :
 			( strOrbital.equals("sp2") &&  isTerminal && nUniq == 2 && iType1 == 2           )? SP2_TERMINAL    :
 			( strOrbital.equals("sp2") && !isTerminal && nUniq == 1 && iType1 == 2           )? SP2_NONTERMINAL :

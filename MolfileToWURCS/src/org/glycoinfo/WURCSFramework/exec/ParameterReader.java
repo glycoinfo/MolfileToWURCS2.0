@@ -1,4 +1,4 @@
-package org.glycoinfo.ChemicalStructureUtility.io.MDLMOL;
+package org.glycoinfo.WURCSFramework.exec;
 
 import java.awt.FileDialog;
 import java.awt.Frame;
@@ -35,6 +35,9 @@ public class ParameterReader {
 	// Regard the Backbone as candidate monosaccharide if the Backbone satisfy below equation.
 	// ratioBackboneNOS < number of carbon of Backbone / number of NOS connected to Backbone
 	public float m_fRatioBackboneNOS = 2.0f;
+
+	// Program version:
+
 
 	//----------------------------
 	// Constructor

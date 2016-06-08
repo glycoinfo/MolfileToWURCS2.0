@@ -7,9 +7,9 @@ import java.util.LinkedList;
 import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Atom;
 import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Molecule;
 import org.glycoinfo.ChemicalStructureUtility.io.MDLMOL.CTFileReader;
-import org.glycoinfo.ChemicalStructureUtility.io.MDLMOL.ParameterReader;
 import org.glycoinfo.ChemicalStructureUtility.util.analytical.NOC.NOCApproach;
 import org.glycoinfo.ChemicalStructureUtility.util.analytical.cyclization.Aromatization;
+import org.glycoinfo.WURCSFramework.exec.ParameterReader;
 import org.glycoinfo.WURCSFramework.util.FileIOUtils;
 
 public class TestNOC {

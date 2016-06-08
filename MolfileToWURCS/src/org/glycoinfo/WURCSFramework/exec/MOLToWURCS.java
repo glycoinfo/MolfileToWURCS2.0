@@ -8,7 +8,6 @@ import java.util.TreeMap;
 
 import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Molecule;
 import org.glycoinfo.ChemicalStructureUtility.io.MDLMOL.CTFileReader;
-import org.glycoinfo.ChemicalStructureUtility.io.MDLMOL.ParameterReader;
 import org.glycoinfo.WURCSFramework.util.WURCSConversionLogger;
 import org.glycoinfo.WURCSFramework.util.WURCSException;
 import org.glycoinfo.WURCSFramework.util.WURCSFactory;
@@ -21,6 +20,9 @@ import org.glycoinfo.WURCSFramework.wurcs.graph.WURCSGraph;
 
 public class MOLToWURCS {
 
+	// Version
+	private static final String VERSION = "2.0.160513";
+
 	private static int minNOS = 0;
 	private static int minO = 0;
 	private static int minBackboneLength = 0;
@@ -28,6 +30,13 @@ public class MOLToWURCS {
 	private static float ratioBackboneNOS = 0;
 
 	public static void main(String[] args) {
+		// usage
+		for ( String arg : args ) {
+			if( !arg.equals("-help") ) continue;
+			usage();
+			System.exit(0);
+		}
+
 		// read argument and files using SelectFileDialog
 		ParameterReader t_objParam = new ParameterReader(args, true);
 		minNOS = t_objParam.m_nMinNOS;
@@ -41,6 +50,31 @@ public class MOLToWURCS {
 		}
 
 	}
+
+	public static void usage() {
+		System.err.println("WURCS2.0 Conversion System from CTFile (Molfile or SDfile)");
+		System.err.println("\tCurrent version: "+VERSION);
+		System.err.println();
+		System.err.println("Usage: java (this program).jar [OPTION]... [FILE]... ");
+		System.err.println();
+		System.err.println("where OPTION include:");
+		System.err.println("\t-minNOS <number of NOS>");
+		System.err.println("\t\t\tto set minimum number of NOS on a monosaccharide");
+		System.err.println("\t-minO <number of O>");
+		System.err.println("\t\t\tto set minimum number of O with single bond on a monosaccharide");
+		System.err.println("\t-minBackboneLength <length of backbone>");
+		System.err.println("\t\t\tto set minimum backbone length of a monosaccharide");
+		System.err.println("\t-maxBackboneLength <length of backbone>");
+		System.err.println("\t\t\tto set maximum backbone length of a monosaccharide");
+		System.err.println("\t-ID <tag ID in sd file>\tto select the tag ID in sd file");
+		System.err.println("\t-dir <directory path>\tto read files in the directory");
+		System.err.println("\t-sdf\t\toutput sd file with WURCS information to stdout");
+		System.err.println("\t-end\t\tto ignore arguments after this option");
+		System.err.println("\t-help\t\tto print this help message");
+		System.err.println();
+		System.err.println("FILE is mol or sd file and must be include filename extension \".mol\" or \".sdf\".");
+	}
+
 
 	public static void readCTFile(String a_strFilePath, String a_strFieldID, boolean a_bOutput) {
 		TreeMap<String, String> t_mapIDtoWURCS = new TreeMap<String, String>();
@@ -122,16 +156,18 @@ public class MOLToWURCS {
 				// For no aglycone
 				if ( t_oSeparateGraph.getAglycones().isEmpty() ) {
 					// For no aglycone
-					t_mapIDtoWURCS.put(ID+"\t1\tSTANDARD\t", t_strWURCS);
+					t_mapIDtoWURCS.put(ID+"\t1\tSTANDARD", t_strWURCS);
 
 					// Output WURCS tags
-					if ( a_bOutput )
-						System.out.print(" > <WURCS2.0>\n"+t_strWURCS+"\n");
+					if ( a_bOutput ) {
+						System.out.print("> <WURCS2.0>\n"+t_strWURCS+"\n\n");
+						System.out.print("$$$$\n");
+					}
 					continue;
 				}
 
 				// For aglycone
-				t_mapIDtoWURCS.put(ID+"\t1\tWITH_AGLYCONE\t", t_strWURCS);
+				t_mapIDtoWURCS.put(ID+"\t1\tWITH_AGLYCONE", t_strWURCS);
 				System.err.println("WURCS2.0 WITH AGLYCONE:\t"+t_strWURCS+"\n");
 
 				String t_strAglycones = "";
@@ -156,7 +192,7 @@ public class MOLToWURCS {
 						if ( t_strAglycones.contains(t_strAglyconeAbbr) ) continue;
 						t_strAglycones += t_strAglyconeAbbr+"\n";
 					}
-					t_mapIDtoWURCS.put(ID+"\t"+i+"\tSEPARATED\t", t_strSepWURCS+t_strAglycone);
+					t_mapIDtoWURCS.put(ID+"\t"+i+"\tSEPARATED", t_strSepWURCS+t_strAglycone);
 				}
 				System.err.println("WURCS2.0_SEPARATED:\n"+t_strSepWURCSs);
 				System.err.println("WURCS2.0_AGLYCONES:\n"+t_strAglycones);
@@ -169,16 +205,17 @@ public class MOLToWURCS {
 					WURCSFactory t_oSepFactory = new WURCSFactory(t_oSepGraphOneAtom);
 					String t_strSepWURCS = t_oSepFactory.getWURCS();
 					t_strSepWURCSs2 += t_strSepWURCS+"\n";
-					t_mapIDtoWURCS.put(ID+"\t"+i+"\tSTANDARD\t", t_strSepWURCS);
+					t_mapIDtoWURCS.put(ID+"\t"+i+"\tSTANDARD", t_strSepWURCS);
 				}
-				System.err.println("WURCS2.0_SEPARATED_NO_AGLYCONE:\n"+t_strSepWURCSs2);
+				System.err.println("WURCS2.0_STANDARD:\n"+t_strSepWURCSs2);
 
 				// Output WURCS tags with aglycones
 				if ( a_bOutput ) {
-					System.out.print(" > <WURCS2.0_WITH_AGLYCONE>\n"+t_strWURCS+"\n\n");
-					System.out.print(" > <WURCS2.0_SEPARATED>\n"+t_strSepWURCSs+"\n");
-					System.out.print(" > <WURCS2.0_AGLYCONES>\n"+t_strAglycones+"\n");
-					System.out.print(" > <WURCS2.0>\n"+t_strSepWURCSs2+"\n");
+					System.out.print("> <WURCS2.0_WITH_AGLYCONE>\n"+t_strWURCS+"\n\n");
+					System.out.print("> <WURCS2.0_SEPARATED>\n"+t_strSepWURCSs+"\n");
+					System.out.print("> <WURCS2.0_AGLYCONES>\n"+t_strAglycones+"\n");
+					System.out.print("> <WURCS2.0>\n"+t_strSepWURCSs2+"\n");
+					System.out.print("$$$$\n");
 				}
 
 			} catch (WURCSException e) {
@@ -187,10 +224,6 @@ public class MOLToWURCS {
 				t_oLogger.addMessage(ID, e.getErrorMessage(), "");
 //				e.printStackTrace();
 			}
-
-			// Output separator
-			if ( a_bOutput )
-				System.out.print("$$$$\n");
 
 			//			if(mols!=null) mols.add(mol);
 //			break;

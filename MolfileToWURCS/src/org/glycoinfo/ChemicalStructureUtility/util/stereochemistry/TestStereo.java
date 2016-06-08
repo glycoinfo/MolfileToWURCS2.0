@@ -8,11 +8,11 @@ import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Atom;
 import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Molecule;
 import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.SubGraph;
 import org.glycoinfo.ChemicalStructureUtility.io.MDLMOL.MoleculeReader;
-import org.glycoinfo.ChemicalStructureUtility.io.MDLMOL.ParameterReader;
 import org.glycoinfo.ChemicalStructureUtility.util.analytical.MoleculeNormalizer;
 import org.glycoinfo.ChemicalStructureUtility.util.analytical.StructureAnalyzer;
 import org.glycoinfo.WURCSFramework.buildingblock.ModGraph;
 import org.glycoinfo.WURCSFramework.buildingblock.ModGraphCreator;
+import org.glycoinfo.WURCSFramework.exec.ParameterReader;
 import org.glycoinfo.WURCSFramework.util.exchange.CarbonChainFinder;
 
 public class TestStereo {
@@ -21,7 +21,7 @@ public class TestStereo {
 		// read argument and files using SelectFileDialog
 		ParameterReader t_objParam = new ParameterReader(args, true);
 
-		MoleculeReader t_oMolRead = new MoleculeReader(t_objParam);
+		MoleculeReader t_oMolRead = new MoleculeReader(t_objParam.getCTfileList());
 
 		// Set skip IDs
 		LinkedList<String> t_aSkipIDs = new LinkedList<String>();
