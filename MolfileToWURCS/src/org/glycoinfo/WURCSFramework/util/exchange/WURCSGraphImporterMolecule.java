@@ -9,6 +9,7 @@ import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Atom;
 import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Connection;
 import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Molecule;
 import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.SubGraphOld;
+import org.glycoinfo.ChemicalStructureUtility.util.analytical.AtomIdentifier;
 import org.glycoinfo.ChemicalStructureUtility.util.analytical.CarbonChainAnalyzer;
 import org.glycoinfo.ChemicalStructureUtility.util.analytical.MoleculeNormalizer;
 import org.glycoinfo.ChemicalStructureUtility.util.analytical.StructureAnalyzer;
@@ -80,10 +81,17 @@ public class WURCSGraphImporterMolecule {
 		MoleculeNormalizer t_oMolNorm = new MoleculeNormalizer();
 		t_oMolNorm.normalize(a_objMolecule);
 
-		// Throw exeption if there is no carbon
+		// Throw exeption if there is no carbon or illegal carbon valence
 		int t_nCarbon = 0;
 		for ( Atom t_oAtom : a_objMolecule.getAtoms() ) {
-			if ( t_oAtom.getSymbol().equals("C") ) t_nCarbon++;
+			if ( !t_oAtom.getSymbol().equals("C") ) continue;
+			t_nCarbon++;
+
+			if ( t_oAtom.isAromatic() ) continue;
+			// Check valence number
+			AtomIdentifier t_oIdent = new AtomIdentifier();
+			if ( t_oIdent.setAtom(t_oAtom).getHiddenBondNumber() < 0 )
+				throw new WURCSException("Illegal valence number is found.");
 		}
 		if ( t_nCarbon == 0 )
 			throw new WURCSException("There is no carbon in the molecule.");
