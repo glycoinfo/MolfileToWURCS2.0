@@ -21,7 +21,7 @@ import org.glycoinfo.WURCSFramework.wurcs.graph.WURCSGraph;
 public class MOLToWURCS {
 
 	// Version
-	private static final String VERSION = "2.0.160608";
+	private static final String VERSION = "2.0.160611";
 
 	private static int minNOS = 0;
 	private static int minO = 0;
@@ -98,11 +98,11 @@ public class MOLToWURCS {
 			Molecule mol = t_objCTReader.getMolecule();
 			String ID = t_objCTReader.getFieldData(a_strFieldID);
 
-			try {
-				if ( !a_strFieldID.equals("PDB_Chemical_Component_ID") )
-					ID = String.format("%1$05d", Integer.parseInt(ID) );
-			} catch (NumberFormatException e) {
-			}
+//			try {
+//				if ( !a_strFieldID.equals("PDB_Chemical_Component_ID") )
+//					ID = String.format("%1$05d", Integer.parseInt(ID) );
+//			} catch (NumberFormatException e) {
+//			}
 			if ( t_aSkipIDs.contains(ID) ) {
 				System.err.println(ID + " is skipped.");
 				continue;
