@@ -11,11 +11,9 @@ import org.glycoinfo.ChemicalStructureUtility.io.MDLMOL.CTFileReader;
 import org.glycoinfo.WURCSFramework.util.WURCSConversionLogger;
 import org.glycoinfo.WURCSFramework.util.WURCSException;
 import org.glycoinfo.WURCSFramework.util.WURCSFactory;
+import org.glycoinfo.WURCSFramework.util.WURCSFactoryForAglycone;
 import org.glycoinfo.WURCSFramework.util.WURCSFileWriter;
 import org.glycoinfo.WURCSFramework.util.exchange.WURCSGraphImporterMolecule;
-import org.glycoinfo.WURCSFramework.util.graph.WURCSGraphNormalizer;
-import org.glycoinfo.WURCSFramework.util.graph.visitor.WURCSVisitorSeparateWURCSGraphByAglycone;
-import org.glycoinfo.WURCSFramework.wurcs.graph.Modification;
 import org.glycoinfo.WURCSFramework.wurcs.graph.WURCSGraph;
 
 public class MOLToWURCS {
@@ -129,8 +127,8 @@ public class MOLToWURCS {
 				t_objImporterMol.getCarbonChainFinder().setParameters(minNOS, minO, minBackboneLength, maxBackboneLength, ratioBackboneNOS);
 
 				WURCSGraph t_objGlycan = t_objImporterMol.start(mol);
-				WURCSGraphNormalizer t_objGraphNormalizer = new WURCSGraphNormalizer();
-				t_objGraphNormalizer.start(t_objGlycan);
+//				WURCSGraphNormalizer t_objGraphNormalizer = new WURCSGraphNormalizer();
+//				t_objGraphNormalizer.start(t_objGlycan);
 
 				WURCSFactory t_oFactory = new WURCSFactory(t_objGlycan);
 				String t_strWURCS = t_oFactory.getWURCS();
@@ -152,11 +150,10 @@ public class MOLToWURCS {
 
 
 				// Treatment aglycone
-				WURCSVisitorSeparateWURCSGraphByAglycone t_oSeparateGraph = new WURCSVisitorSeparateWURCSGraphByAglycone();
-				t_oSeparateGraph.start(t_objGlycan);
+				WURCSFactoryForAglycone t_oFactoryA = new WURCSFactoryForAglycone(t_strWURCS);
 
 				// For no aglycone
-				if ( t_oSeparateGraph.getAglycones().isEmpty() ) {
+				if ( !t_oFactoryA.hasAglycone() ) {
 					// For no aglycone
 					t_mapIDtoWURCS.put(ID+"\t1\tSTANDARD", t_strWURCS);
 
@@ -172,51 +169,38 @@ public class MOLToWURCS {
 				t_mapIDtoWURCS.put(ID+"\t1\tWITH_AGLYCONE", t_strWURCS);
 				System.err.println("WURCS2.0 WITH AGLYCONE:\t"+t_strWURCS+"\n");
 
-				String t_strAglycones = "";
+				// For separated WURCS by each aglycone
 				String t_strSepWURCSs = "";
-				int i=0;
-				for ( WURCSGraph t_oSepGraph : t_oSeparateGraph.getSeparatedGraphs() ) {
-					i++;
-					t_objGraphNormalizer.start(t_oSepGraph);
-					WURCSFactory t_oSepFactory = new WURCSFactory(t_oSepGraph);
-					String t_strSepWURCS = t_oSepFactory.getWURCS();
+				for ( String t_strSepWURCS : t_oFactoryA.getSeparatedWURCSs() )
 					t_strSepWURCSs += t_strSepWURCS+"\n";
+				// For separated aglycones
+				String t_strAglycones = "";
+				for ( String t_strAglyconeAbbr : t_oFactoryA.getSeparatedAglycones() )
+					t_strAglycones += t_strAglyconeAbbr+"\n";
+				String t_strStdWURCSs = "";
 
-					// For aglycone
-					LinkedList<String> t_aUniqueAbbrs = new LinkedList<String>();
-					String t_strAglycone = "";
-					for ( Modification t_oAglycone : t_oSeparateGraph.getMapSeparatedGraphToAglycones().get(t_oSepGraph) ) {
-						String t_strAbbr = t_oSeparateGraph.getMapAglyconeToAbbr().get(t_oAglycone);
-						if ( t_aUniqueAbbrs.contains(t_strAbbr) ) continue;
-						t_aUniqueAbbrs.add(t_strAbbr);
-						String t_strAglyconeAbbr = t_strAbbr+": "+t_oAglycone.getMAPCode();
-						t_strAglycone += "\t"+t_strAglyconeAbbr;
-						if ( t_strAglycones.contains(t_strAglyconeAbbr) ) continue;
-						t_strAglycones += t_strAglyconeAbbr+"\n";
-					}
-					t_mapIDtoWURCS.put(ID+"\t"+i+"\tSEPARATED", t_strSepWURCS+t_strAglycone);
-				}
-				System.err.println("WURCS2.0_SEPARATED:\n"+t_strSepWURCSs);
-				System.err.println("WURCS2.0_AGLYCONES:\n"+t_strAglycones);
-
-				String t_strSepWURCSs2 = "";
-				i=0;
-				for ( WURCSGraph t_oSepGraphOneAtom : t_oSeparateGraph.getSeparatedGraphsWithOneAtom() ) {
+				// For separated WURCSs with aglycone
+				int i=0;
+				for ( String t_strSepWURCSA : t_oFactoryA.getSeparatedWURCSsWithAglycone() ) {
 					i++;
-					t_objGraphNormalizer.start(t_oSepGraphOneAtom);
-					WURCSFactory t_oSepFactory = new WURCSFactory(t_oSepGraphOneAtom);
-					String t_strSepWURCS = t_oSepFactory.getWURCS();
-					t_strSepWURCSs2 += t_strSepWURCS+"\n";
-					t_mapIDtoWURCS.put(ID+"\t"+i+"\tSTANDARD", t_strSepWURCS);
+					t_mapIDtoWURCS.put(ID+"\t"+i+"\tSEPARATED", t_strSepWURCSA);
 				}
-				System.err.println("WURCS2.0_STANDARD:\n"+t_strSepWURCSs2);
+
+				// For standerd WURCSs (remain one atom aglycone)
+				i=0;
+				for ( String t_strStdWURCS : t_oFactoryA.getStandardWURCSs() ) {
+					i++;
+					t_strStdWURCSs = t_strStdWURCS+"\n";
+					t_mapIDtoWURCS.put(ID+"\t"+i+"\tSTANDARD", t_strStdWURCS);
+				}
+				System.err.println("WURCS2.0_STANDARD:\n"+t_strStdWURCSs);
 
 				// Output WURCS tags with aglycones
 				if ( a_bOutput ) {
 					System.out.print("> <WURCS2.0_WITH_AGLYCONE>\n"+t_strWURCS+"\n\n");
 					System.out.print("> <WURCS2.0_SEPARATED>\n"+t_strSepWURCSs+"\n");
 					System.out.print("> <WURCS2.0_AGLYCONES>\n"+t_strAglycones+"\n");
-					System.out.print("> <WURCS2.0>\n"+t_strSepWURCSs2+"\n");
+					System.out.print("> <WURCS2.0>\n"+t_strStdWURCSs+"\n");
 					System.out.print("$$$$\n");
 				}
 
