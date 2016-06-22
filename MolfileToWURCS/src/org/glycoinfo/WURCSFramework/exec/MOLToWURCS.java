@@ -19,7 +19,7 @@ import org.glycoinfo.WURCSFramework.wurcs.graph.WURCSGraph;
 public class MOLToWURCS {
 
 	// Version
-	private static final String VERSION = "2.0.160608";
+	private static final String VERSION = "2.0.160622";
 
 	private static int minNOS = 0;
 	private static int minO = 0;
@@ -111,7 +111,7 @@ public class MOLToWURCS {
 //			if ( !ID.equals("G00513YN") ) continue;
 //			if ( !ID.equals("23373") ) continue;
 //			if ( !ID.equals("CHEBI:15692") ) continue;
-//			if ( !ID.equals("CHEBI:85251") ) continue;
+//			if ( !ID.equals("CHEBI:85257") ) continue;
 //			if(!t_objParam.m_sdfileOutput){
 //				System.err.print( ID+":" );
 //			}
