@@ -33,6 +33,7 @@ public class CarbonChainToBackbone_TBD {
 	/** The carbon is sp2 and non-terminal, and has double bond between connected carbon */
 	private static final int SP2_NONTERMINAL = 4;
 
+	private boolean m_bHasAnomPos;
 //	private CarbonIdentifier m_objIdent = new CarbonIdentifier();
 
 	/**
@@ -43,6 +44,7 @@ public class CarbonChainToBackbone_TBD {
 	public Backbone convert(LinkedList<Atom> chain) {
 		Backbone_TBD backbone = new Backbone_TBD();
 		int anomPos = 0;
+		this.m_bHasAnomPos = false;
 		Atom t_oAnomericCarbon = new CarbonChainAnalyzer().setCarbonChain(chain).getAnomericCarbon();
 		// XXX: remove print
 //		System.err.println( t_oAnomericCarbon );
@@ -52,7 +54,7 @@ public class CarbonChainToBackbone_TBD {
 			backbone.addBackboneCarbon( new BackboneCarbon(backbone, cd) );
 
 			// For anomeric carbon
-			if ( anomPos != 0 ) continue;
+			if ( this.m_bHasAnomPos ) continue;
 			if ( !carbon.equals(t_oAnomericCarbon) ) continue;
 //			if ( !this.m_objIdent.setAtom(carbon).isAnomericLike() ) continue;
 //			if ( cd.getChar() == 'o' || cd.getChar() == 'O' ) continue;
@@ -60,6 +62,7 @@ public class CarbonChainToBackbone_TBD {
 			anomCarbon = backbone.getBackboneCarbons().removeLast();
 			cd = ( anomPos == 1 )? CarbonDescriptor_TBD.SZX_ANOMER : CarbonDescriptor_TBD.SSX_ANOMER;
 			backbone.addBackboneCarbon( new BackboneCarbon(backbone, cd) );
+			this.m_bHasAnomPos = true;
 		}
 		backbone.setAnomericPosition(anomPos);
 		// Check symbol of anomer
@@ -135,7 +138,9 @@ public class CarbonChainToBackbone_TBD {
 						 ( type == 2 )? "=" : // double bond
 						 ( type == 3 )? "#" : // triple bond
 						 "?";
-			mod += conatom.getSymbol() + ( (bridgeCons.contains(con))? "_" : "" );  // Distinguish for bridge foot carbon
+			mod += conatom.getSymbol();
+			if ( !this.m_bHasAnomPos )
+				mod += ( (bridgeCons.contains(con))? "_" : "" );  // Distinguish for bridge foot carbon
 			modStrList.add( mod );
 			modStrUniq.add( mod );
 		}

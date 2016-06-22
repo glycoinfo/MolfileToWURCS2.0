@@ -10,6 +10,7 @@ import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.SubGraphOld;
 import org.glycoinfo.ChemicalStructureUtility.util.Chemical;
 import org.glycoinfo.ChemicalStructureUtility.util.analytical.AtomIdentifier;
 import org.glycoinfo.ChemicalStructureUtility.util.analytical.CarbonChainAnalyzer;
+import org.glycoinfo.WURCSFramework.wurcs.graph.BackboneCarbon;
 import org.glycoinfo.WURCSFramework.wurcs.graph.DirectionDescriptor;
 import org.glycoinfo.WURCSFramework.wurcs.graph.LinkagePosition;
 
@@ -23,14 +24,16 @@ public class ConnectionToLinkagePosition {
 	private HashMap<Connection, LinkedList<Atom>> m_hashConnectionToBackboneChain;
 	private HashMap<SubGraphOld, LinkedList<Atom>> m_hashGraphToModificationCarbons = new HashMap<SubGraphOld, LinkedList<Atom>>();
 	private HashMap<SubGraphOld, HashMap<Atom, Integer>> m_hashGraphToModificationCarbonsMap;
+	private HashMap<Atom, BackboneCarbon> m_mapAtomToBackboneCarbon;
 	private AtomIdentifier m_objIdent = new AtomIdentifier();
 /*
 	public ConnectionToLinkagePosition( HashMap<SubGraph, LinkedList<Atom>> hashGraphToModificationCarbons ) {
 		this.m_hashGraphToModificationCarbons = hashGraphToModificationCarbons;
 	}
 */
-	public ConnectionToLinkagePosition( HashMap<SubGraphOld, HashMap<Atom, Integer>> a_mapGraphToModificationCarbonsMap ) {
+	public ConnectionToLinkagePosition( HashMap<Atom, BackboneCarbon> a_mapAtomToBackboneCarbon, HashMap<SubGraphOld, HashMap<Atom, Integer>> a_mapGraphToModificationCarbonsMap ) {
 		this.m_hashGraphToModificationCarbonsMap = a_mapGraphToModificationCarbonsMap;
+		this.m_mapAtomToBackboneCarbon = a_mapAtomToBackboneCarbon;
 	}
 
 	/**
@@ -48,6 +51,10 @@ public class ConnectionToLinkagePosition {
 		// DMB: Get direction of modification on the backbone carbon
 		String t_strDirection = this.getConnectionDirection( con, chain );
 		DirectionDescriptor t_enumDD = this.convertDirectionDesctiptorString(t_strDirection);
+		// Check omittable
+		char t_cCD = this.m_mapAtomToBackboneCarbon.get( con.startAtom() ).getDesctriptor().getChar();
+		if ( t_cCD != 'c' && t_cCD != 'C' && t_cCD != 'M' && t_cCD != 'n' && t_cCD != 'N' )
+			t_enumDD = DirectionDescriptor.N;
 
 		// PCA: Get carbon poistion in the modification
 //		LinkedList<Atom> modCarbons = this.m_hashGraphToModificationCarbons.get(graph);
@@ -76,7 +83,8 @@ public class ConnectionToLinkagePosition {
 //		if(outputFullInformation || types.get(types.uniqBackboneNum).connects.size() != 1){
 		boolean t_bCanEllipsisDirection =
 //				( this.countUniqueModificationNumberOnCarbon(con, chain) == 0 || t_enumDD == DirectionDescriptor.N );
-				( this.isDirectionOmitted(con, chain) || t_enumDD == DirectionDescriptor.N );
+//				( this.isDirectionOmitted(con, chain) || t_enumDD == DirectionDescriptor.N );
+				( t_enumDD == DirectionDescriptor.N );
 
 		LinkagePosition link = new LinkagePosition(t_iBPos, t_enumDD, t_bCanEllipsisDirection, PCA, ellipsisPCA);
 		return link;

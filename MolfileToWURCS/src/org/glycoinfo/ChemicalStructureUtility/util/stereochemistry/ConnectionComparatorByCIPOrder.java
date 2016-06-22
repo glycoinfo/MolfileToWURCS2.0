@@ -44,6 +44,6 @@ public class ConnectionComparatorByCIPOrder implements Comparator<Connection> {
 	}
 
 	protected int compareHierarchicalDigraph( HierarchicalDigraphNode a_oHD1, HierarchicalDigraphNode a_oHD2 ) {
-		return this.m_oHDComp.compare(a_oHD1, a_oHD1);
+		return this.m_oHDComp.compare(a_oHD1, a_oHD2);
 	}
 }

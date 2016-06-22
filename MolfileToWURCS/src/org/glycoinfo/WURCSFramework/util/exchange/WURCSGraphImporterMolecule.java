@@ -182,7 +182,7 @@ public class WURCSGraphImporterMolecule {
 
 		// Make Linkages and Edges
 //		ConnectionToLinkagePosition C2L = new ConnectionToLinkagePosition(hashGraphToModificationCarbons);
-		ConnectionToLinkagePosition C2L = new ConnectionToLinkagePosition( t_mapGraphToModificationCarbonsMap );
+		ConnectionToLinkagePosition C2L = new ConnectionToLinkagePosition( t_mapAtomToBackboneCarbon, t_mapGraphToModificationCarbonsMap );
 		LinkedList<WURCSEdge> edges = new LinkedList<WURCSEdge>();
 		int count = 0;
 		for ( Connection con : t_aLinkageConnections ) {

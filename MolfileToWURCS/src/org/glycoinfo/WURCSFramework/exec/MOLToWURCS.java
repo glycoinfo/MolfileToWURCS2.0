@@ -97,7 +97,7 @@ public class MOLToWURCS {
 			String ID = t_objCTReader.getFieldData(a_strFieldID);
 
 			try {
-				if ( !a_strFieldID.equals("PDB_Chemical_Component_ID") )
+				if ( a_strFieldID != null && !a_strFieldID.equals("PDB_Chemical_Component_ID") )
 					ID = String.format("%1$05d", Integer.parseInt(ID) );
 			} catch (NumberFormatException e) {
 			}

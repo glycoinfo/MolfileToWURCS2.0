@@ -1,7 +1,9 @@
 package org.glycoinfo.WURCSFramework.buildingblock;
 
 import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Atom;
+import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Connection;
 import org.glycoinfo.ChemicalStructureUtility.util.analytical.CarbonIdentifier;
+import org.glycoinfo.WURCSFramework.wurcs.graph.CarbonDescriptor;
 
 public class BackCarbon extends Atom {
 
@@ -11,12 +13,13 @@ public class BackCarbon extends Atom {
 	public static final int TYPE_SP3 = 3;
 
 	private Atom m_oOriginal;
+	private CarbonDescriptor m_enumDescriptor;
 	private BackCarbonChain m_oParentChain;
 	private BackCarbon m_oPrevCarbon = null;
 	private BackCarbon m_oNextCarbon = null;
-	private ModGraph m_oMod1 = null;
-	private ModGraph m_oMod2 = null;
-	private ModGraph m_oMod3 = null;
+	private Connection m_oConn1 = null;
+	private Connection m_oConn2 = null;
+	private Connection m_oConn3 = null;
 
 	/**
 	 * Connection around the carbon<br>
@@ -78,19 +81,20 @@ public class BackCarbon extends Atom {
 		return this.m_oParentChain;
 	}
 
+	public void setPrev(BackCarbon a_oPrev) {
+		this.m_oPrevCarbon = a_oPrev;
+	}
+
 	public BackCarbon getPrev() {
 		return this.m_oPrevCarbon;
+	}
+
+	public void setNext(BackCarbon a_oNext) {
+		this.m_oNextCarbon = a_oNext;
 	}
 
 	public BackCarbon getNext() {
 		return this.m_oNextCarbon;
 	}
 
-	public void setPrev(BackCarbon a_oPrev) {
-		this.m_oPrevCarbon = a_oPrev;
-	}
-
-	public void setNext(BackCarbon a_oNext) {
-		this.m_oNextCarbon = a_oNext;
-	}
 }
