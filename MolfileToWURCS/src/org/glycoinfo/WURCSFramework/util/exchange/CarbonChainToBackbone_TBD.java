@@ -342,9 +342,9 @@ public class CarbonChainToBackbone_TBD {
 			A1 = ( conC1.getBond().getType() > conC2.getBond().getType() )? conC2.endAtom() : conC1.endAtom();
 		}
 		for ( Connection con : B0.getConnections() ) {
+			if ( con.endAtom().equals(A0) ) continue;
+			if ( !chain.contains( con.endAtom() ) ) continue;
 			B1 = con.endAtom();
-			if ( B1.equals(A0) ) continue;
-			if ( !chain.contains(B1) ) continue;
 			break;
 		}
 		return Chemical.sp2stereo(A0, A1, B0, B1);
