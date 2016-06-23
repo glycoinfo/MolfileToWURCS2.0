@@ -27,11 +27,11 @@ public class Chemical {
 		                  "Hf", "Ta", "W" , "Re", "Os", "Ir", "Pt", "Au", "Hg", "Tl", "Pb", "Bi", "Po", "At", "Rn", //  72 -  86
 		"Fr", "Ra",                                                                                                 //  87 -  88
 		"Ac", "Th", "Pa", "U", "Np", "Pu", "Am", "Cm", "Bk", "Cf", "Es", "Fm", "Md", "No", "Lr",                    //  89 - 103
-		"A", "Q", "X", "?", "R"                                                                                     // 104 - 108
+		"A", "Q", "X", "?", "R", "*"                                                                                // 104 - 109
 	};
 	private static String[] MetalAtoms = {"Li", "Na", "K", "Rb", "Cs", "Be", "Mg", "Ca", "Sr", "Ba", "Ra"};
-	private static String[] NonMetalAtoms = {"H", "B", "C", "N", "O", "F", "P", "S", "Cl", "As", "Se", "Br", "Te", "I", "At",
-											 "A", "Q", "X", "?", "R"};
+	private static String[] NonMetalAtoms = {"H", "B", "C", "N", "O", "F", "P", "S", "Cl", "As", "Se", "Br", "Te", "I", "At"};
+	private static String[] UnknownAtoms = {"A", "Q", "X", "?", "R", "*"};
 
 	/**
 	 * Don't let anyone instantiate this class.
@@ -79,6 +79,15 @@ public class Chemical {
 	public static boolean isNonMetal(String symbol){
 		for(int ii=0; ii<NonMetalAtoms.length; ii++){
 			if(symbol.equals(NonMetalAtoms[ii])){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public static boolean isUnknown(String symbol){
+		for(int ii=0; ii<UnknownAtoms.length; ii++){
+			if(symbol.equals(UnknownAtoms[ii])){
 				return true;
 			}
 		}

@@ -9,6 +9,7 @@ import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Atom;
 import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Connection;
 import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Molecule;
 import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.SubGraphOld;
+import org.glycoinfo.ChemicalStructureUtility.util.Chemical;
 import org.glycoinfo.ChemicalStructureUtility.util.analytical.AtomIdentifier;
 import org.glycoinfo.ChemicalStructureUtility.util.analytical.CarbonChainAnalyzer;
 import org.glycoinfo.ChemicalStructureUtility.util.analytical.MoleculeNormalizer;
@@ -77,13 +78,12 @@ public class WURCSGraphImporterMolecule {
 		this.clear();
 		this.m_objMolecule = a_objMolecule;
 
-		// Normalize molecule
-		MoleculeNormalizer t_oMolNorm = new MoleculeNormalizer();
-		t_oMolNorm.normalize(a_objMolecule);
-
-		// Throw exeption if there is no carbon or illegal carbon valence
+		// Throw exeption if there is no carbon, illegal carbon valence or unkown atom
 		int t_nCarbon = 0;
 		for ( Atom t_oAtom : a_objMolecule.getAtoms() ) {
+			if ( Chemical.isUnknown( t_oAtom.getSymbol() ) )
+				throw new WURCSException("Unknown atom symbol (A, Q, R, X, ?, *) is not handled.");
+
 			if ( !t_oAtom.getSymbol().equals("C") ) continue;
 			t_nCarbon++;
 
@@ -95,6 +95,10 @@ public class WURCSGraphImporterMolecule {
 		}
 		if ( t_nCarbon == 0 )
 			throw new WURCSException("There is no carbon in the molecule.");
+
+		// Normalize molecule
+		MoleculeNormalizer t_oMolNorm = new MoleculeNormalizer();
+		t_oMolNorm.normalize(a_objMolecule);
 
 		// Structureral analyze for molecule
 		// Collect atoms which membered aromatic, pi cyclic and carbon cyclic rings

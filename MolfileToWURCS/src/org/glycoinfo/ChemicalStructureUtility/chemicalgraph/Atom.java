@@ -130,8 +130,8 @@ public class Atom implements AtomicVisitable {
 
 	public void setAliasName(String alias) {
 		this.m_strAliasName = alias;
-		if ( this.m_strSymbol.equals("*") )
-			this.m_strSymbol = this.m_strAliasName.substring(0,1);
+//		if ( this.m_strSymbol.equals("*") )
+//			this.m_strSymbol = this.m_strAliasName.substring(0,1);
 	}
 
 	public void setAtomID(int atomID) {

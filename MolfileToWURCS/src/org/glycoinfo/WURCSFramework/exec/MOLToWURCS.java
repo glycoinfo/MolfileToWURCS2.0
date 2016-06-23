@@ -19,7 +19,7 @@ import org.glycoinfo.WURCSFramework.wurcs.graph.WURCSGraph;
 public class MOLToWURCS {
 
 	// Version
-	private static final String VERSION = "2.0.160622";
+	private static final String VERSION = "2.0.160623";
 
 	private static int minNOS = 0;
 	private static int minO = 0;
