@@ -49,12 +49,12 @@ public class ConnectionToLinkagePosition {
 		int t_iBPos = chain.indexOf( con.startAtom() )+1;
 
 		// DMB: Get direction of modification on the backbone carbon
-		String t_strDirection = this.getConnectionDirection( con, chain );
-		DirectionDescriptor t_enumDD = this.convertDirectionDesctiptorString(t_strDirection);
+		String t_strDirection = "N";
 		// Check omittable
 		char t_cCD = this.m_mapAtomToBackboneCarbon.get( con.startAtom() ).getDesctriptor().getChar();
-		if ( t_cCD != 'c' && t_cCD != 'C' && t_cCD != 'M' && t_cCD != 'n' && t_cCD != 'N' )
-			t_enumDD = DirectionDescriptor.N;
+		if ( t_cCD == 'c' || t_cCD == 'C' || t_cCD == 'M' || t_cCD == 'n' || t_cCD == 'N' )
+			t_strDirection = this.getConnectionDirection( con, chain );
+		DirectionDescriptor t_enumDD = this.convertDirectionDesctiptorString(t_strDirection);
 
 		// PCA: Get carbon poistion in the modification
 //		LinkedList<Atom> modCarbons = this.m_hashGraphToModificationCarbons.get(graph);
