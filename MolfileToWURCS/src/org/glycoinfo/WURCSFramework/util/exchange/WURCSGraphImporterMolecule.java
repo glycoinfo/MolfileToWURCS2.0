@@ -81,8 +81,8 @@ public class WURCSGraphImporterMolecule {
 		// Throw exeption if there is no carbon, illegal carbon valence or unkown atom
 		int t_nCarbon = 0;
 		for ( Atom t_oAtom : a_objMolecule.getAtoms() ) {
-			if ( Chemical.isUnknown( t_oAtom.getSymbol() ) )
-				throw new WURCSException("Unknown atom symbol (A, Q, R, X, ?, *) is not handled.");
+			if ( !Chemical.isKnownAtom( t_oAtom.getSymbol() ) )
+				throw new WURCSException("Unknown (not handled) atom symbol is found.");
 
 			if ( !t_oAtom.getSymbol().equals("C") ) continue;
 			t_nCarbon++;

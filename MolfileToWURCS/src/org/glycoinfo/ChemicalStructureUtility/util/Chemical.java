@@ -26,8 +26,10 @@ public class Chemical {
 		"La", "Ce", "Pr", "Nd", "Pm", "Sm", "Eu", "Gd", "Tb", "Dy", "Ho", "Er", "Tm", "Yb", "Lu",                   //  57 -  71
 		                  "Hf", "Ta", "W" , "Re", "Os", "Ir", "Pt", "Au", "Hg", "Tl", "Pb", "Bi", "Po", "At", "Rn", //  72 -  86
 		"Fr", "Ra",                                                                                                 //  87 -  88
-		"Ac", "Th", "Pa", "U", "Np", "Pu", "Am", "Cm", "Bk", "Cf", "Es", "Fm", "Md", "No", "Lr",                    //  89 - 103
-		"A", "Q", "X", "?", "R", "*"                                                                                // 104 - 109
+		"Ac", "Th", "Pa", "U" , "Np", "Pu", "Am", "Cm", "Bk", "Cf", "Es", "Fm", "Md", "No", "Lr",                   //  89 - 103
+		                  "Rf", "Db", "Sg", "Bh", "Hs", "Mt", "Ds", "Rg", "Cn", "Nh", "Fl", "Mc", "Lv", "Ts", "Og", // 103 - 118
+//		                                                                       "Uut"       "Uup"       "Uus" "Uuo"  // 103 - 118 in 2016/06
+//		"A", "Q", "X", "?", "R", "*"                                                                                //  Unknown
 	};
 	private static String[] MetalAtoms = {"Li", "Na", "K", "Rb", "Cs", "Be", "Mg", "Ca", "Sr", "Ba", "Ra"};
 	private static String[] NonMetalAtoms = {"H", "B", "C", "N", "O", "F", "P", "S", "Cl", "As", "Se", "Br", "Te", "I", "At"};
@@ -85,9 +87,14 @@ public class Chemical {
 		return false;
 	}
 
-	public static boolean isUnknown(String symbol){
-		for(int ii=0; ii<UnknownAtoms.length; ii++){
-			if(symbol.equals(UnknownAtoms[ii])){
+	/**
+	 * Return true if symbol is known atom in periodic table
+	 * @param symbol
+	 * @return true if symbol is known atom
+	 */
+	public static boolean isKnownAtom(String symbol){
+		for(int ii=0; ii<PeriodicTable.length; ii++){
+			if(symbol.equals(PeriodicTable[ii])){
 				return true;
 			}
 		}
