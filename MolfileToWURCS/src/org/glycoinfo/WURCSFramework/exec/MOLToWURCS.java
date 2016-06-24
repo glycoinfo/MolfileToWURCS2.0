@@ -110,7 +110,7 @@ public class MOLToWURCS {
 //			if ( !ID.equals("3u2w_G_5") ) continue;
 //			if ( !ID.equals("G00513YN") ) continue;
 //			if ( !ID.equals("23373") ) continue;
-//			if ( !ID.equals("CHEBI:15692") ) continue;
+//			if ( !ID.equals("CHEBI:50071") ) continue;
 //			if ( !ID.equals("CHEBI:67762") ) continue;
 //			if(!t_objParam.m_sdfileOutput){
 //				System.err.print( ID+":" );

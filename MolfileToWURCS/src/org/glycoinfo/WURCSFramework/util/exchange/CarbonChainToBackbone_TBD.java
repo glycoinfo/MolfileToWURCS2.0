@@ -127,7 +127,7 @@ public class CarbonChainToBackbone_TBD {
 		// Swap bond type for backbone carbon
 		if ( iType2 > iType1 ) { int type = iType2; iType2 = iType1; iType1 = type; }
 
-
+		// TODO: Use ConnectionComparator
 		// Set modification string from connection types and connected atom symbols
 		LinkedList<String> modStrList = new LinkedList<String>();
 		HashSet<String>    modStrUniq = new HashSet<String>();
@@ -308,6 +308,9 @@ public class CarbonChainToBackbone_TBD {
 
 		// Sort connection of modifications
 		// bond type -> symbol
+		ConnectionComparator t_oConnComp = new ConnectionComparator();
+		Collections.sort( conList, t_oConnComp);
+/*
 		Collections.sort(conList, new Comparator<Connection> (){
 			public int compare(Connection con1, Connection con2) {
 				if( con1.getBond().getType() != con2.getBond().getType()  )
@@ -317,8 +320,21 @@ public class CarbonChainToBackbone_TBD {
 				return 0;
 			}
 		});
-		Atom M1 = (conList.size() > 0)? conList.get(0).endAtom() : null;
+*/
+		Connection con1 = conList.get(0);
+		Connection con2 = (conList.size() > 1)? conList.get(1) : null;
+		Atom M1 = con1.endAtom();
+		if ( con2 != null && t_oConnComp.compare(con1, con2) == 0 )
+			return "N";
 
+		/**
+		 *  A1        ?  A1        B1
+		 *    \      /     \      /
+		 *     A0==B0       A0==B0
+		 *    /      \     /      \
+		 *   ?        B1  ?        ?
+		 *       E            Z
+		 */
 		Atom A0 = C;
 		Atom B0 = null;
 		Atom A1 = null;
@@ -326,27 +342,58 @@ public class CarbonChainToBackbone_TBD {
 
 		// sp2 terminal
 		/**
-		 *  M1      ?     M2      ?
-		 *    \    /        \    /
-		 *     C==C1   or    C==C1
-		 *    /    \        /    \
-		 *  M2      Cx    M1      Cx
+		 *  M1        ?   M2        ?   M1        ?
+		 *    \      /      \      /      \      /
+		 *     C1==C2   or   C1==C2   or   C1==C2
+		 *    /      \      /      \      /      \
+		 *  M2        ?   M1        ?   M1        ?
+		 *
+		 *  M1 > M2
 		 */
 		if ( carbonType == SP2_TERMINAL ) {
 			B0 = ( conC1 != null )? conC1.endAtom() : conC2.endAtom();
 			A1 = M1;
 		}
 		// sp2 non-terminal
+		/**
+		 *  C0        ?   M1        ?
+		 *    \      /      \      /
+		 *     C1==C2   or   C1==C2
+		 *    /      \      /      \
+		 *  M1        ?   C0        ?
+		 *  M2 > M3
+		 */
 		if ( carbonType == SP2_NONTERMINAL ) {
 			B0 = ( conC1.getBond().getType() > conC2.getBond().getType() )? conC1.endAtom() : conC2.endAtom();
 			A1 = ( conC1.getBond().getType() > conC2.getBond().getType() )? conC2.endAtom() : conC1.endAtom();
 		}
+		// partner side
+		/**
+		 *  ?        M2   ?        M3   ?        M2
+		 *   \      /      \      /      \      /
+		 *    C1==C2   or   C1==C2   or   C1==C2
+		 *   /      \      /      \      /      \
+		 *  ?        C3   ?        M2   ?        M2
+		 *  C3 > M2 > M3
+		 */
+		LinkedList<Connection> conList2 = new LinkedList<Connection>();
 		for ( Connection con : B0.getConnections() ) {
 			if ( con.endAtom().equals(A0) ) continue;
-			if ( !chain.contains( con.endAtom() ) ) continue;
+			if ( !chain.contains( con.endAtom() ) ) {
+				conList2.add(con);
+				continue;
+			}
 			B1 = con.endAtom();
-			break;
 		}
+		if ( B1 == null && conList2.size() > 1 ) {
+			// partner side is terminal
+			Connection conM2 = conList2.get(0);
+			Connection conM3 = conList2.get(1);
+			int t_iComp = t_oConnComp.compare(conM2, conM3);
+			if ( t_iComp != 0 )
+				B1 = (t_iComp < 0)? conM2.endAtom() : conM3.endAtom();
+		}
+
 		return Chemical.sp2stereo(A0, A1, B0, B1);
 
 	}
