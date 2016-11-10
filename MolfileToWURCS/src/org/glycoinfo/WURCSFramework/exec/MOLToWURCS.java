@@ -190,7 +190,7 @@ public class MOLToWURCS {
 				i=0;
 				for ( String t_strStdWURCS : t_oFactoryA.getStandardWURCSs() ) {
 					i++;
-					t_strStdWURCSs = t_strStdWURCS+"\n";
+					t_strStdWURCSs += t_strStdWURCS+"\n";
 					t_mapIDtoWURCS.put(ID+"\t"+i+"\tSTANDARD", t_strStdWURCS);
 				}
 				System.err.println("WURCS2.0_STANDARD:\n"+t_strStdWURCSs);
