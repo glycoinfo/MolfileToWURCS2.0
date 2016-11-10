@@ -110,19 +110,10 @@ public class StructureAnalyzer {
 			this.m_aPiCyclicAtoms.addAll(t_oPiCyclize);
 		}
 
-		// Collect carbon cyclic atoms
-		CarbonCyclization t_oCarbonCyclize = new CarbonCyclization();
-		for ( Atom t_oAtom : a_objMol.getAtoms() ) {
-			if ( this.m_aCarbonCyclicAtoms.contains(t_oAtom) ) continue;
-			if ( !t_oCarbonCyclize.start(t_oAtom) ) continue;
-			this.m_aCarbonCyclicAtoms.addAll(t_oCarbonCyclize);
-		}
-
 		// Set ignore atoms
 		HashSet<Atom> ignoreAtoms = new HashSet<Atom>();
 		ignoreAtoms.addAll(this.m_aAromaticAtoms);
 		ignoreAtoms.addAll(this.m_aPiCyclicAtoms);
-		ignoreAtoms.addAll(this.m_aCarbonCyclicAtoms);
 
 		// Search and collect terminal carbons
 		for ( Atom atom : a_objMol.getAtoms() ) {
@@ -137,5 +128,38 @@ public class StructureAnalyzer {
 			}
 			if ( numC == 1 ) this.m_aTerminalCarbons.add(atom);
 		}
+
+		// Search and collect branch carbons
+		HashSet<Atom> t_aBranchCarbons = new HashSet<Atom>();
+		t_aBranchCarbons.addAll(this.m_aTerminalCarbons);
+		while ( true ) {
+			HashSet<Atom> t_aNextCarbons = new HashSet<Atom>();
+			for ( Atom atom : a_objMol.getAtoms() ) {
+				if ( !atom.getSymbol().equals("C") ) continue;
+				if ( t_aBranchCarbons.contains(atom) ) continue;
+				int numC = 0;
+				for ( Connection con : atom.getConnections() ) {
+					Atom conAtom = con.endAtom();
+					if ( !conAtom.getSymbol().equals("C")) continue;
+					if ( t_aBranchCarbons.contains(conAtom) ) continue;
+					numC++;
+				}
+				if ( numC == 1 ) t_aNextCarbons.add(atom);
+			}
+			if ( t_aNextCarbons.size() == 0 ) break;
+			t_aBranchCarbons.addAll(t_aNextCarbons);
+		}
+
+		// Collect carbon cyclic atoms
+		CarbonCyclization t_oCarbonCyclize = new CarbonCyclization();
+		for ( Atom t_oAtom : a_objMol.getAtoms() ) {
+			if ( t_aBranchCarbons.contains(t_oAtom) ) continue;
+			if ( this.m_aCarbonCyclicAtoms.contains(t_oAtom) ) continue;
+			if ( !t_oCarbonCyclize.start(t_oAtom) ) continue;
+			this.m_aCarbonCyclicAtoms.addAll(t_oCarbonCyclize);
+		}
+
+		ignoreAtoms.addAll(this.m_aCarbonCyclicAtoms);
+
 	}
 }

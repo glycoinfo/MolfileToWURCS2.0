@@ -95,7 +95,7 @@ public class Calculation {
 	}
 
 	/**
-	 * Calculate inner product from three coordinates.
+	 * Calculate outer product from three coordinates.
 	 * @param o Center atom coordinate
 	 * @param a Side atom coordinate 1
 	 * @param b Side atom coordinate 2
