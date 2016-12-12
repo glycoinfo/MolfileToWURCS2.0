@@ -280,20 +280,22 @@ public class SubGraphToModification {
 	public String makeMAPCode(final SubGraphOld graph, final Path path) {
 		// Set stereo for graph
 		graph.setStereo();
+
+		// Make MAP code
 		String t_strMAP = "";
 		boolean t_bIsInAromatic = false;
 		for(PathSection t_oSection : path){
 			// For starting brach
 			String t_strBranchStart = "";
 			if ( t_oSection.getLast()!=null && path.indexOf(t_oSection.getLast())!=path.indexOf(t_oSection)-1 ) {
-				t_strBranchStart = "/" + (path.indexOf(t_oSection.getLast()) + 1);
+				t_strBranchStart = "/" + (path.indexOf(t_oSection.getLast().getAtom()) + 1);
 			}
 
 			Atom t_oAtom = t_oSection.getAtom();
 			// For cyclic
 			if ( t_oAtom==null ) {
 				t_strMAP += t_strBranchStart;
-				t_strMAP += "$" + (path.indexOf(t_oSection.getNext()) + 1);
+				t_strMAP += "$" + (path.indexOf(t_oSection.getNext().getAtom()) + 1);
 				continue;
 			}
 

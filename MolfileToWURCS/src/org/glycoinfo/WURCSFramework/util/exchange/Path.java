@@ -62,8 +62,11 @@ public class Path extends LinkedList<PathSection>{
 	}
 
 	public int indexOf(final Atom atom){
+		int t_nAtom = -1;
 		for(PathSection path : this){
-			if(path.getAtom() == atom) return this.indexOf(path);
+			if ( path.getAtom() == null ) continue;
+			t_nAtom++;
+			if(path.getAtom() == atom) return t_nAtom;
 		}
 		return -1;
 	}
