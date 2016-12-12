@@ -328,6 +328,9 @@ public class SubGraphToModification {
 					t_strSymbol += this.m_mapBacboneCarbonToMAPPos.get(t_oSection.getAtom());
 			}
 			t_strMAP += t_strSymbol;
+
+			// For stereo
+			if ( t_strSymbol.startsWith("*") ) continue;
 			if ( graph.getStereo(t_oAtom)!=null ) t_strMAP += "^" + graph.getStereo(t_oAtom);
 		}
 		// For last aromatic atom
