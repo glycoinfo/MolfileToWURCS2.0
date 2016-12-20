@@ -78,7 +78,7 @@ public class MoleculeNormalizer {
 			}
 		}
 		// TODO: remove print
-		System.err.println("attach " + addConnect.size());
+//		System.err.println("attach " + addConnect.size());
 		// Add atom and bond of hidden hydrogens
 		for ( Connection con : addConnect ) {
 			this.m_objMolecule.add( con.endAtom() );

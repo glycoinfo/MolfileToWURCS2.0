@@ -2,6 +2,8 @@ package org.glycoinfo.WURCSFramework.buildingblock;
 
 import java.util.LinkedList;
 
+import org.glycoinfo.WURCSFramework.util.unuse.ModGraph;
+
 public class BuildingBlock {
 
 	private LinkedList<BackCarbonChain> m_aChains = new LinkedList<BackCarbonChain>();

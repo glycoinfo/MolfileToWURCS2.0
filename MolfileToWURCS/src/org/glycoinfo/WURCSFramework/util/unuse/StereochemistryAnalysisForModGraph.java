@@ -1,4 +1,4 @@
-package org.glycoinfo.WURCSFramework.util.buildingblock.stereochemistry;
+package org.glycoinfo.WURCSFramework.util.unuse;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -7,7 +7,6 @@ import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Connection;
 import org.glycoinfo.ChemicalStructureUtility.util.stereochemistry.ConnectionComparatorByCIPOrder;
 import org.glycoinfo.ChemicalStructureUtility.util.stereochemistry.HierarchicalDigraphComparator;
 import org.glycoinfo.ChemicalStructureUtility.util.stereochemistry.StereochemistryAnalysis;
-import org.glycoinfo.WURCSFramework.buildingblock.ModGraph;
 
 public class StereochemistryAnalysisForModGraph extends StereochemistryAnalysis {
 

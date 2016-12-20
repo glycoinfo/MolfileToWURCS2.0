@@ -1,4 +1,4 @@
-package org.glycoinfo.WURCSFramework.util.exchange;
+package org.glycoinfo.WURCSFramework.util.exchange.old;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -15,13 +15,22 @@ import org.glycoinfo.ChemicalStructureUtility.util.analytical.CarbonChainAnalyze
 import org.glycoinfo.ChemicalStructureUtility.util.analytical.MoleculeNormalizer;
 import org.glycoinfo.ChemicalStructureUtility.util.analytical.StructureAnalyzer;
 import org.glycoinfo.ChemicalStructureUtility.util.stereochemistry.StereochemistryAnalysis;
+import org.glycoinfo.WURCSFramework.buildingblock.SubMolecule;
 import org.glycoinfo.WURCSFramework.util.WURCSException;
+import org.glycoinfo.WURCSFramework.util.exchange.CarbonChainComparator;
+import org.glycoinfo.WURCSFramework.util.exchange.CarbonChainFinder;
+import org.glycoinfo.WURCSFramework.util.exchange.CarbonChainToBackbone_TBD;
+import org.glycoinfo.WURCSFramework.util.exchange.SubGraphToSubMolecule;
+import org.glycoinfo.WURCSFramework.util.exchange.SubMoleculeToMAPGraph;
+import org.glycoinfo.WURCSFramework.util.graph.MAPGraphExporter;
+import org.glycoinfo.WURCSFramework.util.graph.MAPGraphImporter;
 import org.glycoinfo.WURCSFramework.wurcs.graph.Backbone;
 import org.glycoinfo.WURCSFramework.wurcs.graph.BackboneCarbon;
 import org.glycoinfo.WURCSFramework.wurcs.graph.LinkagePosition;
 import org.glycoinfo.WURCSFramework.wurcs.graph.Modification;
 import org.glycoinfo.WURCSFramework.wurcs.graph.WURCSEdge;
 import org.glycoinfo.WURCSFramework.wurcs.graph.WURCSGraph;
+import org.glycoinfo.WURCSFramework.wurcs.graph.map.MAPGraph;
 
 /**
  * Class of importer for Carbohydrate
@@ -160,7 +169,7 @@ public class WURCSGraphImporterMolecule {
 			// TODO: remove print
 //			System.err.println( aBackboneChains.indexOf(chain) + ": " + backbone.getSkeletonCode() );
 		}
-
+/*
 		// Make Modifications
 		LinkedList<Modification> modifications = new LinkedList<Modification>();
 		HashMap<SubGraphOld, Modification> hashGraphToModification = new HashMap<SubGraphOld, Modification>();
@@ -180,6 +189,39 @@ public class WURCSGraphImporterMolecule {
 //				modification.addBackboneCarbon(bc);
 			}
 			modifications.add(modification);
+		}
+*/
+		// Make Modifications
+		LinkedList<Modification> t_oModifs = new LinkedList<Modification>();
+		HashMap<SubGraphOld, HashMap<Atom, Integer>> t_mapGraphToModificationCarbonsMap = new HashMap<SubGraphOld, HashMap<Atom, Integer>>();
+		HashMap<SubGraphOld, Modification> hashGraphToModification = new HashMap<SubGraphOld, Modification>();
+		HashSet<Atom> t_aBackboneCarbons = new HashSet<Atom>();
+		for ( LinkedList<Atom> t_oChain : t_aBackboneChains ) {
+			t_aBackboneCarbons.addAll(t_oChain);
+		}
+		SubGraphToSubMolecule t_oSG2SM = new SubGraphToSubMolecule(t_aBackboneCarbons);
+		for ( SubGraphOld t_oSG : t_aModificationGraphs ) {
+			SubMolecule t_oSM = t_oSG2SM.convert(t_oSG);
+			SubMoleculeToMAPGraph t_oSM2MAPG = new SubMoleculeToMAPGraph(t_oSM);
+			MAPGraph t_oMAPGraph = t_oSM2MAPG.getMAPGraph();
+			Modification t_oModif = new Modification( (new MAPGraphExporter()).getMAP(t_oMAPGraph) );
+			hashGraphToModification.put(t_oSG, t_oModif);
+
+			// Add backbone atoms to candidate modifications
+			for ( Connection t_oConn : t_oSG.getExternalConnections() ) {
+				Atom t_oConnAtom = t_oConn.endAtom();
+				if ( !t_aBackboneCarbons.contains( t_oConnAtom ) ) continue;
+				t_oSG.add( t_oConnAtom );
+				t_oSG.add( t_oConn.getBond() );
+			}
+
+			HashMap<Atom, Integer> t_mapBackboneCarbonToStarIndex = new HashMap<Atom, Integer>();
+			for ( Atom t_oCarbon : t_oSM.getBackboneCarbons() ) {
+				int t_iStarIndex = t_oSM2MAPG.getStarIndexFromBackboneCarbon(t_oCarbon);
+				Atom t_oOrigCarbon = t_oSM.getOriginalAtom(t_oCarbon);
+				t_mapBackboneCarbonToStarIndex.put(t_oOrigCarbon, t_iStarIndex);
+			}
+			t_mapGraphToModificationCarbonsMap.put(t_oSG, t_mapBackboneCarbonToStarIndex);
 		}
 
 		WURCSGraph objWURCSGlycan = new WURCSGraph();
@@ -350,18 +392,21 @@ public class WURCSGraphImporterMolecule {
 		SubGraphCreatorOld creator = new SubGraphCreatorOld(startAtoms, t_aBackboneCarbons);
 		LinkedList<SubGraphOld> candidateModifications = creator.create();
 
-		// Find aglycons from the candidate modifications
-		for ( SubGraphOld graph : candidateModifications ) {
-			boolean isAglycon = true;
-			for ( Connection con : graph.getExternalConnections() ) {
-				Atom conatom = con.endAtom();
-				if ( !t_aBackboneCarbons.contains( conatom ) ) continue;
-				if (  t_aAnomericCarbons.contains( conatom ) ) continue;
-				isAglycon = false;
-			}
-			if ( isAglycon ) this.m_aAglyconGraphs.addLast( graph );
-		}
+		// TODO: Make submolecule through copying SubGraph
+		SubGraphToSubMolecule t_oSG2SM = new SubGraphToSubMolecule(t_aBackboneCarbons);
+		for ( SubGraphOld t_oCandidateModif : candidateModifications ) {
+			SubMolecule t_oSubMol = t_oSG2SM.convert(t_oCandidateModif);
 
+			SubMoleculeToMAPGraph t_oSM2MAP = new SubMoleculeToMAPGraph(t_oSubMol);
+			t_oSM2MAP.start();
+			MAPGraphExporter t_oMAPExport = new MAPGraphExporter();
+			String t_strMAP = t_oMAPExport.getMAP( t_oSM2MAP.getMAPGraph() );
+			System.err.println( t_strMAP );
+			MAPGraphImporter t_oMAPImport = new MAPGraphImporter();
+			t_strMAP = t_oMAPExport.getMAP( t_oMAPImport.parseMAP(t_strMAP) );
+			System.err.println( t_strMAP );
+		}
+/*
 		// Add backbone atoms to candidate modifications
 		for ( SubGraphOld graph : candidateModifications ) {
 			for ( Connection con : graph.getExternalConnections() ) {
@@ -371,8 +416,19 @@ public class WURCSGraphImporterMolecule {
 				graph.add( con.getBond() );
 			}
 		}
-
+*/
 		if ( !this.m_bRemoveAglycone ) return candidateModifications;
+
+		// Find aglycons from the candidate modifications
+		for ( SubGraphOld graph : candidateModifications ) {
+			boolean isAglycon = true;
+			for ( Atom atom : graph.getAtoms() ) {
+				if ( !t_aBackboneCarbons.contains( atom ) ) continue;
+				if (  t_aAnomericCarbons.contains( atom ) ) continue;
+				isAglycon = false;
+			}
+			if ( isAglycon ) this.m_aAglyconGraphs.addLast( graph );
+		}
 
 		// Remove aglycons from candidate modifications
 		// and add modifications which remade from removed aglycons

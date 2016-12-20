@@ -1,4 +1,4 @@
-package org.glycoinfo.WURCSFramework.util.exchange;
+package org.glycoinfo.WURCSFramework.util.exchange.old;
 
 import java.util.HashMap;
 import java.util.HashSet;

@@ -12,6 +12,8 @@ import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Connection;
 import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.SubGraphOld;
 import org.glycoinfo.ChemicalStructureUtility.util.Chemical;
 import org.glycoinfo.ChemicalStructureUtility.util.MorganAlgorithm;
+import org.glycoinfo.WURCSFramework.util.exchange.old.Path;
+import org.glycoinfo.WURCSFramework.util.exchange.old.PathSection;
 import org.glycoinfo.WURCSFramework.wurcs.graph.Modification;
 
 /**
@@ -291,10 +293,25 @@ public class SubGraphToModification {
 				t_strBranchStart = "/" + (path.indexOf(t_oSection.getLast().getAtom()) + 1);
 			}
 
+			// For bond
+			String t_strBond = "";
+			Bond t_oBond = t_oSection.getBond();
+			if ( t_oBond != null ) {
+				Boolean lastIsAromatic = t_oSection.getLast().getAtom().isAromatic();
+				Boolean nextIsAromatic = t_oSection.getNext().getAtom().isAromatic();
+				if ( !(lastIsAromatic&&nextIsAromatic) ) {
+					if ( t_oBond.getType() == 2) t_strBond += "=";
+					if ( t_oBond.getType() == 3) t_strBond += "#";
+				}
+				boolean t_bHasStereo = (graph.getStereo(t_oBond)!=null);
+				if ( graph.getStereo(t_oBond)!=null ) t_strBond += "^" + graph.getStereo(t_oBond);
+			}
+
 			Atom t_oAtom = t_oSection.getAtom();
 			// For cyclic
 			if ( t_oAtom==null ) {
 				t_strMAP += t_strBranchStart;
+				t_strMAP += t_strBond;
 				t_strMAP += "$" + (path.indexOf(t_oSection.getNext().getAtom()) + 1);
 				continue;
 			}
@@ -309,17 +326,7 @@ public class SubGraphToModification {
 
 			t_strMAP += t_strBranchStart;
 
-			// For bond
-			Bond t_oBond = t_oSection.getBond();
-			if ( t_oBond != null ) {
-				Boolean lastIsAromatic = t_oSection.getLast().getAtom().isAromatic();
-				Boolean nextIsAromatic = t_oSection.getNext().getAtom().isAromatic();
-				if ( !(lastIsAromatic&&nextIsAromatic) ) {
-					if ( t_oBond.getType() == 2) t_strMAP += "=";
-					if ( t_oBond.getType() == 3) t_strMAP += "#";
-				}
-				if ( graph.getStereo(t_oBond)!=null ) t_strMAP += "^" + graph.getStereo(t_oBond);
-			}
+			t_strMAP += t_strBond;
 
 			String t_strSymbol = t_oAtom.getSymbol();
 			if ( this.m_aBackboneAtoms.contains( t_oSection.getAtom() ) ) {

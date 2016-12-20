@@ -1,4 +1,4 @@
-package org.glycoinfo.WURCSFramework.util.exchange;
+package org.glycoinfo.WURCSFramework.util.unuse;
 
 import java.util.Comparator;
 

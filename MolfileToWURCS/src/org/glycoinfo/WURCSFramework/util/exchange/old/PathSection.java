@@ -1,4 +1,4 @@
-package org.glycoinfo.WURCSFramework.util.exchange;
+package org.glycoinfo.WURCSFramework.util.exchange.old;
 
 import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Atom;
 import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Bond;

@@ -1,4 +1,4 @@
-package org.glycoinfo.WURCSFramework.buildingblock;
+package org.glycoinfo.WURCSFramework.util.unuse;
 
 import java.util.LinkedList;
 

@@ -1,4 +1,4 @@
-package org.glycoinfo.WURCSFramework.util.buildingblock.stereochemistry;
+package org.glycoinfo.WURCSFramework.util.unuse;
 
 import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Atom;
 import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.ChemicalGraph;

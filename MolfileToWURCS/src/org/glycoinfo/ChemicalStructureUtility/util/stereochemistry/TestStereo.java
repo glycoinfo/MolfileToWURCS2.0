@@ -10,10 +10,10 @@ import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.SubGraph;
 import org.glycoinfo.ChemicalStructureUtility.io.MDLMOL.MoleculeReader;
 import org.glycoinfo.ChemicalStructureUtility.util.analytical.MoleculeNormalizer;
 import org.glycoinfo.ChemicalStructureUtility.util.analytical.StructureAnalyzer;
-import org.glycoinfo.WURCSFramework.buildingblock.ModGraph;
-import org.glycoinfo.WURCSFramework.buildingblock.ModGraphCreator;
 import org.glycoinfo.WURCSFramework.exec.ParameterReader;
 import org.glycoinfo.WURCSFramework.util.exchange.CarbonChainFinder;
+import org.glycoinfo.WURCSFramework.util.unuse.ModGraph;
+import org.glycoinfo.WURCSFramework.util.unuse.ModGraphCreator;
 
 public class TestStereo {
 
