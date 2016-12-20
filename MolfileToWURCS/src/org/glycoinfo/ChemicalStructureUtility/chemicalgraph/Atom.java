@@ -187,6 +187,7 @@ public class Atom implements AtomicVisitable {
 		t_oCopy.setCoordinate(this.m_dCoordinate);
 		t_oCopy.setCharge(this.m_iCharge);
 		t_oCopy.setMass(this.m_iMass);
+		t_oCopy.setNumberOfPiElectron(this.m_iPiElectron);
 		t_oCopy.setAliasName(this.m_strAliasName);
 		t_oCopy.setAtomID(this.m_iAtomID);
 		return t_oCopy;
