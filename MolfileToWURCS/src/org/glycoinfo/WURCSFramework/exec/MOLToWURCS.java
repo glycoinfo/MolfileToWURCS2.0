@@ -13,13 +13,13 @@ import org.glycoinfo.WURCSFramework.util.WURCSException;
 import org.glycoinfo.WURCSFramework.util.WURCSFactory;
 import org.glycoinfo.WURCSFramework.util.WURCSFactoryForAglycone;
 import org.glycoinfo.WURCSFramework.util.WURCSFileWriter;
-import org.glycoinfo.WURCSFramework.util.exchange.WURCSGraphImporterMolecule;
+import org.glycoinfo.WURCSFramework.util.exchange.MoleculeToWURCSGraph;
 import org.glycoinfo.WURCSFramework.wurcs.graph.WURCSGraph;
 
 public class MOLToWURCS {
 
 	// Version
-	private static final String VERSION = "2.0.160624";
+	private static final String VERSION = "2.0.161220";
 
 	private static int minNOS = 0;
 	private static int minO = 0;
@@ -93,7 +93,7 @@ public class MOLToWURCS {
 
 		while ( t_objCTReader.readNext() ) {
 			// read a record from CTFile
-			Molecule mol = t_objCTReader.getMolecule();
+			Molecule t_oMolecule = t_objCTReader.getMolecule();
 			String ID = t_objCTReader.getFieldData(a_strFieldID);
 
 			try {
@@ -105,16 +105,6 @@ public class MOLToWURCS {
 				System.err.println(ID + " is skipped.");
 				continue;
 			}
-//			if ( !ID.equals("MR8") ) continue;
-//			if ( !ID.equals("N-0000-001846") ) continue;
-//			if ( !ID.equals("3u2w_G_5") ) continue;
-//			if ( !ID.equals("G00513YN") ) continue;
-//			if ( !ID.equals("23373") ) continue;
-//			if ( !ID.equals("CHEBI:50071") ) continue;
-//			if ( !ID.equals("CHEBI:67762") ) continue;
-//			if(!t_objParam.m_sdfileOutput){
-//				System.err.print( ID+":" );
-//			}
 			System.err.println(ID);
 
 			// Output MOL string
@@ -122,28 +112,25 @@ public class MOLToWURCS {
 				System.out.print( t_objCTReader.getMOLString() );
 
 			try {
-				WURCSGraphImporterMolecule t_objImporterMol = new WURCSGraphImporterMolecule();
-				// Set parameters for finding backbone
-				t_objImporterMol.getCarbonChainFinder().setParameters(minNOS, minO, minBackboneLength, maxBackboneLength, ratioBackboneNOS);
+				// Convert Molecule to WURCSGraph
+				MoleculeToWURCSGraph t_oMol2Graph = new MoleculeToWURCSGraph();
+				t_oMol2Graph.getCarbonChainFinder().setParameters(minNOS, minO, minBackboneLength, maxBackboneLength, ratioBackboneNOS);
+				t_oMol2Graph.start(t_oMolecule);
+				WURCSGraph t_oGraph = t_oMol2Graph.getWURCSGraph();
 
-				WURCSGraph t_objGlycan = t_objImporterMol.start(mol);
-//				WURCSGraphNormalizer t_objGraphNormalizer = new WURCSGraphNormalizer();
-//				t_objGraphNormalizer.start(t_objGlycan);
-
-				WURCSFactory t_oFactory = new WURCSFactory(t_objGlycan);
+				// Normalize WURCSGraph and generate WURCS
+				WURCSFactory t_oFactory = new WURCSFactory(t_oGraph);
 				String t_strWURCS = t_oFactory.getWURCS();
 				System.err.println(t_strWURCS);
 //				t_objGraphToArray.start(t_objGlycan);
 
 				// TODO: Temporary repairs for MAP
-				if ( t_strWURCS.contains("*OCO*/3CO/6=O/3C") ) {
-					t_strWURCS = t_strWURCS.replaceAll("\\*OCO\\*/3CO/6=O/3C", "*OC^XO*/3CO/6=O/3C");
-				}
 				if ( t_strWURCS.contains("*OP^XO*/3O/3=O") ) {
 					t_strWURCS = t_strWURCS.replaceAll("\\*OP\\^XO\\*/3O/3=O", "*OPO*/3O/3=O");
 				}
 
-				System.err.println(t_objCTReader.getFieldData(a_strFieldID));
+				// XXX: remove print
+//				System.err.println(t_objCTReader.getFieldData(a_strFieldID));
 
 				t_oLogger.addWURCS(ID, t_strWURCS);
 //				System.exit(0);

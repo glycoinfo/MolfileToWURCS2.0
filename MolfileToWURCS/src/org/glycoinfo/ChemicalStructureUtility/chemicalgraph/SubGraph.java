@@ -16,6 +16,33 @@ public class SubGraph extends ChemicalGraph {
 		this.m_oOriginalGraph = a_oOriginalGraph;
 	}
 
+	public ChemicalGraph getOriginalGraph() {
+		return this.m_oOriginalGraph;
+	}
+
+	public LinkedList<Atom> getOriginalAtoms() {
+		LinkedList<Atom> t_oOriginals = new LinkedList<Atom>();
+		for ( Atom t_oSubAtom : this.m_aAtoms ) {
+			t_oOriginals.add( this.m_mapAtomToOriginal.get(t_oSubAtom) );
+		}
+		return t_oOriginals;
+	}
+
+	public Atom getOriginal(Atom a_oAtom) {
+		if ( !this.contains(a_oAtom) ) return null;
+		return this.m_mapAtomToOriginal.get(a_oAtom);
+	}
+
+	public Bond getOriginal(Bond a_oBond) {
+		if ( !this.contains(a_oBond) ) return null;
+		return this.m_mapBondToOriginal.get(a_oBond);
+	}
+
+	public Connection getOriginal(Connection a_oConn) {
+		if ( !this.contains(a_oConn.getBond()) ) return null;
+		return this.m_mapConnectionToOriginal.get(a_oConn);
+	}
+
 	public boolean copyOriginal( Atom a_oOriginal ) {
 		// Return false if original graph does not have the atom
 		if ( !this.m_oOriginalGraph.contains(a_oOriginal) ) return false;
@@ -54,30 +81,6 @@ public class SubGraph extends ChemicalGraph {
 			}
 		}
 		return true;
-	}
-
-	public ChemicalGraph getOriginalGraph() {
-		return this.m_oOriginalGraph;
-	}
-
-	public LinkedList<Atom> getOriginalAtoms() {
-		LinkedList<Atom> t_oOriginals = new LinkedList<Atom>();
-		for ( Atom t_oSubAtom : this.m_aAtoms ) {
-			t_oOriginals.add( this.m_mapAtomToOriginal.get(t_oSubAtom) );
-		}
-		return t_oOriginals;
-	}
-
-	public Atom getOriginal(Atom a_oAtom) {
-		return this.m_mapAtomToOriginal.get(a_oAtom);
-	}
-
-	public Bond getOriginal(Bond a_oBond) {
-		return this.m_mapBondToOriginal.get(a_oBond);
-	}
-
-	public Connection getOriginal(Connection a_oConn) {
-		return this.m_mapConnectionToOriginal.get(a_oConn);
 	}
 
 }
