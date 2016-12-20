@@ -13,8 +13,22 @@ import org.glycoinfo.ChemicalStructureUtility.util.analytical.AtomIdentifier;
 
 public class StereochemistryAnalysis {
 
-	private HashMap<Atom, String> m_mapAtomToStereo = new HashMap<Atom, String>();
-	private HashMap<Bond, String> m_mapBondToStereo = new HashMap<Bond, String>();
+	private HashMap<Atom, String> m_mapAtomToStereo;
+	private HashMap<Bond, String> m_mapBondToStereo;
+	private AtomicNumberCalculator m_oANumCalc;
+	private ConnectionComparatorByCIPOrder m_oCIPComp;
+	private StringBuffer m_sbLog;
+
+	public StereochemistryAnalysis() {
+		this.m_mapAtomToStereo = new HashMap<Atom, String>();
+		this.m_mapBondToStereo = new HashMap<Bond, String>();
+		this.m_oANumCalc = new AtomicNumberCalculator();
+		this.m_sbLog = new StringBuffer();
+	}
+
+	public void setAtomicNumberCalculator(AtomicNumberCalculator a_oANumCalc) {
+		this.m_oANumCalc = a_oANumCalc;
+	}
 
 	public String getAtomStereo(Atom a_oAtom) {
 		return this.m_mapAtomToStereo.get(a_oAtom);
@@ -22,6 +36,14 @@ public class StereochemistryAnalysis {
 
 	public String getBondStereo(Bond a_oBond) {
 		return this.m_mapBondToStereo.get(a_oBond);
+	}
+
+	public ConnectionComparatorByCIPOrder getConnectionComparatorByCIPOrder() {
+		return this.m_oCIPComp;
+	}
+
+	public void printLog() {
+		System.err.println( this.m_sbLog );
 	}
 
 	public void setStereoTo(ChemicalGraph a_oGraph) {
@@ -32,16 +54,14 @@ public class StereochemistryAnalysis {
 		for ( Atom t_oAtom : a_oGraph.getAtoms() ) {
 			t_oAtom.setChirality( this.m_mapAtomToStereo.get(t_oAtom) );
 			if ( this.m_mapAtomToStereo.get(t_oAtom) == null ) continue;
-//			System.err.println( t_oAtom.getSymbol()+"("+t_oAtom.getAtomID()+"): "+this.m_mapAtomToStereo.get(t_oAtom) );
+			this.m_sbLog.append( t_oAtom.getSymbol()+"("+t_oAtom.getAtomID()+"): "+this.m_mapAtomToStereo.get(t_oAtom)+"\n" );
 		}
 		// Set cis-trans for bonds
 		for ( Bond t_oBond : a_oGraph.getBonds() ) {
 			t_oBond.setGeometric( this.m_mapBondToStereo.get(t_oBond) );
 			if ( this.m_mapBondToStereo.get(t_oBond) == null ) continue;
-//			System.err.println( t_oBond.getAtom1().getSymbol()+"("+t_oBond.getAtom1().getAtomID()+")="+t_oBond.getAtom2().getSymbol()+"("+t_oBond.getAtom2().getAtomID()+"): "+this.m_mapBondToStereo.get(t_oBond) );
+			this.m_sbLog.append( t_oBond.getAtom1().getSymbol()+"("+t_oBond.getAtom1().getAtomID()+")="+t_oBond.getAtom2().getSymbol()+"("+t_oBond.getAtom2().getAtomID()+"): "+this.m_mapBondToStereo.get(t_oBond)+"\n" );
 		}
-		// XXX: remove print
-//		System.err.println();
 	}
 
 	public void start(ChemicalGraph a_oGraph) {
@@ -148,12 +168,12 @@ public class StereochemistryAnalysis {
 	 * @return Sorted connections (null if connections are not unique order)
 	 */
 	protected LinkedList<Connection> sortConnectionsByCIPOrder( LinkedList<Connection> a_aConns, HierarchicalDigraphComparator a_oHDComp ) {
-		ConnectionComparatorByCIPOrder t_oConnComp = new ConnectionComparatorByCIPOrder(a_oHDComp);
-		Collections.sort(a_aConns, t_oConnComp);
+		this.m_oCIPComp = new ConnectionComparatorByCIPOrder(a_oHDComp, this.m_oANumCalc);
+		Collections.sort(a_aConns, this.m_oCIPComp);
 		Connection t_oPreConn = a_aConns.getFirst();
 		for ( Connection t_oConn : a_aConns ) {
 			if ( t_oPreConn.equals(t_oConn) ) continue;
-			if ( t_oConnComp.compare(t_oPreConn, t_oConn) == 0 ) return null;
+			if ( this.m_oCIPComp.compare(t_oPreConn, t_oConn) == 0 ) return null;
 			t_oPreConn = t_oConn;
 		}
 		return a_aConns;

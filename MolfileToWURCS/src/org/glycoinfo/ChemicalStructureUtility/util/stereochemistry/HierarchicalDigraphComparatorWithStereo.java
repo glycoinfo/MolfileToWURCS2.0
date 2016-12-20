@@ -68,11 +68,14 @@ public class HierarchicalDigraphComparatorWithStereo extends HierarchicalDigraph
 				Connection connection1 = child1.getConnection();
 				Connection connection2 = child2.getConnection();
 
-				// まず二重結合の幾何異性に関して、ZをEより優位とする。
-				// For double bond geometrical isomerism, to prioritize "Z" more than "E"
+				// For double bond geometrical isomerism, "Z" > "E" > "X" > no isomerism
 				String bondStereo1 = this.m_hashBondToStereo.get(connection1.getBond());
 				String bondStereo2 = this.m_hashBondToStereo.get(connection2.getBond());
-				if( bondStereo1!=null && bondStereo1!=null){
+				if ( bondStereo1!=null && bondStereo2==null ) return -1;
+				if ( bondStereo1==null && bondStereo2!=null ) return 1;
+				if ( bondStereo1!=null && bondStereo1!=null ) {
+					if( !bondStereo1.equals("X") &&  bondStereo2.equals("X") ) return -1;
+					if(  bondStereo1.equals("X") && !bondStereo2.equals("X") ) return 1;
 					if( bondStereo1.equals("Z") && bondStereo2.equals("E")) return -1;
 					if( bondStereo1.equals("E") && bondStereo2.equals("Z")) return 1;
 				}

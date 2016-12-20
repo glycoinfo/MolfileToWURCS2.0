@@ -6,7 +6,6 @@ import java.util.LinkedList;
 
 import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Atom;
 import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Connection;
-import org.glycoinfo.ChemicalStructureUtility.util.Chemical;
 
 /**
  * Class for creating hierarchical digraph
@@ -15,18 +14,23 @@ import org.glycoinfo.ChemicalStructureUtility.util.Chemical;
  */
 public class HierarchicalDigraphCreator {
 
-	private HierarchicalDigraphNode m_oRootHD;
+	private AtomicNumberCalculator m_oANumCalc;
+	private HierarchicalDigraphNode m_oRootHD = null;
 	private int m_iDepthLimit = 1;
 	private boolean m_bIsCompletedFullSearch = true;
 
+	public HierarchicalDigraphCreator( AtomicNumberCalculator a_oANumCalc ) {
+		this.m_oANumCalc = a_oANumCalc;
+	}
+
 	/**
-	 * Construct hierarchical digraph from the connection
+	 * Make hierarchical digraph from the connection
 	 * @param a_oGraph Target graph
 	 * @param a_oStart Connection of start
 	 * @param a_iDepth Depth limit of depth search, which must be an integer 1 or more
 	 */
-	public HierarchicalDigraphCreator( Connection a_oStart, int a_iDepth ) {
-		this.m_oRootHD = new HierarchicalDigraphNode( a_oStart, Chemical.getAtomicNumber(a_oStart.endAtom().getSymbol()) );
+	public void start( Connection a_oStart, int a_iDepth ) {
+		this.m_oRootHD = new HierarchicalDigraphNode( a_oStart, this.getAverageAtomicNumber(a_oStart.endAtom()) );
 		this.m_iDepthLimit = a_iDepth;
 
 		// Set start atom
@@ -69,6 +73,10 @@ public class HierarchicalDigraphCreator {
 		return false;
 	}
 
+	private double getAverageAtomicNumber(Atom a_oAtom) {
+		return this.m_oANumCalc.getAtomicNumber(a_oAtom);
+	}
+
 	/**
 	 * Construct HierarchicalDigraph using depth-limited search
 	 * @param a_oHD Current node of HierarchicalDigraph
@@ -93,7 +101,7 @@ public class HierarchicalDigraphCreator {
 			// Ignore out of subgraph except for hydrogen
 			if ( this.isIgnoreAtom( t_oConn.endAtom() ) ) continue;
 
-			double t_iAtomicNumber = (double)Chemical.getAtomicNumber(t_oConn.endAtom().getSymbol());
+			double t_iAtomicNumber = this.getAverageAtomicNumber(t_oConn.endAtom());
 
 			// Count aromatic connections and sum atomic number of naighbor aromatic atom
 			boolean t_bIsAromatic = false;
