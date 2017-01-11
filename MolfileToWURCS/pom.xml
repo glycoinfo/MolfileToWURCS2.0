@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.glycoinfo.WURCSFramework</groupId>
   <artifactId>MolfileToWURCS</artifactId>
-  <version>0.0.5</version>
+  <version>0.0.6-SNAPSHOT</version>
     <repositories>
         <repository>
             <id>apache-repo</id>
@@ -57,7 +57,7 @@
     <dependency>
         <groupId>org.glycoinfo</groupId>
         <artifactId>wurcsframework</artifactId>
-        <version>0.0.5-SNAPSHOT</version>
+        <version>0.0.6-SNAPSHOT</version>
     </dependency>
   </dependencies>
 </project>
