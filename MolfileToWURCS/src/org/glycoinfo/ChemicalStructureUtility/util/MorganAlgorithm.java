@@ -43,8 +43,9 @@ public class MorganAlgorithm {
 	public void calcMorganNumber(final LinkedList<Bond> ignoreBonds, final LinkedList<Atom> ignoreAtoms){
 		HashMap<Atom, Integer> t_mapAtomToMorganNum = new HashMap<Atom, Integer>();
 		LinkedList<Atom> t_aAtoms = this.m_oGraph.getAtoms();
+		// Init morgan number
 		for ( Atom atom : t_aAtoms )
-			t_mapAtomToMorganNum.put(atom, 1);
+			t_mapAtomToMorganNum.put( atom, this.getAtomWeight(atom) );
 
 		int t_iUniqCountPrev = 1;
 		while (true) {
@@ -74,6 +75,16 @@ public class MorganAlgorithm {
 	}
 
 	/**
+	 * Get atom weight (for extends)
+	 * @param a_oAtom Target atom
+	 * @return Number of atom weight
+	 */
+	protected int getAtomWeight( Atom a_oAtom ) {
+		// Always return 1 for default Morgan algorithm
+		return 1;
+	}
+
+	/**
 	 * Return the number of unique tmp in list
 	 * (Use when generate EC number)
 	 * @return the number of unique tmp in list
@@ -86,7 +97,8 @@ public class MorganAlgorithm {
 			t_aUniqNums.add(t_iNum);
 		}
 		return t_aUniqNums.size();
-/*
+
+		/*
 		LinkedList<Atom> t_aAtoms = new LinkedList<Atom>();
 		t_aAtoms.addAll( a_mapAtomToTempECNum.keySet() );
 		int uniqNum = 0;

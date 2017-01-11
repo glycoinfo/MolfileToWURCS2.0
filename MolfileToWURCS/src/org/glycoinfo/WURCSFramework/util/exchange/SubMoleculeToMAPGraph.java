@@ -9,14 +9,14 @@ import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Connection;
 import org.glycoinfo.WURCSFramework.buildingblock.SubMolecule;
 import org.glycoinfo.WURCSFramework.util.comparator.BackboneCarbonComparator;
 import org.glycoinfo.WURCSFramework.util.comparator.ConnectionComparatorForMAPGraph;
-import org.glycoinfo.WURCSFramework.wurcs.graph.map.MAPAtom;
-import org.glycoinfo.WURCSFramework.wurcs.graph.map.MAPAtomAbstract;
-import org.glycoinfo.WURCSFramework.wurcs.graph.map.MAPAtomCyclic;
-import org.glycoinfo.WURCSFramework.wurcs.graph.map.MAPBondType;
-import org.glycoinfo.WURCSFramework.wurcs.graph.map.MAPConnection;
-import org.glycoinfo.WURCSFramework.wurcs.graph.map.MAPGraph;
-import org.glycoinfo.WURCSFramework.wurcs.graph.map.MAPStar;
-import org.glycoinfo.WURCSFramework.wurcs.graph.map.MAPStereo;
+import org.glycoinfo.WURCSFramework.wurcs.map.MAPAtom;
+import org.glycoinfo.WURCSFramework.wurcs.map.MAPAtomAbstract;
+import org.glycoinfo.WURCSFramework.wurcs.map.MAPAtomCyclic;
+import org.glycoinfo.WURCSFramework.wurcs.map.MAPBondType;
+import org.glycoinfo.WURCSFramework.wurcs.map.MAPConnection;
+import org.glycoinfo.WURCSFramework.wurcs.map.MAPGraph;
+import org.glycoinfo.WURCSFramework.wurcs.map.MAPStar;
+import org.glycoinfo.WURCSFramework.wurcs.map.MAPStereo;
 
 public class SubMoleculeToMAPGraph {
 
@@ -65,23 +65,20 @@ public class SubMoleculeToMAPGraph {
 		MAPGraph t_oMAPGraph = new MAPGraph();
 
 		// Set first atom to MAPGraph
-		MAPStar t_oHeadStar = new MAPStar(1);
+		MAPStar t_oHeadStar = new MAPStar();
 		t_oHeadStar.setStarIndex( this.m_mapBackboneCarbonToStarIndex.get(t_oGraphStart) );
 		t_oMAPGraph.addAtom(t_oHeadStar);
 		MAPAtomAbstract t_oPrevMAPAtom = t_oHeadStar;
 		t_mapAtomToMAPAtom.put(t_oGraphStart, t_oHeadStar);
 
-		int t_iMAPAtomNum = 1;
 		for ( Connection t_oConn : t_aOrderedConnections ) {
-
-			t_iMAPAtomNum++;
 
 			Atom t_oEnd = t_oConn.endAtom();
 
 			MAPAtomAbstract t_oMAPAtom = null;
 
 			// New default MAPAtom
-			MAPAtom t_oDefault = new MAPAtom( t_iMAPAtomNum, t_oEnd.getSymbol() );
+			MAPAtom t_oDefault = new MAPAtom( t_oEnd.getSymbol() );
 			// Set chiral
 			String t_strChiral = t_oEnd.getChirality();
 			MAPStereo t_enumChiral = ( "R".equals(t_strChiral) )? MAPStereo.RECTUS   :
@@ -95,12 +92,11 @@ public class SubMoleculeToMAPGraph {
 			if ( t_mapAtomToMAPAtom.containsKey(t_oEnd) ) {
 				MAPAtomAbstract t_oCyclic = t_mapAtomToMAPAtom.get(t_oEnd);
 				t_oMAPAtom = new MAPAtomCyclic( t_oCyclic );
-				t_iMAPAtomNum--;
 			}
 
 			// For Backbone carbons
 			if ( t_aBackboneCarbons.contains(t_oEnd) ) {
-				MAPStar t_oMAPStar = new MAPStar( t_iMAPAtomNum );
+				MAPStar t_oMAPStar = new MAPStar();
 				t_oMAPStar.setStarIndex( this.m_mapBackboneCarbonToStarIndex.get(t_oEnd) );
 				t_oMAPAtom = t_oMAPStar;
 			}
@@ -117,11 +113,13 @@ public class SubMoleculeToMAPGraph {
 				t_mapAtomToMAPAtom.put(t_oEnd, t_oMAPAtom);
 
 			// For connections
-			MAPBondType t_enumBondType = null;
+			MAPBondType t_enumBondType = MAPBondType.SINGLE;
 			if ( t_oConn.getBond().getType() == 2 )
 				t_enumBondType = MAPBondType.DOUBLE;
 			if ( t_oConn.getBond().getType() == 3 )
 				t_enumBondType = MAPBondType.TRIPLE;
+			if ( t_oConn.getBond().getType() == 4 )
+				t_enumBondType = MAPBondType.AROMATIC;
 
 			// For cis-trans
 			String t_strGeometric = t_oConn.getBond().getGeometric();
@@ -144,7 +142,7 @@ public class SubMoleculeToMAPGraph {
 
 			// Set atom to star
 			if ( t_oPrevMAPAtom instanceof MAPStar )
-				((MAPStar)t_oPrevMAPAtom).setConnectedAtom( (MAPAtom)t_oMAPAtom );
+				((MAPStar)t_oPrevMAPAtom).setConnection( t_oPrevMAPAtom.getConnections().getFirst() );
 
 			// Set previous MAPAtom
 			t_oPrevMAPAtom = t_oMAPAtom;

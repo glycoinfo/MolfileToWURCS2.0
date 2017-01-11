@@ -14,7 +14,7 @@ import org.glycoinfo.ChemicalStructureUtility.util.analytical.StructureAnalyzer;
 import org.glycoinfo.ChemicalStructureUtility.util.stereochemistry.StereochemistryAnalysis;
 import org.glycoinfo.WURCSFramework.buildingblock.SubMolecule;
 import org.glycoinfo.WURCSFramework.util.WURCSException;
-import org.glycoinfo.WURCSFramework.util.graph.MAPGraphExporter;
+import org.glycoinfo.WURCSFramework.util.map.MAPGraphExporter;
 import org.glycoinfo.WURCSFramework.wurcs.graph.Backbone;
 import org.glycoinfo.WURCSFramework.wurcs.graph.BackboneCarbon;
 import org.glycoinfo.WURCSFramework.wurcs.graph.DirectionDescriptor;

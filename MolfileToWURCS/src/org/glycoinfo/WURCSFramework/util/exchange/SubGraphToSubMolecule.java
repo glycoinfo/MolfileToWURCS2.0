@@ -55,6 +55,9 @@ public class SubGraphToSubMolecule {
 		HashMap<Atom, Atom> t_mapOrigToCopyAtom = new HashMap<Atom, Atom>();
 		for ( Atom t_oOrigAtom : a_oSubGraph.getAtoms() ) {
 			Atom t_oCopy = t_oOrigAtom.copy();
+			// For aromatic atom
+			if ( t_oOrigAtom.isAromatic() )
+				t_oCopy.setAromaticity();
 			t_mapOrigToCopyAtom.put(t_oOrigAtom, t_oCopy);
 			t_oSubMol.add(t_oCopy);
 			t_oSubMol.associateAtomWithOriginal(t_oCopy, t_oOrigAtom);
@@ -62,7 +65,11 @@ public class SubGraphToSubMolecule {
 		for ( Bond t_oOrigBond : a_oSubGraph.getBonds() ) {
 			Atom t_oAtom1 = t_mapOrigToCopyAtom.get( t_oOrigBond.getAtom1() );
 			Atom t_oAtom2 = t_mapOrigToCopyAtom.get( t_oOrigBond.getAtom2() );
-			Bond t_oCopy = t_oOrigBond.copy(t_oAtom1, t_oAtom2);
+			// For aromatic bond (bond type 4)
+			int t_oBondType = t_oOrigBond.getType();
+			if ( t_oAtom1.isAromatic() && t_oAtom2.isAromatic() )
+				t_oBondType = 4;
+			Bond t_oCopy = new Bond( t_oAtom1, t_oAtom2, t_oBondType, t_oOrigBond.getStereo() );
 			t_oSubMol.add(t_oCopy);
 			t_oSubMol.associateBondWithOriginal(t_oCopy, t_oOrigBond);
 		}

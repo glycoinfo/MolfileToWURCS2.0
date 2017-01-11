@@ -29,15 +29,21 @@ public class AtomIdentifier {
 	//----------------------------
 
 	/**
-	 * Get sum of all bond orders
+	 * Get sum of all bond orders (aromatic bond order is estimated as 1.5)
 	 * @return sum of all bond orders
 	 */
 	public int getSumBondOrders() {
-		int nSumOrder=0;
+		int t_nSumOrder = 0;
+		int t_nAromatic = 0;
 		for ( Connection con : this.m_objAtom.getConnections() ) {
-			nSumOrder += con.getBond().getType();
+			if ( con.getBond().getType() == 4 ) {
+				t_nAromatic++;
+				continue;
+			}
+			t_nSumOrder += con.getBond().getType();
 		}
-		return nSumOrder;
+		t_nSumOrder += 1.5 * t_nAromatic;
+		return t_nSumOrder;
 	}
 
 	/**

@@ -22,15 +22,15 @@ import org.glycoinfo.WURCSFramework.util.exchange.CarbonChainFinder;
 import org.glycoinfo.WURCSFramework.util.exchange.CarbonChainToBackbone_TBD;
 import org.glycoinfo.WURCSFramework.util.exchange.SubGraphToSubMolecule;
 import org.glycoinfo.WURCSFramework.util.exchange.SubMoleculeToMAPGraph;
-import org.glycoinfo.WURCSFramework.util.graph.MAPGraphExporter;
-import org.glycoinfo.WURCSFramework.util.graph.MAPGraphImporter;
+import org.glycoinfo.WURCSFramework.util.map.MAPGraphExporter;
+import org.glycoinfo.WURCSFramework.util.map.MAPGraphImporter;
 import org.glycoinfo.WURCSFramework.wurcs.graph.Backbone;
 import org.glycoinfo.WURCSFramework.wurcs.graph.BackboneCarbon;
 import org.glycoinfo.WURCSFramework.wurcs.graph.LinkagePosition;
 import org.glycoinfo.WURCSFramework.wurcs.graph.Modification;
 import org.glycoinfo.WURCSFramework.wurcs.graph.WURCSEdge;
 import org.glycoinfo.WURCSFramework.wurcs.graph.WURCSGraph;
-import org.glycoinfo.WURCSFramework.wurcs.graph.map.MAPGraph;
+import org.glycoinfo.WURCSFramework.wurcs.map.MAPGraph;
 
 /**
  * Class of importer for Carbohydrate

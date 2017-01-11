@@ -80,11 +80,11 @@ public class StereochemistryAnalysis {
 			this.m_mapAtomToStereo.put(t_oAtom, this.calcChirality(t_oAtom, t_oHDComp) );
 		}
 
-		// Calculate EZ for double bonds
+		// Calculate EZ for double and aromatic bonds
 		HashMap<Bond, String> t_mapBondToStereo = new HashMap<Bond, String>();
 		LinkedList<Bond> t_aCandidateIsomerismBond = new LinkedList<Bond>();
 		for ( Bond t_oBond : a_oGraph.getBonds() ) {
-			if ( t_oBond.getType() != 2 ) continue;
+			if ( t_oBond.getType() != 2 && t_oBond.getType() != 4 ) continue;
 			t_aCandidateIsomerismBond.add(t_oBond);
 			this.m_mapBondToStereo.put(t_oBond, this.calcIsomerism(t_oBond, t_oHDComp) );
 		}
@@ -120,7 +120,7 @@ public class StereochemistryAnalysis {
 	}
 
 	/**
-	 * Calc and get geometrical isomerism of target double bond
+	 * Calc and get geometrical isomerism of target bond
 	 * @param a_oBond Target double bond
 	 * @param a_oHDComp Comparator for HierarchicalDigraph
 	 * @return String of isomerism ("E" or "Z", null if no isomerism)
@@ -129,7 +129,7 @@ public class StereochemistryAnalysis {
 		Atom t_oA0 = a_oBond.getAtom1();
 		Atom t_oB0 = a_oBond.getAtom2();
 
-		// Sort connections on A0 except for double bond
+		// Sort connections on A0 except between bond atoms
 		LinkedList<Connection> t_aConnections1 = new LinkedList<Connection>();
 		for ( Connection t_oConn : t_oA0.getConnections() ) {
 			if ( t_oConn.endAtom().equals(t_oB0) ) continue;
@@ -144,7 +144,7 @@ public class StereochemistryAnalysis {
 			t_oA1 = t_aSortedConnections.getFirst().endAtom();
 		}
 
-		// Sort connections on B0 except for double bond
+		// Sort connections on B0 except between bond atoms
 		LinkedList<Connection> t_aConnections2 = new LinkedList<Connection>();
 		for ( Connection t_oConn : t_oB0.getConnections() ) {
 			if ( t_oConn.endAtom().equals(t_oA0) ) continue;
