@@ -118,7 +118,7 @@ public class MOLToWURCS2 {
 				System.err.println(ID + " is skipped.");
 				continue;
 			}
-			System.err.println(ID);
+			//System.err.println(ID);
 
 			// Output MOL string
 			if ( a_bOutput )
@@ -134,13 +134,15 @@ public class MOLToWURCS2 {
 				// Normalize WURCSGraph and generate WURCS
 				WURCSFactory t_oFactory = new WURCSFactory(t_oGraph);
 				String t_strWURCS = t_oFactory.getWURCS();
-				System.err.println(t_strWURCS);
+				//System.err.println(t_strWURCS);
 //				t_objGraphToArray.start(t_objGlycan);
 
 				// TODO: Temporary repairs for MAP
 				if ( t_strWURCS.contains("*OP^XO*/3O/3=O") ) {
 					t_strWURCS = t_strWURCS.replaceAll("\\*OP\\^XO\\*/3O/3=O", "*OPO*/3O/3=O");
 				}
+				
+				//System.err.println(t_strWURCS);
 
 				// XXX: remove print
 //				System.err.println(t_objCTReader.getFieldData(a_strFieldID));
@@ -155,7 +157,7 @@ public class MOLToWURCS2 {
 				// For no aglycone
 				if ( !t_oFactoryA.hasAglycone() ) {
 					// For no aglycone
-					t_mapIDtoWURCS.put(ID+"\t1\tSTANDARD", t_strWURCS);
+					t_mapIDtoWURCS.put(ID+"\t1", t_strWURCS);
 
 					// Output WURCS tags
 					if ( a_bOutput ) {
@@ -164,10 +166,6 @@ public class MOLToWURCS2 {
 					}
 					continue;
 				}
-
-				// For aglycone
-				//t_mapIDtoWURCS.put(ID+"\t1\tWITH_AGLYCONE", t_strWURCS);
-				//System.err.println("WURCS2.0 WITH AGLYCONE:\t"+t_strWURCS+"\n");
 
 				// For separated WURCS by each aglycone
 				String t_strSepWURCSs = "";
@@ -179,27 +177,20 @@ public class MOLToWURCS2 {
 					t_strAglycones += t_strAglyconeAbbr+"\n";
 				String t_strStdWURCSs = "";
 
-				// For separated WURCSs with aglycone
-				int i=0;
-				for ( String t_strSepWURCSA : t_oFactoryA.getSeparatedWURCSsWithAglycone() ) {
-					i++;
-					t_mapIDtoWURCS.put(ID+"\t"+i+"\tSEPARATED", t_strSepWURCSA);
-				}
 
 				// For standerd WURCSs (remain one atom aglycone)
-				i=0;
+				int i=0;
 				for ( String t_strStdWURCS : t_oFactoryA.getStandardWURCSs() ) {
 					i++;
-					t_strStdWURCSs += t_strStdWURCS+"\n";
-					t_mapIDtoWURCS.put(ID+"\t"+i+"\tSTANDARD", t_strStdWURCS);
+					//t_strStdWURCSs += t_strStdWURCS+"\n";
+					t_strStdWURCSs += t_strStdWURCS;
+					t_mapIDtoWURCS.put(ID+"\t"+i, t_strStdWURCS);
 				}
-				System.err.println("WURCS2.0_STANDARD:\n"+t_strStdWURCSs);
 
+				//System.err.println(t_strStdWURCSs);
+				
 				// Output WURCS tags with aglycones
 				if ( a_bOutput ) {
-					System.out.print("> <WURCS2.0_WITH_AGLYCONE>\n"+t_strWURCS+"\n\n");
-					System.out.print("> <WURCS2.0_SEPARATED>\n"+t_strSepWURCSs+"\n");
-					System.out.print("> <WURCS2.0_AGLYCONES>\n"+t_strAglycones+"\n");
 					System.out.print("> <WURCS2.0>\n"+t_strStdWURCSs+"\n");
 					System.out.print("$$$$\n");
 				}
@@ -215,6 +206,13 @@ public class MOLToWURCS2 {
 //			break;
 		}
 
+		// console output
+		// TreeMap<String, String>
+		for ( String id : t_mapIDtoWURCS.keySet() ) {
+			System.err.println(id+"\t"+t_mapIDtoWURCS.get(id));
+		}
+		
+		
 		if (b_outputfile == true ) {
 			
 			// Output results
