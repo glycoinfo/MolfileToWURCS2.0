@@ -9,6 +9,9 @@
  * Modifications and additions by The Noguchi Institue.
  *
 
+MolfileToWURCS2.0/MolfileToWURCS/src/org/glycoinfo/WURCSFramework/exec/MOLToWURCS.java
+ or
+MolfileToWURCS2.0/MolfileToWURCS/src/org/glycoinfo/WURCSFramework/exec/MOLToWURCS2.java
  
 Usage: java (this program).jar [OPTION]... [FILE]... 
 
@@ -19,9 +22,7 @@ Usage: java (this program).jar [OPTION]... [FILE]...
 * 	-end		to ignore arguments after this option
 * 	-v		to print this Version
 * 	-help		to print this help message
-  
-Please input following:
-* $ java -jar mol2wurcs2.jar -help
+
 
 Contact: yamadaissaku@gmail.com
 
