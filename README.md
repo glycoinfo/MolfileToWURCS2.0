@@ -10,7 +10,6 @@
  *
 
 MolfileToWURCS2.0/MolfileToWURCS/src/org/glycoinfo/WURCSFramework/exec/MOLToWURCS.java
- or
 MolfileToWURCS2.0/MolfileToWURCS/src/org/glycoinfo/WURCSFramework/exec/MOLToWURCS2.java
  
 Usage: java (this program).jar [OPTION]... [FILE]... 
