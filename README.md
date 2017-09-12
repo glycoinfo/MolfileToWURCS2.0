@@ -1,6 +1,7 @@
 # MolfileToWURCS2.0
 
 MolfileToWURCS2.0 is a format convertor from molfile/sdfile to WURCS2.0. 
+molfile/sdfile can be use only V2000 format. 
 
  * Web3 Unique Representation Carbohydrate Structure (WURCS)
  * Version 2
