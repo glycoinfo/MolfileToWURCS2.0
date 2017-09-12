@@ -10,6 +10,9 @@
  *
 
 MolfileToWURCS2.0/MolfileToWURCS/src/org/glycoinfo/WURCSFramework/exec/MOLToWURCS.java
+* "{ID}	{#}	STANDARD	WURCS=2.0/..." is standard WURCS2.0.
+* "WITH_AGLYCONE" and "SEPARATED" is not Standard. 
+
 MolfileToWURCS2.0/MolfileToWURCS/src/org/glycoinfo/WURCSFramework/exec/MOLToWURCS2.java
  
 Usage: java (this program).jar [OPTION]... [FILE]... 
