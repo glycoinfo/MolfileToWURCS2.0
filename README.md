@@ -12,16 +12,16 @@
  
 Usage: java (this program).jar [OPTION]... [FILE]... 
 
-where OPTION include:
-	-ID <tag ID in sd file>	to select the tag ID in sd file
-	-dir <directory path>	to read files in the directory
-	-sdf		output sd file with WURCS information to stdout
-	-end		to ignore arguments after this option
-	-v		to print this Version
-	-help		to print this help message
+* where OPTION include:
+* 	-ID <tag ID in sd file>	to select the tag ID in sd file
+* 	-dir <directory path>	to read files in the directory
+* 	-sdf		output sd file with WURCS information to stdout
+* 	-end		to ignore arguments after this option
+* 	-v		to print this Version
+* 	-help		to print this help message
   
 Please input following:
-$ java -jar mol2wurcs2.jar -help
+* $ java -jar mol2wurcs2.jar -help
 
 Contact: yamadaissaku@gmail.com
 
