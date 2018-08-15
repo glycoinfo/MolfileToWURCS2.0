@@ -12,7 +12,7 @@ import org.glycoinfo.ChemicalStructureUtility.util.Chemical;
 import org.glycoinfo.ChemicalStructureUtility.util.analytical.CarbonIdentifier;
 import org.glycoinfo.WURCSFramework.wurcs.graph.Backbone;
 import org.glycoinfo.WURCSFramework.wurcs.graph.BackboneCarbon;
-import org.glycoinfo.WURCSFramework.wurcs.graph.old.CarbonDescriptor;
+import org.glycoinfo.WURCSFramework.wurcs.graph.CarbonDescriptor;
 
 /**
  * Class for create backbone
