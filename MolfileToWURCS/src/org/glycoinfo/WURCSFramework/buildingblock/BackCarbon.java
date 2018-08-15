@@ -3,7 +3,7 @@ package org.glycoinfo.WURCSFramework.buildingblock;
 import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Atom;
 import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Connection;
 import org.glycoinfo.ChemicalStructureUtility.util.analytical.CarbonIdentifier;
-import org.glycoinfo.WURCSFramework.wurcs.graph.old.CarbonDescriptor;
+import org.glycoinfo.WURCSFramework.wurcs.graph.CarbonDescriptor;
 
 public class BackCarbon extends Atom {
 
