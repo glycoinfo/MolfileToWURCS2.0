@@ -13,6 +13,7 @@ import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Bond;
 import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Connection;
 import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Molecule;
 import org.glycoinfo.ChemicalStructureUtility.util.Chemical;
+//import java.util.Scanner;
 
 /**
  * Class for reading CTfile(Sdfile, Molfile) and extract Molecule object
@@ -295,5 +296,23 @@ public class CTFileReader {
 			e.printStackTrace();
 		}
 		return t_strLine;
+	}
+
+	public CTFileReader(BufferedReader buffer) {
+		//this.m_strfilePath = a_objFilepath;
+		try{
+
+
+
+			//File file = new File(this.m_strfilePath);
+			this.m_brOutput = new BufferedReader(buffer);
+			//this.m_strFileName = file.getName();
+			//this.m_strDirName = file.getParent();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		this.m_iRecordNo = 1;
+
 	}
 }

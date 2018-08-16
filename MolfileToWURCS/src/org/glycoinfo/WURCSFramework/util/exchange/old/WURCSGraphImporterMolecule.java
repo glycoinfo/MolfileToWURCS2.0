@@ -17,6 +17,7 @@ import org.glycoinfo.ChemicalStructureUtility.util.analytical.StructureAnalyzer;
 import org.glycoinfo.ChemicalStructureUtility.util.stereochemistry.StereochemistryAnalysis;
 import org.glycoinfo.WURCSFramework.buildingblock.SubMolecule;
 import org.glycoinfo.WURCSFramework.util.WURCSException;
+import org.glycoinfo.WURCSFramework.util.array.WURCSFormatException;
 import org.glycoinfo.WURCSFramework.util.exchange.CarbonChainComparator;
 import org.glycoinfo.WURCSFramework.util.exchange.CarbonChainFinder;
 import org.glycoinfo.WURCSFramework.util.exchange.CarbonChainToBackbone_TBD;
@@ -403,7 +404,12 @@ public class WURCSGraphImporterMolecule {
 			String t_strMAP = t_oMAPExport.getMAP( t_oSM2MAP.getMAPGraph() );
 			System.err.println( t_strMAP );
 			MAPGraphImporter t_oMAPImport = new MAPGraphImporter();
-			t_strMAP = t_oMAPExport.getMAP( t_oMAPImport.parseMAP(t_strMAP) );
+			try {
+				t_strMAP = t_oMAPExport.getMAP( t_oMAPImport.parseMAP(t_strMAP) );
+			} catch (WURCSFormatException e) {
+				// TODO 自動生成された catch ブロック
+				e.printStackTrace();
+			}
 			System.err.println( t_strMAP );
 		}
 /*

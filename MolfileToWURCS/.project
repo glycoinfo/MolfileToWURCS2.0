@@ -3,6 +3,7 @@
 	<name>MolfileToWURCS</name>
 	<comment></comment>
 	<projects>
+		<project>WURCSFramework</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
