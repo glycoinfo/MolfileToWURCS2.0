@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -314,5 +315,19 @@ public class CTFileReader {
 		}
 		this.m_iRecordNo = 1;
 
+	}
+
+	public CTFileReader(Reader sStrBuf1) {
+		//this.m_strfilePath = a_objFilepath;
+		try{
+			//File file = new File(this.m_strfilePath);
+			this.m_brOutput = new BufferedReader(sStrBuf1);
+			//this.m_strFileName = file.getName();
+			//this.m_strDirName = file.getParent();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		this.m_iRecordNo = 1;
 	}
 }

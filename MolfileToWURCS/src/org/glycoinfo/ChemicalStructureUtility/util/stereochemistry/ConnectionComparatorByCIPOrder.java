@@ -11,7 +11,7 @@ import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Connection;
  */
 public class ConnectionComparatorByCIPOrder implements Comparator<Connection> {
 
-	private HierarchicalDigraphComparator m_oHDComp;
+	protected HierarchicalDigraphComparator m_oHDComp;
 	private AtomicNumberCalculator m_oANumCalc;
 
 	public ConnectionComparatorByCIPOrder(HierarchicalDigraphComparator a_oHDComp, AtomicNumberCalculator a_oANumCalc) {
