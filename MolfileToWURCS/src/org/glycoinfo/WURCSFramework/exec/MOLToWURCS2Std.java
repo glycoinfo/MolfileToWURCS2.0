@@ -15,6 +15,7 @@ import org.glycoinfo.WURCSFramework.util.WURCSException;
 import org.glycoinfo.WURCSFramework.util.WURCSFactory;
 import org.glycoinfo.WURCSFramework.util.WURCSFactoryForAglycone;
 import org.glycoinfo.WURCSFramework.util.WURCSFileWriter;
+import org.glycoinfo.WURCSFramework.util.WURCSValidator;
 import org.glycoinfo.WURCSFramework.util.exchange.MoleculeToWURCSGraph;
 import org.glycoinfo.WURCSFramework.wurcs.graph.WURCSGraph;
 //import java.util.Scanner;
@@ -180,6 +181,16 @@ public class MOLToWURCS2Std {
 				// XXX: remove print
 //				System.err.println(t_objCTReader.getFieldData(a_strFieldID));
 
+
+
+
+
+
+
+
+
+
+
 				t_oLogger.addWURCS(ID, t_strWURCS);
 //				System.exit(0);
 
@@ -216,6 +227,18 @@ public class MOLToWURCS2Std {
 				for ( String t_strStdWURCS : t_oFactoryA.getStandardWURCSs() ) {
 					i++;
 					//t_strStdWURCSs += t_strStdWURCS+"\n";
+
+					// WURCSValidator start
+					WURCSValidator validator=new WURCSValidator();
+					validator.start(t_strStdWURCS);
+					t_strStdWURCS=validator.getStandardWURCS();
+					if(validator.getTheNumberOfErrors()==0) System.out.println(t_strStdWURCS);
+					System.out.println("the number of errors: "+validator.getTheNumberOfErrors());
+					for(String er: validator.getErrors()) System.out.println("	Error:   "+er);
+					for(String wa: validator.getWarnings()) System.out.println("	Warning: "+wa);
+					System.out.println();
+					// WURCSValidator end
+
 					t_strStdWURCSs += t_strStdWURCS;
 					t_mapIDtoWURCS.put(ID+"\t"+i, t_strStdWURCS);
 				}
@@ -371,6 +394,19 @@ public class MOLToWURCS2Std {
 				int i=0;
 				for ( String t_strStdWURCS : t_oFactoryA.getStandardWURCSs() ) {
 					i++;
+
+					// WURCSValidator start
+					WURCSValidator validator=new WURCSValidator();
+					validator.start(t_strStdWURCS);
+					t_strStdWURCS=validator.getStandardWURCS();
+					if(validator.getTheNumberOfErrors()==0) System.out.println(t_strStdWURCS);
+					System.out.println("the number of errors: "+validator.getTheNumberOfErrors());
+					for(String er: validator.getErrors()) System.out.println("	Error:   "+er);
+					for(String wa: validator.getWarnings()) System.out.println("	Warning: "+wa);
+					System.out.println();
+					// WURCSValidator end
+
+
 					//t_strStdWURCSs += t_strStdWURCS+"\n";
 					t_strStdWURCSs += t_strStdWURCS;
 					t_mapIDtoWURCS.put(ID+"\t"+i, t_strStdWURCS);
