@@ -19,7 +19,8 @@ import org.glycoinfo.WURCSFramework.wurcs.graph.WURCSGraph;
 public class MOLToWURCS {
 
 	// Version
-	private static final String VERSION = "2.0.170111";
+
+	private static final String VERSION = "2.0.190329";
 
 	private static int minNOS = 0;
 	private static int minO = 0;
@@ -95,6 +96,7 @@ public class MOLToWURCS {
 			// read a record from CTFile
 			Molecule t_oMolecule = t_objCTReader.getMolecule();
 			String ID = t_objCTReader.getFieldData(a_strFieldID);
+
 
 			try {
 				if ( a_strFieldID != null && !a_strFieldID.equals("PDB_Chemical_Component_ID") )
