@@ -2,7 +2,10 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.glycoinfo.WURCSFramework</groupId>
   <artifactId>MolfileToWURCS</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.2-SNAPSHOT</version>
+
+
+<!--
     <repositories>
         <repository>
             <id>apache-repo</id>
@@ -37,12 +40,19 @@
             <name>Internal Release Snapshots</name>
             <url>http://nexus.glycoinfo.org/content/repositories/snapshots/</url>
         </snapshotRepository>
-        <!-- <site> <id>website</id> <url>file:///var/lib/tomcat7/webapps/</url>
-            </site> -->
+        <site>
+        	<id>website</id>
+        	<url>file:///var/lib/tomcat7/webapps/</url>
+        </site>
     </distributionManagement>
+   -->
+
+
+
   <build>
     <sourceDirectory>src</sourceDirectory>
     <plugins>
+    <!--
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.1</version>
@@ -51,13 +61,14 @@
           <target>1.7</target>
         </configuration>
       </plugin>
+     -->
     </plugins>
   </build>
   <dependencies>
     <dependency>
         <groupId>org.glycoinfo</groupId>
         <artifactId>wurcsframework</artifactId>
-        <version>0.0.2-SNAPSHOT</version>
+        <version>0.1.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
 </project>
