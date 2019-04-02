@@ -4,7 +4,8 @@
   <artifactId>MolfileToWURCS</artifactId>
   <version>0.0.9-SNAPSHOT</version>
 
-
+	<name>MolfileToWURCS</name>
+	<url>https://glyconavi.org</url>
 
     <repositories>
         <repository>
