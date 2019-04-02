@@ -36,7 +36,6 @@ public class BackboneCarbonComparator implements Comparator<Atom> {
 		this.m_oCIPComp = new ConnectionComparatorByCIPOrderForSubMolecule(a_oSubMol);
 	}
 
-	@Override
 	public int compare(Atom a_oCarbon1, Atom a_oCarbon2) {
 
 		int t_iComp = 0;

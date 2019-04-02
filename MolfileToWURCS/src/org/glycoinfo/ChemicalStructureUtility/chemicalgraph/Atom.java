@@ -173,7 +173,6 @@ public class Atom implements AtomicVisitable {
 		}
 		return t_bSuccess;
 	}
-	@Override
 	public void accept(AtomicVisitor a_objVisitor) throws AtomicVisitorException {
 		a_objVisitor.visit(this);
 	}

@@ -6,7 +6,6 @@ import org.glycoinfo.ChemicalStructureUtility.chemicalgraph.Connection;
 
 public class ConnectionComparator implements Comparator<Connection> {
 
-	@Override
 	public int compare(Connection o1, Connection o2) {
 
 		int t_iComp = o2.getBond().getType() - o1.getBond().getType();

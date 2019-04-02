@@ -90,7 +90,6 @@ public class Connection implements AtomicVisitable {
 		return unitVector3D;
 	}
 
-	@Override
 	public void accept(AtomicVisitor a_objVisitor) throws AtomicVisitorException {
 		a_objVisitor.visit(this);
 	}

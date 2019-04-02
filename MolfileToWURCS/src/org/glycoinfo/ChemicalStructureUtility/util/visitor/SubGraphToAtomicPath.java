@@ -29,20 +29,17 @@ public class SubGraphToAtomicPath implements AtomicVisitor {
 		this.m_aAromaticAtoms = aromatics;
 	}
 
-	@Override
 	public void visit( Atom a_objAtom ) throws AtomicVisitorException {
 		if ( !this.m_objGraph.contains(a_objAtom) ) return;
 
 
 	}
 
-	@Override
 	public void visit( Connection a_objConnection ) throws AtomicVisitorException {
 		if ( !this.m_objGraph.contains(a_objConnection.getBond()) ) return;
 
 	}
 
-	@Override
 	public void start(SubGraphOld a_objGraph) throws AtomicVisitorException {
 		this.clear();
 
@@ -51,12 +48,10 @@ public class SubGraphToAtomicPath implements AtomicVisitor {
 		t_objTraverser.traverseGraph(this.m_objGraph);
 	}
 
-	@Override
 	public AtomicTraverser getTraverser(AtomicVisitor a_objVisitor) throws AtomicVisitorException {
 		return new AtomicTraverserConnection(a_objVisitor);
 	}
 
-	@Override
 	public void clear() {
 		this.m_aConnections.clear();
 	}

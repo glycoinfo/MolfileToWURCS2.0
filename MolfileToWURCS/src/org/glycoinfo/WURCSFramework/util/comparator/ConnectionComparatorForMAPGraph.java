@@ -67,7 +67,6 @@ public class ConnectionComparatorForMAPGraph implements Comparator<Connection> {
 		return t_oMA.getAtomToMorganNumber();
 	}
 
-	@Override
 	public int compare(Connection a_oConn1, Connection a_oConn2) {
 
 		int t_iComp = 0;

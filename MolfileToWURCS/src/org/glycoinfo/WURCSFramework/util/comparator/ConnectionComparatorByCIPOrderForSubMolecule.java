@@ -27,7 +27,6 @@ public class ConnectionComparatorByCIPOrderForSubMolecule implements Comparator<
 		this.m_oCIPComp = new ConnectionComparatorByCIPOrder(t_oHDComp);
 	}
 
-	@Override
 	public int compare(Connection a_oConn1, Connection a_oConn2) {
 		return this.m_oCIPComp.compare(a_oConn1, a_oConn2);
 	}

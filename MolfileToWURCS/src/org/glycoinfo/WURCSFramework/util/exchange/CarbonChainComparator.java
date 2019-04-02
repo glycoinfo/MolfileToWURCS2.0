@@ -16,7 +16,6 @@ public class CarbonChainComparator implements Comparator<LinkedList<Atom>> {
 	CarbonChainAnalyzer m_objAnalyzer2 = new CarbonChainAnalyzer();
 //	SkeltonCodeGenerator m_objCodeGen = new SkeltonCodeGenerator();
 
-	@Override
 	public int compare(LinkedList<Atom> chain1, LinkedList<Atom> chain2) {
 		// For length of carbon chain, to prioritize longer one
 		// TODO: check comparation order

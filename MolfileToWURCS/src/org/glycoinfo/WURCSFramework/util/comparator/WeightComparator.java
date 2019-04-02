@@ -9,7 +9,6 @@ import java.util.Comparator;
  */
 public class WeightComparator implements Comparator<Double> {
 
-	@Override
 	public int compare(Double a_dWeight1, Double a_dWeight2) {
 		// Return 0 if either of weights is null
 		if ( a_dWeight1==null || a_dWeight2==null ) return 0;
