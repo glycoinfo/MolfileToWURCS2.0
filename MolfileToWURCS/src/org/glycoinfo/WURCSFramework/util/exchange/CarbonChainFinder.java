@@ -41,12 +41,12 @@ public class CarbonChainFinder {
 	//----------------------------
 	// Accessor
 	//----------------------------
-	public void setParameters(final int minNOS, final int minO, final int minBackboneLength, final int maxBackboneLength, final float ratioBackboneNOS){
+	public void setParameters(final int minNOS, final int minO, final int minBackboneLength, final int maxBackboneLength) {//, final float ratioBackboneNOS){
 		this.m_iMinNOS    = minNOS;
 		this.m_iMinO      = minO;
 		this.m_iMinLength = minBackboneLength;
 		this.m_iMaxLength = maxBackboneLength;
-		this.m_fRatioNOS  = ratioBackboneNOS;
+		//this.m_fRatioNOS  = ratioBackboneNOS;
 	}
 
 	public void clear() {

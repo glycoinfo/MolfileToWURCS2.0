@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.io.StringReader;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -49,6 +50,14 @@ public class CTFileReader {
 			e.printStackTrace();
 		}
 		this.m_iRecordNo = 1;
+	}
+
+
+	public void MolReader(String a_strMol) {
+
+		StringReader sr = new StringReader(a_strMol);
+		BufferedReader br = new BufferedReader(sr);
+		this.m_brOutput = br;
 	}
 
 	/**

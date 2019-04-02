@@ -23,7 +23,7 @@ import org.glycoinfo.WURCSFramework.wurcs.graph.WURCSGraph;
 public class MOLToWURCS2Std {
 
 	// Version
-	private static final String VERSION = "2.0.180815US";
+	private static final String VERSION = "2.0.190402JPN";
 
 	private static int minNOS = 0;
 	private static int minO = 0;
@@ -161,7 +161,8 @@ public class MOLToWURCS2Std {
 			try {
 				// Convert Molecule to WURCSGraph
 				MoleculeToWURCSGraph t_oMol2Graph = new MoleculeToWURCSGraph();
-				t_oMol2Graph.getCarbonChainFinder().setParameters(minNOS, minO, minBackboneLength, maxBackboneLength, ratioBackboneNOS);
+				//t_oMol2Graph.getCarbonChainFinder().setParameters(minNOS, minO, minBackboneLength, maxBackboneLength, ratioBackboneNOS);
+				t_oMol2Graph.getCarbonChainFinder().setParameters(minNOS, minO, minBackboneLength, maxBackboneLength);
 				t_oMol2Graph.start(t_oMolecule);
 				WURCSGraph t_oGraph = t_oMol2Graph.getWURCSGraph();
 
@@ -339,7 +340,8 @@ public class MOLToWURCS2Std {
 			try {
 				// Convert Molecule to WURCSGraph
 				MoleculeToWURCSGraph t_oMol2Graph = new MoleculeToWURCSGraph();
-				t_oMol2Graph.getCarbonChainFinder().setParameters(minNOS, minO, minBackboneLength, maxBackboneLength, ratioBackboneNOS);
+				//t_oMol2Graph.getCarbonChainFinder().setParameters(minNOS, minO, minBackboneLength, maxBackboneLength, ratioBackboneNOS);
+				t_oMol2Graph.getCarbonChainFinder().setParameters(minNOS, minO, minBackboneLength, maxBackboneLength);
 				t_oMol2Graph.start(t_oMolecule);
 				WURCSGraph t_oGraph = t_oMol2Graph.getWURCSGraph();
 

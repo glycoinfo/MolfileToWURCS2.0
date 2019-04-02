@@ -27,7 +27,7 @@ public class MOLToWURCS2 {
 	private static int maxBackboneLength = 0;
 	private static float ratioBackboneNOS = 0;
 	private static boolean b_outputfile = false;
-	
+
 	public static void main(String[] args) {
 		// usage
 		for ( String arg : args ) {
@@ -127,7 +127,8 @@ public class MOLToWURCS2 {
 			try {
 				// Convert Molecule to WURCSGraph
 				MoleculeToWURCSGraph t_oMol2Graph = new MoleculeToWURCSGraph();
-				t_oMol2Graph.getCarbonChainFinder().setParameters(minNOS, minO, minBackboneLength, maxBackboneLength, ratioBackboneNOS);
+				//t_oMol2Graph.getCarbonChainFinder().setParameters(minNOS, minO, minBackboneLength, maxBackboneLength, ratioBackboneNOS);
+				t_oMol2Graph.getCarbonChainFinder().setParameters(minNOS, minO, minBackboneLength, maxBackboneLength);
 				t_oMol2Graph.start(t_oMolecule);
 				WURCSGraph t_oGraph = t_oMol2Graph.getWURCSGraph();
 
@@ -141,7 +142,7 @@ public class MOLToWURCS2 {
 				if ( t_strWURCS.contains("*OP^XO*/3O/3=O") ) {
 					t_strWURCS = t_strWURCS.replaceAll("\\*OP\\^XO\\*/3O/3=O", "*OPO*/3O/3=O");
 				}
-				
+
 				//System.err.println(t_strWURCS);
 
 				// XXX: remove print
@@ -188,7 +189,7 @@ public class MOLToWURCS2 {
 				}
 
 				//System.err.println(t_strStdWURCSs);
-				
+
 				// Output WURCS tags with aglycones
 				if ( a_bOutput ) {
 					System.out.print("> <WURCS2.0>\n"+t_strStdWURCSs+"\n");
@@ -211,27 +212,27 @@ public class MOLToWURCS2 {
 		for ( String id : t_mapIDtoWURCS.keySet() ) {
 			System.err.println(id+"\t"+t_mapIDtoWURCS.get(id));
 		}
-		
-		
+
+
 		if (b_outputfile == true ) {
-			
+
 			// Output results
 			String t_strFileName = t_objCTReader.getFileName();
 			String t_strDirName = "";
 			if (t_objCTReader.getDirectoryName() == "null") {
 				t_strDirName = t_objCTReader.getDirectoryName() + File.separator;
 			}
-	
+
 			//System.err.println("Output result to "+t_strDirName);
-			
-			
+
+
 			WURCSFileWriter.printWURCSList(t_mapIDtoWURCS, t_strDirName, t_strFileName+"_result.txt").close();
 			try {
 				t_oLogger.printLog(  WURCSFileWriter.getResultFilePath(t_strDirName, t_strFileName+"_result.log") );
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
-	
+
 			// close CTfile
 			try {
 				t_objCTReader.close();

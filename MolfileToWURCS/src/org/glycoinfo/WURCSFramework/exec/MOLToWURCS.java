@@ -116,7 +116,8 @@ public class MOLToWURCS {
 			try {
 				// Convert Molecule to WURCSGraph
 				MoleculeToWURCSGraph t_oMol2Graph = new MoleculeToWURCSGraph();
-				t_oMol2Graph.getCarbonChainFinder().setParameters(minNOS, minO, minBackboneLength, maxBackboneLength, ratioBackboneNOS);
+				//t_oMol2Graph.getCarbonChainFinder().setParameters(minNOS, minO, minBackboneLength, maxBackboneLength, ratioBackboneNOS);
+				t_oMol2Graph.getCarbonChainFinder().setParameters(minNOS, minO, minBackboneLength, maxBackboneLength);
 				t_oMol2Graph.start(t_oMolecule);
 				WURCSGraph t_oGraph = t_oMol2Graph.getWURCSGraph();
 
