@@ -48,7 +48,23 @@
     </distributionManagement>
 
 
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-changelog-plugin</artifactId>
+				<version>2.3</version>
+			</plugin>
 
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-linkcheck-plugin</artifactId>
+				<version>1.2</version>
+				<configuration>
+				</configuration>
+			</plugin>
+		</plugins>
+	</reporting>
 
   <build>
     <sourceDirectory>src</sourceDirectory>
@@ -65,6 +81,8 @@
 
     </plugins>
   </build>
+
+
   <dependencies>
     <dependency>
         <groupId>org.glycoinfo</groupId>
