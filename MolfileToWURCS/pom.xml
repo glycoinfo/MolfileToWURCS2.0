@@ -2,10 +2,10 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.glycoinfo.WURCSFramework</groupId>
   <artifactId>MolfileToWURCS</artifactId>
-  <version>0.0.8-SNAPSHOT</version>
+  <version>0.0.9-SNAPSHOT</version>
 
-<!--
->>>>>>> refs/heads/issakuWork
+
+
     <repositories>
         <repository>
             <id>apache-repo</id>
@@ -45,14 +45,14 @@
         	<url>file:///var/lib/tomcat7/webapps/</url>
         </site>
     </distributionManagement>
-   -->
+
 
 
 
   <build>
     <sourceDirectory>src</sourceDirectory>
     <plugins>
-    <!--
+
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.1</version>
@@ -61,7 +61,7 @@
           <target>1.7</target>
         </configuration>
       </plugin>
-     -->
+
     </plugins>
   </build>
   <dependencies>
