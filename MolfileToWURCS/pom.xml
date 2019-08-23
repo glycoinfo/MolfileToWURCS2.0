@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.glycoinfo.WURCSFramework</groupId>
   <artifactId>MolfileToWURCS</artifactId>
-  <version>0.0.10a-SNAPSHOT</version>
+  <version>0.0.10-SNAPSHOT</version>
 
 	<name>MolfileToWURCS</name>
 	<url>https://glyconavi.org</url>
