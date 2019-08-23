@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.glycoinfo.WURCSFramework</groupId>
   <artifactId>MolfileToWURCS</artifactId>
-  <version>0.0.10</version>
+  <version>0.0.10a</version>
 
 	<name>MolfileToWURCS</name>
 	<url>https://glyconavi.org</url>
@@ -88,7 +88,7 @@
     <dependency>
         <groupId>org.glycoinfo</groupId>
         <artifactId>wurcsframework</artifactId>
-        <version>0.1.0-SNAPSHOT</version>
+        <version>0.0.81-SNAPSHOT</version>
     </dependency>
   </dependencies>
 </project>
